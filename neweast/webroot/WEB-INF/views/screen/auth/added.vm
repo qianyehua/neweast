@@ -1,0 +1,50 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/validate.css" />
+<script src="$!{imageServer}/scripts/system/auth.js" type="text/javascript" charset="gb2312"></script>
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+
+<div class="main-right">
+    <div class="basic">
+        <ul class="form-tab">
+            <li class="c">
+                <span>鉴定机构</span>
+            </li>
+        </ul>
+        <div class="formbox">
+                <div class="clear"></div>
+                <div class="nr">
+                    <div class="nr-t"></div>
+                    <div class="nr-c">
+                        <table class="c2">
+                               <tr>
+                                <th>
+                                    机构名称：</th>
+                                    <td>
+                                        <label class="error">  ${auth.name}  </label>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    登录账号：</th>
+                                    <td>
+                                        <label class="error">  ${auth.account}  </label>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <th>登录密码：</th>
+                                    <td>
+                                        <label class="error">  ${auth.password} </label>
+                                    </td>
+                            </tr>
+</table>
+</div>
+<div class="nr-b"></div>
+</div>
+<!-- 表单按钮区 -->
+<div class="form-but">
+    <input type="button" class="but" onclick="window.location.href='$!{appServer}/auth/list.htm'" value="返回" />
+</div>
+<!-- 表单按钮区 END -->
+<div class="clear"></div>
+                </div>
+</div>
+        </div>

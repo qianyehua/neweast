@@ -1,0 +1,110 @@
+<div class="listbox">
+	<form id="form1" action="list.htm" method="get">
+		#springBind("query.isRecommend")
+		<input type="hidden" name="$!{status.expression}" value="$!{status.value}"/>
+		<table  class="list-table" id="artTab">
+			#if($!{query.isRecommend})
+			<tr>
+				<th>类目</th>
+				<td>
+					#springBind("query.artParentCategoryId")
+					<select id="artParentCategoryId" name="$!{status.expression}" class="inp" style="width:150px">
+					<option value="">请选择</option>
+            		#foreach(${menu} in $!{list_menus})
+        			<option value="${menu.id}" title="$!{menu.name}" #if($!{query.artParentCategoryId}==$!{menu.id}) selected="selected" #end>
+        				$!{menu.name}	
+                    </option>
+            		#end
+                    </select>
+				</td>
+				<td>
+					<input type="submit" value="查询" class="but-61">
+				</td>
+			</tr>
+			#else
+			<tr>
+				<th>艺术品名称</th>
+				<td>
+					#springBind("query.queryName")
+					<input name="$!{status.expression}" value="$!{status.value}"/>
+				</td>
+				<td>
+					<input type="submit" value="查询" class="but-61">
+				</td>
+			</tr>
+			<tr>
+				<th>卖家账号</th>
+				<td>
+					#springBind("query.email")
+					<input name="$!{status.expression}" value="$!{status.value}"/>
+				</td>
+			</tr>
+			<tr>
+				<th>类目</th>
+				<td>
+					#springBind("query.categoryId")
+					<select id="categoryId" name="$!{status.expression}" class="inp" style="width:150px">
+					<option value="">请选择</option>
+            		#foreach(${menu} in $!{list_menus})
+        			<option value="${menu.id}" title="$!{menu.name}" #if($!{query.categoryId}==$!{menu.id} || $!{query.artParentCategoryId}==$!{menu.id}) selected="selected" #end>
+        				#foreach($str in $!stringUtils.split($!{menu.name},";") )
+        					#if($str=="&nbsp")
+        						&nbsp;&nbsp;
+        					#else
+        						$str
+        					#end
+        				#end
+                    </option>
+            		#end
+                    </select>
+				</td>
+				
+			</tr>
+			<tr>
+			<th>艺术品类型</th>
+				<td>
+					#springBind("query.artType")
+                	<select id="artType" name="artType">
+                		<option value="">请选择</option>
+                		#foreach($artType in $artTypeList)
+                			<option value="$artType.value" #if($query.artType == "$artType.value") selected="selected" #end>
+                				$artType.desp
+                			</option>
+                		#end
+                	</select>					
+				</td>
+			</tr>
+			#end
+		</table>
+	</form>
+	<table  class="list-table" id="artTab">
+		<tr>
+			<th width="20%">图片</th>
+			<th width="22%">艺术品名称</th>
+			<th width="40%">类目</th>
+			<th width="18%">是否推荐</th>
+		</tr>
+		#if($!{query} && ${query.totalCount} > 0)
+			#foreach($art in $query.getData())
+				<tr #if($!{velocityCount}%2 == 0) class="bg" #end id="$!{art.id}" #if(!$art.isNormal()) style="color:red" #end> 
+					<td><a href="$!{uploadServer}/$!{art.getAttachmentList()[0]}" title="点击看大图" target="_blank">
+					<img height="50" width="50"src="$!{uploadServer}/$!{art.getAttachmentList()[0]}?x-oss-process=image/resize,m_pad,h_50,w_50"/>
+					</a></td>
+					<td><p title="$!{art.artName}">$!stringUtils.abbreviate($!{art.name},12)</p></td>
+					<td>$!{art.categoryContent}</td>
+					<td> 
+					<input type="checkbox" onclick="parent.chRecommend($!{art.id}, this);" #if($!{query.isRecommend})checked #end></input>
+					</td>
+				</tr>
+			#end
+		#else
+			<tr>
+				<td colspan="4">
+					<p class="ts">没有结果</p>
+				</td>
+			</tr>
+		#end
+	</table>
+	#pager($query, "form1")
+	<div class="clear"></div>
+</div>

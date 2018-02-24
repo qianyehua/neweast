@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PublicHelpCategory">
+
+	<typeAlias alias="PublicHelpCategory"
+		type="com.skyjoo.neweast.biz.portal.domain.common.PublicHelpCategory" />
+
+	<resultMap id="publicHelpCategoryResultMap" class="PublicHelpCategory">
+		<result column="ID" property="id" />
+		<result column="PARENT_ID" property="parentId" />
+		<result column="NAME" property="name" />
+		<result column="DESCRIPTION" property="description" />
+		<result column="ORDERING" property="ordering" />
+		<result column="CAT_LEVEL" property="catLevel" />
+		<result column="GMT_CREATE" property="gmtCreate" />
+		<result column="GMT_MODIFY" property="gmtModify" />
+		<result column="OPERATOR" property="operator" />
+		<result column="IS_DELETED" property="isDeleted" />
+		<!-- 级联查父类目名称 -->
+		<result column="PARENT_NAME" property="parentName"/>
+	</resultMap>
+	<!-- 根据id查询单个类目 -->
+	<select id="getPublicHelpCategoryById" parameterClass="java.lang.Long"
+		resultMap="publicHelpCategoryResultMap">
+		SELECT t1.ID,t1.PARENT_ID,t1.NAME,t1.DESCRIPTION,
+		t1.ORDERING,t1.CAT_LEVEL,t1.GMT_CREATE,t1.GMT_MODIFY,
+		t1.OPERATOR,t1.IS_DELETED,t2.NAME PARENT_NAME
+		FROM PUBLIC_HELP_CATEGORY t1 left join PUBLIC_HELP_CATEGORY t2
+		on t1.PARENT_ID = t2.ID
+		where t1.ID=#id# and t1.IS_DELETED &lt;&gt; 1 order by t1.ordering
+	</select>
+	
+	<select id="getCategeoryByName" parameterClass="PublicHelpCategory"
+		resultClass="int">
+		SELECT count(1) FROM PUBLIC_HELP_CATEGORY where  CAT_LEVEL= #catLevel# 
+		and IS_DELETED = 0 and NAME = #name# 
+		<isNotNull property="id" prepend="AND">
+			ID &lt;&gt; #id#
+		</isNotNull>
+	</select>
+	
+	<!-- 根据pid查询所有子类目 -->
+	<select id="getPublicHelpCategorysByPid" parameterClass="java.lang.Long"
+		resultMap="publicHelpCategoryResultMap">
+		SELECT t1.ID,t1.PARENT_ID,t1.NAME,t1.DESCRIPTION,
+		t1.ORDERING,t1.CAT_LEVEL,t1.GMT_CREATE,t1.GMT_MODIFY,t1.OPERATOR
+		,t1.IS_DELETED,t2.name PARENT_NAME
+		FROM PUBLIC_HELP_CATEGORY t1 left join PUBLIC_HELP_CATEGORY t2
+		  on t1.parent_id = t2.id 
+		 where t1.PARENT_ID=#pid# and t1.IS_DELETED &lt;&gt; 1 order by t1.ORDERING
+	</select>
+
+	<!-- 插入一条类目信息 -->
+	<insert id="insertPublicHelpCategory" parameterClass="PublicHelpCategory">
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+			select
+			SEQ_PUBLIC_HELP_CATEGORY.nextval from dual</selectKey>
+		INSERT INTO PUBLIC_HELP_CATEGORY (ID,PARENT_ID,NAME,DESCRIPTION,
+		ORDERING,CAT_LEVEL,GMT_CREATE,GMT_MODIFY,OPERATOR,IS_DELETED)
+		VALUES (#id#,#parentId#,#name#,#description#,#ordering#,
+		#catLevel#,sysdate,sysdate,#operator#,0)
+	</insert>
+
+	<!-- 修改一条类目信息 -->
+	<update id="updatePublicHelpCategory" parameterClass="PublicHelpCategory">
+		update
+		PUBLIC_HELP_CATEGORY set
+		NAME=#name#,ORDERING=#ordering#,
+		GMT_MODIFY=sysdate,OPERATOR=#operator#
+		where ID=#id#
+	</update>
+	
+	<!-- 逻辑删除一条类目信息 -->
+	<delete id="deletePublicHelpCategory" parameterClass="PublicHelpCategory">
+		update
+		PUBLIC_HELP_CATEGORY set IS_DELETED=#isDeleted#,GMT_MODIFY=sysdate,OPERATOR=#operator#
+		where ID=#id#
+	</delete>
+	
+	<!-- 根据id查子类目数 -->
+	<select id="getCategoriesById" resultClass="int" parameterClass="java.lang.Long">
+		SELECT count(1) FROM PUBLIC_HELP_CATEGORY where parent_id = #catId# and IS_DELETED = 0
+	</select>
+	
+	<!-- 根据id查类目级别 -->
+	<select id="getLevelById" resultClass="int" parameterClass="java.lang.Long">
+		SELECT CAT_LEVEL FROM PUBLIC_HELP_CATEGORY where id = #catId#
+	</select>
+</sqlMap>

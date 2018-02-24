@@ -1,0 +1,51 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<!-- 搜索框 -->
+<div class="search-box"">
+    <form id="testUser" name="testUser" action="test_list.htm" method="get">
+        <table>
+            <tr>
+                <th>用户名</th>
+                <td>
+                    <input type="text" name="id" onKeyUp="this.value=this.value.trim()" id="serchUserName" maxlength="16" class="inp"></td>
+                    <td>
+                        <input type="submit" name="search" value="查询" class="but-61" />
+                    </td>
+</tr>
+</table>
+</form>
+</div>
+<!-- 搜索框 END -->
+ <div class="basic">
+    <div class="tool">
+        <span>
+            <a href="add_list.htm" class="bt_add"  hidefocus="true" target="main">新增</a>
+        </span>
+    </div>
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="25%">编号</th>
+			<th width="25%">账号</th>
+			<th width="25%">密码 </th>
+			<th width="25%">操作 </th>
+        </tr>
+        
+			#foreach($test in $!list.getData())
+			<tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+                <td  align="center">$!{test.id}</td>
+                <td align="center">$!{test.name}</td>
+                <td align="center">$!{test.password}</td>	
+                <td class="link-td"><a href="edit_list.htm?id=$!{list.id}">修改</a>		
+                <a name="delete" 
+        			onclick="return confirm('确定删除该菜单吗？');" 
+        			href="delet.htm?id=$!{list.id}">删除</a>		
+             </tr>	
+			#end
+	
+    </table>
+    #pager($list, "testUser")
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

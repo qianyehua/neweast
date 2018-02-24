@@ -1,0 +1,56 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/validate.css" />
+<script src="$!{imageServer}/scripts/system/user.js" type="text/javascript" charset="gb2312"></script>
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<div class="main-right">
+    <div class="basic">
+        <ul class="form-tab">
+            <li class="c">
+                <span>用户增加</span>
+            </li>
+        </ul>
+        <div class="formbox">
+            <form id="systemUser" name="systemUser" action="add.htm" method="post">
+                <div class="clear"></div>
+                <div class="nr">
+                    <div class="nr-t"></div>
+                    <div class="nr-c">
+                        <table class="c2">
+                            <tr>
+                                <th>
+                                    <span style="color:red">*</span>
+                                    用户名：</th>
+                                    <td>
+                                        
+                                        <input type="text" id="Name" name="name" maxlength="12" class="inp" value=" "/>
+                                      
+                                    </td>
+                            </tr>
+                        
+                            <tr>
+                                <th>
+                                    <span style="color:red">*</span>
+                                    密    码：</th>
+                                    <td>
+                                        <input type="password" id="password" name="Password"  maxlength="12" class="inp" value=""/>
+                                    </td>
+                            </tr>
+                            
+                           
+                           
+            
+</table>
+</div>
+<div class="nr-b"></div>
+</div>
+<input type="hidden" id="roles" name="roles" value=""/>
+<!-- 表单按钮区 -->
+<div class="form-but">
+    <input type="submit" id="save" name="save" class="but" value="保存" />
+    <input type="button" id="back" name="back" class="but" onclick="location.href='list.htm'" value="返回" />
+</div>
+<!-- 表单按钮区 END -->
+<div class="clear"></div>
+</form>
+                </div>
+</div>
+        </div>

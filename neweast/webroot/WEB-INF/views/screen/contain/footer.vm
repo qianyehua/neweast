@@ -1,0 +1,8 @@
+#set($layout = 'layout/blank.vm')
+<!-- 页脚 -->  
+<div class="body-foot">
+    <p>
+        Copyright 2013 版权所有 香港大公文化集团有限公司 交易后台管理系统
+    </p>
+</div>
+<!-- 页脚 END -->

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ACTIVITY_X_ART">
+    <typeAlias alias="activityXArt" type="com.skyjoo.neweast.biz.activity.domain.ActivityXArt"/>
+    
+    <resultMap id="resultMap" class="activityXArt" >
+    	<result column="ID" property="id"/>
+    	<result column="ACTIVITY_ID" property="activityId"/>
+    	<result column="ART_ID" property="artId"/>
+    	<result column="ORDERING" property="ordering"/>
+    	<result column="GMT_CREATE" property="gmtCreate"/>
+    </resultMap>
+    
+	<resultMap id="artResultMap" class="activityXArt" extends="resultMap">
+    	<result column="NAME" property="name"/>
+    	<result column="ATTACHMENT" property="attachment"/>
+    	<result column="categoryContent" property="categoryContent"/>
+    	<result column="ARTIST" property="artise"/>
+    </resultMap>
+    
+    <!-- 获取活动艺术品列表 -->
+    <select id="getActivityXArt"  resultMap="artResultMap">
+    	select 
+    		axa.ID,
+    		axa.ACTIVITY_ID,
+    		axa.ART_ID,
+    		axa.ORDERING,
+    		axa.GMT_CREATE,
+    		a.NAME,
+    		are.ATTACHMENT,
+    		(ac2.name || '->' || ac.name) as categoryContent,
+    		ae.ARTIST
+    	from 
+    		ACTIVITY_X_ART axa
+    		left join ART a on a.ID = axa.ART_ID
+    		left join ART_EXT are on are.ART_ID = axa.ART_ID
+    		left join ARTISE ae on ae.ID = a.ARTISE_ID
+    		left join ART_CATEGORY ac on ac.ID = a.CATEGORY_ID
+			left join ART_CATEGORY ac2 on ac.PARENT_ID = ac2.ID
+    	where axa.ACTIVITY_ID = #activityId#
+    	order by axa.ORDERING,axa.GMT_CREATE
+    </select>
+    
+    <insert id="insert" parameterClass="activityXArt">
+		<selectKey keyProperty="id" resultClass="long">
+			select SEQ_ACTIVITY_X_ART.NEXTVAL from DUAL
+		</selectKey>
+		insert into ACTIVITY_X_ART(ID,ACTIVITY_ID,ART_ID,GMT_CREATE)
+		values (#id#, #activityId#, #artId#,sysdate)
+	</insert>
+	
+	<delete id="deleteActivityXArt" >
+		delete	from ACTIVITY_X_ART  where ID = #id#
+	</delete>
+	
+	<delete id="deleteByActivityId" >
+		delete	from ACTIVITY_X_ART  where ACTIVITY_ID = #activityId#
+	</delete>
+	
+	<update id="updateOrder" parameterClass="activityXArt">
+		update ACTIVITY_X_ART
+		set	ORDERING = #ordering#
+		where ID = #id#
+	</update>
+</sqlMap>

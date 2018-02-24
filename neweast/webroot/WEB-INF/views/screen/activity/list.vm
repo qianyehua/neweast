@@ -1,0 +1,50 @@
+<div class="basic">
+	<form id="listForm" name="listForm" action="list.htm" method="get">
+	<div class="tool">
+		名称：<input type="text" name="actName" id="actName" value="$!{actName}"/>	
+		<span>
+			<input type="submit" name="search" value="查询" class="but-61" />
+            <a onclick="window.location='add-init.htm'" href="#" class="bt_add" hidefocus="true" >新增</a>
+        </span>
+	</div>
+	</form>
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="15%">主题推荐名称</th>
+			<th width="30%">推荐描述</th>
+			<th width="15%">链接</th>
+			<th width="8%">排序</th>
+			<th width="15%">创建时间</th>
+			<th width="17%">操作</th>
+        </tr>
+		#if($!{list} && ${list.size()} > 0)
+			#foreach($act in $list)
+				<tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+					<td align="center" rowspan="2">$!{act.name}</td>
+					<td align="center" rowspan="2">$!{act.introduction}</td>
+					<td align="center" rowspan="2">$!{blueflyServer}/activity/detail.htm?id=$!{act.id}</td>
+					<td align="center" rowspan="2">$!{act.ordering}</td>
+					<td align="center" rowspan="2">$!{dateTool.format($!{act.gmtCreate})}</td>
+					<td align="center" class="link-td" valign="bottom">
+						<a href="$!{appServer}/axa/list.htm?activityId=$!{act.id}">艺术品管理</a>
+					</td>
+				</tr>
+				<tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+					<td align="center" class="link-td" valign="top">
+						<a href="edit-init.htm?id=$!{act.id}">编辑</a>
+						<a href="delete.htm?id=$!{act.id}" onClick="return confirm('确定要删除该活动吗？');">删除</a>
+					</td>
+                </tr>
+			#end
+		#else
+			<tr>
+				<td colspan="7">
+					<p class="ts">没有结果</p>
+				</td>
+			</tr>
+		#end
+    </table>
+ </div>
+ </div>
+ <div class="clear"></div>

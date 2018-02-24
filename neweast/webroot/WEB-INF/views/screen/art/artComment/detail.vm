@@ -1,0 +1,33 @@
+   <div class="main-right" >        	
+  <div class="basic">  
+   <ul class="form-tab">
+        <li class="c">
+            <span>评论详情</span>
+        </li>
+    </ul>
+  	<div class="listbox" >
+   	<table class="list-table">
+		<tr>
+			<td width="20%" align="right">艺术品名称：</td><td width="80%">$!{artComment.artName}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">评论人：</td><td width="80%">$!{artComment.fromName}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">被评论人：</td><td width="80%">$!{artComment.toName}</td>
+		</tr>		
+		<tr>
+			<td width="20%" align="right">评论时间：</td><td width="80%">$!{dateTool.format($!{artComment.gmtCreate})}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">评论内容：</td><td width="80%">$!{artComment.content}</td>
+		</tr>
+    </table>
+    </div>
+	<div class="form-but">
+		<input type="button" onclick="location='$!{appServer}/artComment/delete.htm?id=${artComment.id}'" class="but" value="删除" /> 		
+		<input type="button" id="back" name="back" class="but" value="返回" />
+    </div><!-- 表单按钮区 END -->
+  </div>
+</div>
+		

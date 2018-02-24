@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ARTICLE_RECOMMEND_ART">
+	<typeAlias alias="articleRecommendArt" type="com.skyjoo.neweast.biz.article.domain.ArticleRecommendArt" />
+	<resultMap id="articleRecommendArtResult" class="articleRecommendArt">
+		<result column="ID" property="id" />
+		<result column="GMT_CREATE"  property="gmtCreate" />
+		<result column="GMT_MODIFY"  property="gmtModify" />
+		<result column="ARTICLE_ID"  property="articleId" />
+		<result column="ART_ID"  property="artId"/>
+		<result column="INTRODUCTION"  property="introduction" />
+		<result column="NAME"  property="artName"/>
+		<result column="ARTISE"  property="artistName"/>
+	</resultMap>
+
+  
+  <select id="getRecommendArtByArticleId" resultMap="articleRecommendArtResult" >
+		select A.*, B.NAME,B.ARTISE
+		    from ARTICLE_RECOMMEND_ART A
+		    left join  ART B on B.ID=A.ART_ID
+		    where A.ARTICLE_ID=#articleId#
+		 	order by A.GMT_CREATE ASC,A.ID
+  </select>
+  
+   <update id="update" parameterClass="articleRecommendArt">
+  		update ARTICLE_RECOMMEND_ART 
+    	set GMT_MODIFY = sysdate, INTRODUCTION=#introduction# 		
+   		where ID = #id#
+  </update>
+  
+  
+  <select id="getRecommendArt" resultMap="articleRecommendArtResult" parameterClass="Long">
+		select A.*, B.NAME,B.ARTISE
+		    from ARTICLE_RECOMMEND_ART A
+		    left join  ART B on B.ID=A.ART_ID
+		    where A.ID=#id#
+		 	
+  </select>
+
+ <insert id="insert" parameterClass="articleRecommendArt">
+		<selectKey keyProperty="id" resultClass="long">
+			select SEQ_ARTICLE_RECOMMEND_ART.NEXTVAL from DUAL
+		</selectKey>
+		insert into ARTICLE_RECOMMEND_ART(ID,ARTICLE_ID,ART_ID,GMT_CREATE,GMT_MODIFY)
+		values (#id#, #articleId#, #artId#, sysdate,sysdate)
+</insert>
+  <delete id="removeRecommendArt" parameterClass="Long">
+  	delete from ARTICLE_RECOMMEND_ART where id=#id#
+  </delete>
+
+  
+</sqlMap>

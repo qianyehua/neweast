@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="TRADE_ORDER_ITEM">
+
+	<typeAlias alias="tradeOrderItem" type="com.skyjoo.neweast.biz.trade.domain.TradeOrderItem" />
+	
+	<resultMap id="tradeOrderItemResultMap" class="tradeOrderItem">
+		<result column="ID" property="id"/>
+		<result column="ORDER_ID" property="orderId"/>
+		<result column="TRADE_NO" property="tradeNo"/>
+		<result column="ART_ID" property="artId"/>
+		<result column="ATTACHMENT" property="attachment"/>
+		<result column="CAT_CODE" property="catCode"/>
+		<result column="ART_NAME" property="artName"/>
+		<result column="ART_NUMBER" property="artNumber"/>
+		<result column="ART_PRICE" property="artPrice"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		toi.ID,
+		toi.ORDER_ID,
+		toi.TRADE_NO,
+		toi.ART_ID,
+		toi.ATTACHMENT,
+		toi.CAT_CODE,
+		toi.ART_NAME,
+		toi.ART_NUMBER,
+		toi.ART_PRICE,
+		toi.GMT_CREATE
+	</sql>
+	
+	<select id="selectOrderIdsByArtNo" parameterClass="string" resultClass="long">
+		select distinct toi.ORDER_ID
+		from TRADE_ORDER_ITEM toi
+		left join ART a on a.id = toi.ART_ID
+		where a.ART_CODE = #artNo#
+	</select>
+</sqlMap>

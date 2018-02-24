@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SHOP_BUSINESS_HOURS">
+
+	<typeAlias alias="shopBusinessHours" type="com.skyjoo.neweast.biz.shop.domain.ShopBusinessHours" />
+	
+	<resultMap id="shopBusinessHoursResultMap" class="shopBusinessHours">
+		<result column="ID" property="id"/>
+		<result column="SHOP_ID" property="shopId"/>
+		<result column="TYPE" property="type"/>
+		<result column="GMT_START" property="gmtStart"/>
+		<result column="GMT_END" property="gmtEnd"/>
+		<result column="CUSTOMER_SERVICE" property="customerService"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		sbh.ID,
+		sbh.SHOP_ID,
+		sbh.TYPE,
+		sbh.GMT_START,
+		sbh.GMT_END,
+		sbh.CUSTOMER_SERVICE,
+		sbh.GMT_CREATE,
+		sbh.GMT_MODIFY
+	</sql>
+	
+	<select id="selectByShopId" parameterClass="long" resultMap="shopBusinessHoursResultMap">
+		select <include refid="columsSql"/>
+		from SHOP_BUSINESS_HOURS sbh
+		where sbh.SHOP_ID = #shopId#
+	</select>
+
+	<delete id="deleteByShopId" parameterClass="long">
+		delete from SHOP_BUSINESS_HOURS sbh
+		where sbh.SHOP_ID = #shopId# 
+	</delete>	
+</sqlMap>

@@ -1,0 +1,173 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/validate.css" />
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<script type="text/javascript">
+	$('document').ready(function(){ 
+		jQuery.validator.addMethod("isMoney",function(value,element){
+		 	return this.optional(element) || /^[0-9]{1,14}?$/.test(value) ;
+		},'请输入最多14位的整数');
+	
+		jQuery.validator.addMethod("isLevelNo",function(value,element){
+			 return this.optional(element) || /^\d+$/.test(value) ;
+		},'等级号必须是正整数');
+		$('#editForm').validate({
+		errorPlacement: function(error, element) {    
+        	error.appendTo(element.parent().find("font")); 
+       	}
+		});
+	});
+
+	function add () {
+		var $last_tr = $("#table>tbody>tr:last");
+		var tr_id = $last_tr.attr("id");
+		if(tr_id != "title") {
+			tr_id++;
+    		var str = "<tr id='"+tr_id+"' style='text-align:center'>";
+    		str += "<td>";
+    		str += "<input name='list["+tr_id+"].levelNo'  class='inp required isLevelNo' maxlength='12' onkeyup='this.value=this.value.trim();' value=''/>";
+			str += "<font color='red'></font></td>";
+    		
+    		str += "<td>";
+    		str += "<input name='list["+tr_id+"].levelName'  class='inp required' maxlength='15' onkeyup='this.value=this.value.trim();' value=''/>";
+			str += "<font color='red'></font></td>";
+    		
+    		str += "<td>";
+    		str += "<input name='list["+tr_id+"].lowLimit'  class='inp required isMoney' maxlength='17' onkeyup='this.value=this.value.trim();' value=''/>";
+			str += "<font color='red'></font></td>";
+    		
+    		str += "<td>";
+    		str += "<a href='#' onclick='del("+tr_id+");return false;' >删除</a><font/></td></tr>";
+			
+			$(str).insertAfter($last_tr);
+			resizeMainIframe();
+		} else {
+			var str = "<tr id='0' style='text-align:center'>";
+    		str += "<td>";
+    		str += "<input name='list[0].levelNo'  class='inp required isLevelNo' maxlength='12' onkeyup='this.value=this.value.trim();' value=''/>";
+			str += "<font color='red'></font></td>";
+    		
+    		str += "<td>";
+    		str += "<input name='list[0].levelName'  class='inp required' maxlength='15' onkeyup='this.value=this.value.trim();' value=''/>";
+			str += "<font color='red'></font></td>";
+    		
+    		str += "<td>";
+    		str += "<input name='list[0].lowLimit'  class='inp required isMoney' maxlength='17' onkeyup='this.value=this.value.trim();' value=''/>";
+			str += "<font color='red'></font></td>";
+    		
+    		str += "<td>";
+    		str += "<a href='#' onclick='del(0);return false;' >删除</a><font/></td></tr>";
+			$(str).insertAfter($("#title")); 
+			resizeMainIframe();
+		}
+	}
+	
+	function del(id) {
+		if(confirm('是否要删除这条记录？')) {
+			var a = $("#"+id+" input:eq(0)").val();
+			var b = $("#"+id+" input:eq(1)").val();
+			var c = $("#"+id+" input:eq(2)").val();
+			if(a=="" || b=="" || c==""){
+				$("#"+id).remove();
+			}else{
+				$("#"+id).hide();
+				var str = $("#isdel").val()+id+",";
+				$("#isdel").val(str);
+			}
+		}
+	}
+	
+	function do_post() {
+		$('#editForm').submit();
+	}
+</script>
+<div class="main-right" >
+<div class="basic">
+	<ul class="form-tab">
+            <li class="c">
+                <span>修改信用等级</span>
+            </li>
+        </ul>
+<div class="formbox">
+    <form id="editForm" name="editForm" action="edit.htm" method="post">
+		<div class="clear"></div>
+		<div class="nr">
+			<div class="nr-t"></div>
+        <style>
+        .formbox .c2 td font{display:block; height:20px; line-height:20px;}
+        </style>
+        <table id="table" name="table" class="c2 c6">
+        	  <tr id="title">
+        		<th style="text-align:center"><span class="required">*</span>等级号</th>
+        		<th style="text-align:center"><span class="required">*</span>等级名称</th>
+        		<th style="text-align:center"><span class="required">*</span>信用值要求</th>
+        		<th style="text-align:center">操作</th>
+              </tr>
+            #foreach($level in $result.list)
+            #set($index = $velocityCount - 1)
+            <tr id="$index" style="text-align:center">
+            	<td>
+            		#springBind("result.list[$index].levelNo")
+            		<input name="${status.expression}" id="levelNo"  class="inp required isLevelNo" onkeyup="this.value=this.value.trim();" maxlength="12" value="#if($!hasErrors)$!{status.value}#else$!{level.levelNo}#end"/>
+            		<font color="red"><label class="error" #if($!{status.errorMessage})style="display:none"#end>$!{status.errorMessage}</label></font>
+            	</td>
+            	<td>
+            		#springBind("result.list[$index].levelName")
+            		<input name="${status.expression}" id="levelName" class="inp required" maxlength="15" onkeyup="this.value=this.value.trim();" value="$!{status.value}"/>
+            		<font color="red"><label class="error" #if($!{status.errorMessage})style="display:none"#end>$!{status.errorMessage}</label></font>
+            	</td>
+            	<td>
+            		#springBind("result.list[$index].lowLimit")
+            		<input name="${status.expression}" id="lowLimit" class="inp required isMoney" maxlength="17" onkeyup="this.value=this.value.trim();" value="#if($!hasErrors)$!{status.value}#else$!{level.lowLimit}#end"/>
+            		<font color="red"><label class="error" #if($!{status.errorMessage})style="display:none"#end>$!{status.errorMessage}</label></font>
+            	</td>
+            	<td>
+            		<a href="#" onclick="del($index);return false;" >删除</a><font/>
+            	</td>
+            </tr>
+            #end 
+            #if($result.list.size() == 0) 
+            <tr id="0"  style="text-align:center">
+            	<td>
+            		#springBind("result.list[0].levelNo")
+            		<input name="${status.expression}" id="levelNo" class="inp required isLevelNo" maxlength="10" onkeyup="this.value=this.value.trim();" value="$!{status.value}"/>
+            		<font color="red"><label class="error" #if($!{status.errorMessage})style="display:none"#end>$!{status.errorMessage}</label></font>
+            	</td>
+            	<td>
+            		#springBind("result.list[0].levelName")
+            		<input name="${status.expression}" id="levelName" class="inp required" maxlength="15" onkeyup="this.value=this.value.trim();" value="$!{status.value}"/>
+            		<font color="red"><label class="error" #if($!{status.errorMessage})style="display:none"#end>$!{status.errorMessage}</label></font>
+            	</td>
+            	<td>
+            		#springBind("result.list[0].lowLimit")
+            		<input name="${status.expression}" id="lowLimit" class="inp required isMoney" maxlength="13" onkeyup="this.value=this.value.trim();" value="$!{status.value}"/>
+            		<font color="red"><label class="error" #if($!{status.errorMessage})style="display:none"#end>$!{status.errorMessage}</label></font>
+            	</td>
+            	<td>
+            		<a href="#" onclick="del(0);return false;" >删除</a><font/>
+            	</td>
+            </tr>
+            #end
+        </table>
+		<input type="hidden" id="isdel" name="isdel" value=""/>
+		<div class="nr-b"></div>
+        </div>
+		<div class="form-but"><!-- 表单按钮区 -->
+        #if($!hasSame)
+        <tr align="center" ><font color="red">不同等级的信用值下限不能相同</font></tr>
+        <br/>
+		#elseif($!hasSameNo)
+        <tr align="center"><font color="red">等级号有重复，请修改</font></tr>
+        <br/>
+		#elseif($!hasSameName)
+        <tr align="center"><font color="red">等级名称有重复，请修改</font></tr>
+        <br/>
+		#end
+    	<input type="button" value="新增" class="but" onclick="add()">
+    	<input type="button" value="保存" class="but" onclick="do_post();"/>
+    	<input type="button" value="返回" class="but" onclick="location.href='list.htm';">
+    </div>
+	</form>
+    </div>
+</div>
+</div>
+</div>
+</div>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="ResourceConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>WEB-INF/conf/server.properties</value>
+				<value>/WEB-INF/conf/mail.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- URLBrokers -->
+	<bean id="appServerBroker" class="com.eyeieye.melos.web.url.URLBroker">
+		<property name="encoding" value="${web.encoding}"></property>
+		<property name="config">
+			<bean class="com.eyeieye.melos.web.url.URLConfig">
+				<property name="host" value="${app.server.host}"></property>
+				<property name="port" value="${app.server.port}"></property>
+				<property name="followContextPath" value="true"></property>
+			</bean>
+		</property>
+	</bean>
+	<bean id="imageServerBroker" class="com.eyeieye.melos.web.url.StampURLBroker">
+		<property name="encoding" value="${web.encoding}"></property>
+		<property name="config">
+			<bean class="com.eyeieye.melos.web.url.URLConfig">
+				<property name="host" value="${image.server.host}"></property>
+				<property name="port" value="${image.server.port}"></property>
+				<property name="followContextPath" value="true"></property>
+			</bean>
+		</property>
+		<property name="stamp" value="${web.stamp}"></property>
+	</bean>
+	
+	 <bean id="uploadServerBroker" class="com.eyeieye.melos.web.url.MultiHostURLBroker" >
+		<property name="encoding" value="${web.encoding}"></property>
+		<property name="config">
+			<bean class="com.eyeieye.melos.web.url.MultiHostURLConfig">
+				<property name="hosts" value="${upload.server.host}"></property>
+				<property name="port" value="${upload.server.port.download}"></property>
+				<property name="followContextPath" value="false"></property>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="blueflyServerBroker" class="com.eyeieye.melos.web.url.StampURLBroker">
+		<property name="encoding" value="${web.encoding}"></property>
+		<property name="config">
+			<bean class="com.eyeieye.melos.web.url.URLConfig">
+				<property name="host" value="${bluefly.host}"></property>
+				<property name="port" value="${bluefly.port}"></property>
+				<property name="followContextPath" value="true"></property>
+			</bean>
+		</property>
+	</bean>
+	
+	
+	
+	<bean class="com.eyeieye.melos.web.url.ServletContextInitHelper">
+		<property name="brokers">
+			<list>
+				<ref bean="appServerBroker" />	
+				<ref bean="uploadServerBroker" />
+				<ref bean="imageServerBroker" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean class="com.eyeieye.melos.web.url.CommonInitHelper">
+		<property name="contextPath" value="${bluefly.context}"></property>
+		<property name="brokers">
+			<list>
+				<ref bean="blueflyServerBroker" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="encodingFilterBean" class="org.springframework.web.filter.CharacterEncodingFilter">
+		<property name="encoding" value="${web.encoding}"></property>
+		<property name="forceEncoding" value="false"></property>
+	</bean>
+
+	<!-- cookyjar 配置 -->
+	<bean id="cookieCrypto" class="com.eyeieye.melos.util.crypto.impl.AESCryptoImpl">
+		<property name="key" value="${cookie.aes.key}"></property>
+		<property name="ivParameter" value="${cookie.aes.iv}"></property>
+	</bean>
+
+	<bean id="cookyjarConfigure" class="com.eyeieye.melos.web.cookyjar.CookyjarConfigure">
+		<!-- cookie缺省配置 -->
+		<property name="defaultConfigure">
+			<bean class="com.eyeieye.melos.web.cookyjar.CookieConfigure">
+				<property name="path" value="/" />
+				<property name="lifeTime" value="-1" />
+				<property name="domain" value=".${app.domain}" />
+				<property name="httpOnly" value="false" />
+				<property name="version" value="1"></property>
+			</bean>
+		</property>
+		<!-- 每个cookie的配置是 本身配置+缺省配置 -->
+		<property name="cookieConfigures">
+			<list>
+				<bean class="com.eyeieye.melos.web.cookyjar.CookieConfigure">
+					<property name="name" value="systemUserAgent" />
+					<property name="clientName" value="_sua_" />
+					<property name="crypto" ref="cookieCrypto" />
+					<property name="randomChar" value="5" />
+					<!-- 浏览器关闭 -->
+					<property name="lifeTime" value="-1" />
+					<property name="selfDependenceClass" value="com.skyjoo.neweast.web.cookyjar.SystemUserAgent"></property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	<bean id="responseOutputBufferFilterBean" class="com.eyeieye.melos.web.filter.ResponseOutputBufferFilter">
+		<property name="outCharset" value="${web.encoding}"></property>
+		<property name="etagEnable" value="false"></property>
+	</bean>
+	<bean id="cookyjarFilterBean" class="com.eyeieye.melos.web.cookyjar.CookyjarFilter">
+		<property name="cookyjarConfigure" ref="cookyjarConfigure"></property>
+		<property name="clientTimeName" value="c_time"></property>
+	</bean>
+
+	<bean id="performanceMonitorFilterBean"
+		class="com.eyeieye.melos.profiler.SpringPerformanceMonitorFilter">
+		<property name="threshold" value="${performance.monitor.threshold}"></property>
+	</bean>
+
+	<bean id="containFilterBean" class="com.eyeieye.melos.web.contain.ContainFilter">
+	</bean>
+
+	<bean id="functionFilterBean" class="com.skyjoo.neweast.web.access.AccessFunctionFilter" >
+		<property name="userFuncsCacheService" ref="userFuncsCacheService" />
+	</bean>
+	
+	<bean id="simpleOncePerRequestFilterChainBean"
+		class="com.eyeieye.melos.web.filter.SimpleOncePerRequestFilterChain">
+		<property name="filters">
+			<list>
+				<ref local="encodingFilterBean" />
+				<bean class="com.eyeieye.melos.web.filter.NoSessionFilter" />
+				<ref local="performanceMonitorFilterBean" />
+				<ref local="responseOutputBufferFilterBean" />
+				<ref local="cookyjarFilterBean" />
+				<ref local="containFilterBean" />
+				<ref local="functionFilterBean" />
+			</list>
+		</property>
+	</bean>
+</beans>

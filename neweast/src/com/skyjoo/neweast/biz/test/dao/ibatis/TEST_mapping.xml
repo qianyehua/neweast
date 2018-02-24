@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="TEST">
+<typeAlias alias="test" type="com.skyjoo.neweast.biz.test.domain.test" />
+
+	<resultMap id="testResultMap" class="test">
+		<result column="ID" property="id"/>
+		<result column="NAME" property="name"/>
+		<result column="PASSWORD" property="password"/>
+	</resultMap>
+
+	<sql id="columsSql">
+		t.ID,
+		t.NAME,
+		t.PASSWORD
+	</sql>
+		  <sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+	
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum &gt;= #beginIndex#
+	</sql>
+	
+    <sql id="pageCondition">
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="name">
+				t.NAME = #name#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="password">
+				t.PASSWORD= #password#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="id">
+				t.ID= #id#
+			</isNotEmpty>
+			
+		</dynamic>
+	</sql> 
+	
+	 <select id="pageCount" parameterClass="test" resultClass="java.lang.Integer">
+		select count(*)
+		from TEST_QYH t
+		<include refid="pageCondition"/>
+	</select>
+	
+	<select id="page" parameterClass="test" resultMap="testResultMap">
+		<include refid="pageBeginSql"/>
+		select <include refid="columsSql"/>
+		from TEST_QYH t
+		<include refid="pageCondition"/>
+		order by t.id desc
+		<include refid="pageEndSql"/>
+	</select> <!---->
+	<!--查询所有  -->
+	<select id="getAllTest" resultMap="testResultMap">
+	   select <include refid="columsSql"/> from TEST_QYH t
+	</select>
+	
+	<!--id查询  -->
+	<select id="getTestByid" resultMap="testResultMap">
+	   select <include refid="columsSql"/> from TEST_QYH t
+	       where t.ID=#id#
+	
+	</select>
+	
+	
+	<!--修改  -->
+	<update id="updateTest" parameterClass="test">
+		update
+		TEST_QYH t set 
+		t.NAME=#name#,t.PASSWORD=#password#
+		where t.ID=#id#
+	</update>
+	
+	<!--删除  -->
+    <delete id="removeTest">
+      delete from TEST_QYH t where t.ID=#id# 
+    
+    </delete>
+
+    <!--增加  -->	
+	<insert id="insertTest" parameterClass="test">
+		<selectKey keyProperty="id" resultClass="long">
+			select
+			TEST_ID.NEXTVAL from DUAL
+        </selectKey>
+		insert into TEST_QYH t
+		values (#name#,#password#,#id#)
+	</insert>
+	
+	
+	
+	
+	
+	
+</sqlMap>

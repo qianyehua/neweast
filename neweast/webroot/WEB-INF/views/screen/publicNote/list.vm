@@ -1,0 +1,103 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+jQuery( function() {
+	//设置日期
+	$('.date-pick').datePicker( {
+		clickInput : true,
+		startDate : "2010-01-01"
+   	});
+});
+</script>
+<!-- 搜索框 -->
+<form id="publicNote" name="publicNote" action="list.htm" method="get">
+	<div class="search-box"">
+        <input type="hidden" name="rececjId" id="rececjId" value=""/>
+        <table>
+            <tr>
+				<th>公告类型</th>
+                <td>
+					#springBind("publicNote.type")
+						<select name="type" id="type">
+							<option value="">请选择</option>
+							#foreach($type in $!{noteType_map.entrySet()})
+							<option value="$!{type.getKey()}"#if($!{page.type}==$!{type.getKey()}) selected="true"#end>$!{type.getValue()}</option>
+							#end
+						</select>
+				</td>
+				<th>状态</th>
+				<td>
+                    #springBind("publicNote.status")
+						<select name="status" id="status">
+							<option value="">请选择</option>
+							#foreach($status in $!{noteStatus_map.entrySet()})
+							<option value="$!{status.getKey()}"#if($!{page.status}==$!{status.getKey()}) selected="true"#end>$!{status.getValue()}</option>
+							#end
+						</select>
+                </td>
+				</tr><tr>
+                <th>发布日期</th>
+                <td>
+					<input type="text" id="startDate" name="startDate"  value="$!page.startDate"  readonly="readonly" size="9" class="date-pick" />
+                    -
+                    <input type="text" id="endDate" name="endDate"  value="$!page.endDate" readonly="readonly"  size="9" class="date-pick" />
+
+                 </td>
+				 <th></th>
+                <td>
+                    <input type="submit" name="search" value="查询" class="but-61" />
+                	<input type="reset" value="重置" onclick="window.location = 'list.htm'" class="but-62"/>
+                </td>
+       </tr>
+</table>
+</div>
+<!-- 搜索框 END -->
+ <div class="basic">
+    <div class="tool">
+		<span>
+            <a onclick="window.location='add-init.htm'" href="#" class="bt_add" hidefocus="true" >新增</a>
+        </span>
+	</div>
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="30%">标题</th>
+			<th width="15%">公告类型</th>
+			<th width="10%">状态 </th>
+			<th width="20%">发布时间</th>
+			<th width="25%">操作</th>
+        </tr>
+		#if($!{page} && ${page.totalCount} > 0)
+                #foreach($note in $page.getData())
+                    <tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+                            <td><p title="$!{note.title}">$!stringUtils.abbreviate($!{note.title},20)</p></td>
+                            <td align="center">$!{noteType_map.get($!note.type)}</td>
+                            <td align="center">$!{noteStatus_map.get($!note.status)}</td>
+                            <td align="center">$!dateTool.format('yyyy-MM-dd HH:mm:ss',$!{note.noticeTime})</td>
+                            <td class="link-td">
+                                <a href="view.htm?id=$!{note.id}">查看</a>
+                                #if(${note.status}==0)
+									&nbsp;
+									<a href="audit-init.htm?id=$!{note.id}">审核</a>
+								#end
+								#if(${note.status}!=3)
+									&nbsp;
+									<a href="remove.htm?id=$!{note.id}" onClick="return confirm('确定要删除该公告吗？');">删除</a>
+								#end
+							</td>
+                    </tr>
+                #end
+                #else
+                    <tr>
+                        <td colspan="7">
+                            <p class="ts">没有结果</p>
+                        </td>
+                    </tr>
+            #end
+    </table>
+	 #pager($page, "publicNote")
+	
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

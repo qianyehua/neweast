@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SHOP">
+
+	<typeAlias alias="shop" type="com.skyjoo.neweast.biz.shop.domain.Shop" />
+	<typeAlias alias="shopQuery" type="com.skyjoo.neweast.biz.shop.domain.query.ShopQuery" />
+	
+	<resultMap id="shopResultMap" class="shop">
+		<result column="ID" property="id"/>
+		<result column="NAME" property="name"/>
+		<result column="ACCOUNT_ID" property="accountId"/>
+		<result column="LOGO_PATH" property="logoPath"/>
+		<result column="DESCRIPTION" property="description"/>
+		<result column="MOBILE" property="mobile"/>
+		<result column="PROVINCE" property="province"/>
+		<result column="CITY" property="city"/>
+		<result column="ADDRESS" property="address"/>
+		<result column="STATUS" property="status"/>
+		<result column="ATR_AUDIT_ON" property="atrAuditOn"/>
+		<result column="IMG_AUDIT_ON" property="imgAuditOn"/>
+		<result column="MEMO" property="memo"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+		<result column="SALES_VOLUME" property="salesVolume"/>
+	</resultMap>
+	
+	<resultMap id="shopExtResultMap" class="shop" extends="shopResultMap">
+		<result column="REAL_NAME" property="sellerName"/>
+		<result column="LOGIN_ID" property="email"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		s.ID,
+		s.NAME,
+		s.ACCOUNT_ID,
+		s.LOGO_PATH,
+		s.DESCRIPTION,
+		s.MOBILE,
+		s.PROVINCE,
+		s.CITY,
+		s.ADDRESS,
+		s.STATUS,
+		s.ATR_AUDIT_ON,
+		s.IMG_AUDIT_ON,
+		s.MEMO,
+		s.GMT_CREATE,
+		s.GMT_MODIFY,
+		s.SALES_VOLUME
+	</sql>
+	
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+	
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum &gt;= #beginIndex#
+	</sql>
+		
+	<sql id="pageCondition">
+		<dynamic prepend="where">
+			<isNotEmpty property="email" prepend="and">
+				uaa.LOGIN_ID = #email#
+			</isNotEmpty>
+			<isNotEmpty property="name" prepend="and">
+				s.NAME LIKE '$name$%'
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+				s.STATUS = #status#
+			</isNotEmpty>
+			<isNotEmpty property="gmtCreateStart" prepend="and">
+				s.GMT_CREATE &gt;= to_date(#gmtCreateStart#, 'yyyy-MM-dd')
+			</isNotEmpty>
+			<isNotEmpty property="gmtCreateEnd" prepend="and">
+				s.GMT_CREATE &lt; to_date(#gmtCreateEnd#, 'yyyy-MM-dd') + 1
+			</isNotEmpty>
+			<isNotNull>
+				<isEqual property="isRecommend" compareValue="true" prepend="and">
+					s.ID in (select SHOP_ID from HOMEPAGE_RECOMMEND_SHOP where STATUS = 1)
+				</isEqual>
+				<isEqual property="isRecommend" compareValue="false" prepend="and">
+					s.ID not in (select SHOP_ID from HOMEPAGE_RECOMMEND_SHOP where STATUS = 1)
+				</isEqual>
+			</isNotNull>
+		</dynamic>
+	</sql>
+		
+	<select id="pageCount" parameterClass="shopQuery" resultClass="java.lang.Integer">
+		select count(*)
+		from SHOP s
+		left join SHOP_AUTH_APPLY uaa on uaa.ACCOUNT_ID = s.ACCOUNT_ID
+		<include refid="pageCondition"/>
+	</select>
+	
+	<select id="page" parameterClass="shopQuery" resultMap="shopExtResultMap">
+		<include refid="pageBeginSql"/>
+		
+		select <include refid="columsSql"/>, uaa.REAL_NAME, uaa.LOGIN_ID 
+		from SHOP s
+		left join SHOP_AUTH_APPLY uaa on uaa.ACCOUNT_ID = s.ACCOUNT_ID
+		<include refid="pageCondition"/>
+		order by s.GMT_CREATE asc
+		
+		<include refid="pageEndSql"/>
+	</select>
+	
+	<select id="selectById" parameterClass="long" resultMap="shopResultMap">
+		select <include refid="columsSql"/>
+		from SHOP s
+		where s.id = #id#
+	</select>
+	
+	<select id="selectByAccountId" parameterClass="long" resultMap="shopResultMap">
+		select <include refid="columsSql"/>
+		from SHOP s
+		where s.ACCOUNT_ID = #accountId#
+	</select>
+
+	<update id="update" parameterClass="shop">
+		update 	SHOP s
+		set 	s.GMT_MODIFY = sysdate
+			<isNotEmpty property="status" prepend=",">
+				s.STATUS = #status#
+			</isNotEmpty>
+			<isNotEmpty property="atrAuditOn" prepend=",">
+				s.ATR_AUDIT_ON = #atrAuditOn#
+			</isNotEmpty>
+			<isNotEmpty property="imgAuditOn" prepend=",">
+				s.IMG_AUDIT_ON = #imgAuditOn#
+			</isNotEmpty>
+			<isNotEmpty property="memo" prepend=",">
+				s.MEMO = #memo#
+			</isNotEmpty>
+		where 	s.ID = #id#
+	</update>
+	
+	<update id="batchUpdateShop" parameterClass="shop">
+		update SHOP s
+		set s.GMT_MODIFY = sysdate
+			<isNotEmpty property="name" prepend=",">
+				s.NAME = #name#
+			</isNotEmpty>
+			<isNotEmpty property="logoPath" prepend=",">
+				s.LOGO_PATH = #logoPath#
+			</isNotEmpty>
+			<isNotEmpty property="description" prepend=",">
+				s.DESCRIPTION = #description#
+			</isNotEmpty>
+			<isNotEmpty property="mobile" prepend=",">
+				s.MOBILE = #mobile#
+			</isNotEmpty>
+			<isNotEmpty property="province" prepend=",">
+				s.PROVINCE = #province#
+			</isNotEmpty>
+			<isNotEmpty property="city" prepend=",">
+				s.CITY = #city#
+			</isNotEmpty>
+			<isNotEmpty property="address" prepend=",">
+				s.ADDRESS = #address#
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend=",">
+				s.STATUS = #status#
+			</isNotEmpty>
+			<!--
+				<isNotEmpty property="atrAuditOn" prepend=",">
+					s.ATR_AUDIT_ON = #atrAuditOn#
+				</isNotEmpty>
+				<isNotEmpty property="imgAuditOn" prepend=",">
+					s.IMG_AUDIT_ON = #imgAuditOn#
+				</isNotEmpty>
+			-->
+			<isNotEmpty property="memo" prepend=",">
+				s.MEMO = #memo#
+			</isNotEmpty>
+			<isNotEmpty property="salesVolume" prepend=",">
+	   			s.SALES_VOLUME= #salesVolume#
+	   		</isNotEmpty>
+	   		<isNotEmpty property="mainBiz" prepend=",">
+	   			s.MAIN_BIZ= #mainBiz#
+	   		</isNotEmpty>
+			<dynamic prepend="where">
+				<isNotEmpty property="id" prepend="and">
+					s.ID = #id#
+				</isNotEmpty>
+				<isNotEmpty property="accountId" prepend="and">
+					s.ACCOUNT_ID = #accountId#
+				</isNotEmpty>
+			</dynamic>
+	</update>
+	
+	<insert id="insert" parameterClass="shop">
+		<selectKey keyProperty="id" resultClass="long">
+			select SEQ_SHOP.NEXTVAL from DUAL
+		</selectKey>
+		insert into SHOP s (<include refid="columsSql"/>)
+		values (#id#, #name#, #accountId#, #logoPath#, #description#, #mobile#, #province#, #city#, 
+				#address#, #status#, 'N', 'N', #memo#, sysdate, sysdate, 0)
+	</insert>
+</sqlMap>

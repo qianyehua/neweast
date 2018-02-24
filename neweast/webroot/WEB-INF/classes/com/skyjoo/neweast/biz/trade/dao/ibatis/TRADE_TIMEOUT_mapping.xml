@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="TRADE_TIMEOUT">
+
+	<typeAlias alias="tradeTimeout" type="com.skyjoo.neweast.biz.trade.domain.TradeTimeout" />
+	
+	<resultMap id="tradeTimeoutResultMap" class="tradeTimeout">
+		<result column="ID" property="id"/>
+		<result column="ORDER_ID" property="orderId"/>
+		<result column="TRADE_NO" property="tradeNo"/>
+		<result column="PAY_TYPE" property="payType"/>
+		<result column="USER_ID" property="userId"/>
+		<result column="REFUND_ID" property="refundId"/>
+		<result column="LOGISTIC_ID" property="logisticId"/>
+		<result column="PROCESSOR_NAME" property="processorName"/>
+		<result column="WARNING_DATE" property="warningDate"/>
+		<result column="TIMEOUT_DATE" property="timeoutDate"/>
+		<result column="STATUS" property="status"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+		<result column="MEMO" property="memo"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		tt.ID,
+		tt.ORDER_ID,
+		tt.TRADE_NO,
+		tt.PAY_TYPE,
+		tt.USER_ID,
+		tt.REFUND_ID,
+		tt.LOGISTIC_ID,
+		tt.PROCESSOR_NAME,
+		tt.WARNING_DATE,
+		tt.TIMEOUT_DATE,
+		tt.STATUS,
+		tt.GMT_CREATE,
+		tt.GMT_MODIFY,
+		tt.MEMO
+	</sql>
+	
+	<select id="selectByOrderId" parameterClass="long" resultMap="tradeTimeoutResultMap">
+		select <include refid="columsSql"/>
+		from TRADE_TIMEOUT tt
+		where tt.ORDER_ID = #orderId#
+	</select>
+
+</sqlMap>

@@ -1,0 +1,44 @@
+   <div class="main-right" >        	
+  <div class="basic">  	
+  <ul class="form-tab">
+        <li class="c">
+            <span>属性选项</span>
+        </li>
+    </ul>         
+    <div class="tool">
+        <span><a href="addIni.htm?propertyId=$!{propertyId}&categoryId=$!{categoryId}&parentId=$!{parentId}" class="bt_add" hidefocus="true">新增</a></span> 
+    </div>
+  	<div class="listbox" >
+   	<table class="list-table">
+      <tr>
+        <th width="60%">选项内容</th>
+        <th width="20">序列号</th>
+        <th width="20">操作</th>
+      </tr>
+#if($!{list_option.size()} == 0)
+	<tr>    
+    	<td colspan="7">
+        	<p class="ts">没有结果</p>
+        </td>
+    </tr>
+#end
+#foreach(${option} in $!{list_option})
+      <tr #if($velocityCount%2==0) class="bg"   #end>
+        <td>$!{option.content}</td>
+        <td>$!{option.ordering}</td>
+        <td class="link-td">
+        <a href="editIni.htm?optionId=$!{option.id}&propertyId=$!{propertyId}&categoryId=$!{categoryId}&parentId=$!{parentId}">编辑</a>
+        <a onclick=" return confirm('确定删除该选项吗？');" href="remove.htm?optionId=$!{option.id}&propertyId=$!{propertyId}&categoryId=$!{categoryId}&parentId=$!{parentId}">删除</a>		
+		</td>
+      </tr>
+#end
+    </table>
+    </div>
+
+	<div class="form-but"><!-- 表单按钮区 -->
+    	<input type="button" onclick="location='$!{appServer}/art/artCategoryProperty/list.htm?categoryId=$!{categoryId}&parentId=$!{parentId}&propertyId=$!{propertyId}'" class="but" value="返回" />
+    </div><!-- 表单按钮区 END -->
+
+  </div>
+</div>
+		

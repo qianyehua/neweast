@@ -1,0 +1,24 @@
+<div class="basic">
+    <ul class="form-tab">
+        <li class="c">
+            <span>操作提示</span>
+        </li>
+    </ul>
+    <div class="formbox">
+        <div class="clear"></div>
+        <!-- 成功提示 -->
+        <div class="nr success-box">
+            <div class="nr-t"></div>
+            <div class="nr-c" style="height:100px;">
+                <div class="text">
+                    <h4>#if($!{message})$!{message}#else 操作成功 #end</h4>
+                    <a href="#if($!{url})$!{appServer}$!{url}#else # #end" class="but" onclick="#if(!$!{url})history.go(-1);return false;#end">确定</a>
+                </div>
+            </div>
+            <div class="nr-b"></div>
+        </div>
+        <!-- 成功提示 END -->
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+</div>

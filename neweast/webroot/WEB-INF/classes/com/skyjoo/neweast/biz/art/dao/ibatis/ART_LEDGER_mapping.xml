@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ART_LEDGER">
+
+	<typeAlias alias="artLedger" type="com.skyjoo.neweast.biz.art.domain.ArtLedger" />
+
+	<resultMap id="artLedgerResultMap" class="artLedger">
+		<result column="ID" property="id"/>
+		<result column="ART_ID" property="artId"/>
+		<result column="IS_LEDGER" property="isLedger"/>
+		<result column="COMMISSIOIN" property="commission"/>
+		<result column="LEDGER_METHOD" property="ledgerMethod"/>
+		<result column="HKD_RATE" property="hdkRate"/>
+		<result column="RMB_RATE" property="rmbRate"/>
+		<result column="RMB_MONEY" property="rmbMoney"/>
+		<result column="OPERATOR" property="operator"/>
+		<result column="GMT_CREATOR" property="gmtCreator"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+	</resultMap>
+	
+	<sql id="columnSql">
+		a.ID,
+		a.ART_ID,
+		a.IS_LEDGER,
+		a.COMMISSIOIN,
+		a.LEDGER_METHOD,
+		a.HKD_RATE,
+		a.RMB_RATE,
+		a.RMB_MONEY,
+		a.OPERATOR,
+		a.GMT_CREATOR,
+		a.GMT_MODIFY
+	</sql>
+
+	
+	<insert id="insertArtLedger" parameterClass="artLedger">
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+    		select SEQ_ART_LEDGER.nextval from dual
+    	</selectKey>
+    	insert into
+    		ART_LEDGER(ID,ART_ID,IS_LEDGER,COMMISSIOIN,LEDGER_METHOD,HKD_RATE,RMB_RATE,RMB_MONEY,OPERATOR,GMT_CREATOR,GMT_MODIFY)
+    	values
+    		(#id#,#artId#,#isLedger#,#commission#,#ledgerMethod#,#hdkRate#,#rmbRate#,#rmbMoney#,#operator#,sysdate,sysdate)
+	</insert>
+	
+	<update id="updateArtLedger" parameterClass="artLedger">
+		update 
+			ART_LEDGER
+		<dynamic prepend="set">
+			<isNotEmpty property="isLedger" prepend=",">
+				IS_LEDGER = #isLedger#
+			</isNotEmpty>
+			<isNotEmpty property="commission" prepend=",">
+				COMMISSIOIN = #commission#
+			</isNotEmpty>
+			<isNotEmpty property="ledgerMethod" prepend=",">
+				LEDGER_METHOD = #ledgerMethod#
+			</isNotEmpty>
+			<isNotEmpty property="hdkRate" prepend=",">
+				HKD_RATE = #hdkRate#
+			</isNotEmpty>
+			<isNotEmpty property="rmbRate" prepend=",">
+				RMB_RATE = #rmbRate#
+			</isNotEmpty>
+			<isNotEmpty property="rmbMoney" prepend=",">
+				RMB_MONEY = #rmbMoney#
+			</isNotEmpty>
+			<isNotEmpty property="operator" prepend=",">
+				OPERATOR = #operator#
+			</isNotEmpty>
+			<isEmpty property="gmtModify" prepend=",">
+				GMT_MODIFY = sysdate
+			</isEmpty>
+		</dynamic>
+		where
+		   ID = #id#
+	</update>
+	
+	<select id="getArtLedgerById" parameterClass="long" resultMap="artLedgerResultMap">
+		select <include refid="columnSql"/>
+		from ART_LEDGER a
+		WHERE ID = #artLedgerId#
+	</select>
+	
+</sqlMap>

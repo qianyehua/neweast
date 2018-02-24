@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="publicHelpProperty">
+	<typeAlias alias="publicHelpProperty"
+		type="com.skyjoo.neweast.biz.portal.domain.common.PublicHelpProperty" />
+	<resultMap id="publicHelpPropertyResult" class="publicHelpProperty">
+		<result column="ID" property="id" />
+		<result column="GMT_CREATE" property="gmtCreate" />
+		<result column="GMT_MODIFY" property="gmtModify" />
+		<result column="DESCRIPTION" property="title"/>
+		<result column="CONTENT" property="content" />
+		<result column="CATEGORY_ID" property="categoryId" />
+		<result column="CAT_CODE" property="catCode" />
+		<result column="STATUS" property="status" />
+		<result column="OPERATOR" property="operator" />
+	</resultMap>
+
+  <sql id="columnSql">
+  	S.ID, 
+  	S.GMT_CREATE,
+  	S.GMT_MODIFY, 
+  	S.DESCRIPTION, 
+  	S.CONTENT, 
+	S.CATEGORY_ID,
+	S.CAT_CODE,
+	S.STATUS, 
+	S.OPERATOR
+  </sql>
+  <select id="getPublicHelpProperty" resultMap="publicHelpPropertyResult"
+		parameterClass="Long">
+		 select <include refid="columnSql"/>
+		from PUBLIC_HELP_PROPERTY S
+		where ID = #publicHelpPropertyId# and status=0
+  </select>
+  
+  <select id="getPublicHelpPropertyByCatId" resultClass="java.lang.Long" 
+  	parameterClass="java.lang.Long">
+  	select count(1) from PUBLIC_HELP_PROPERTY where CATEGORY_ID = #catId# and status=0
+  </select>
+  <!-- 根据1级类目id查询所有内容 -->
+	<select id="getPaginatedPublicHelpPropertyOne" parameterClass="publicHelpProperty"
+		resultMap="publicHelpPropertyResult">
+		select *
+		from (
+		select t1.* , rownum linenum
+		from (
+		select <include refid="columnSql"/>
+		from (select t4.* 
+  	from public_help_category t1 
+  	 join public_help_category t2
+ 		on t1.id = t2.parent_id  
+ 	left join public_help_category t3 
+ 		on t2.id = t3.parent_id
+ 	left join public_help_property t4 
+ 		on t4.category_id = t3.id 
+ 	where t1.id = #categoryId# 
+ 	and t4.status = 0) S
+		<dynamic prepend="where">
+		<isNotEmpty prepend="and" property="title">
+			S.DESCRIPTION LIKE #title#||'%'
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="startDate">
+            <![CDATA[ S.GMT_CREATE >= to_date(#startDate#,'yyyy-MM-dd') ]]>
+        </isNotEmpty>
+        <isNotEmpty prepend="and" property="endDate">
+            <![CDATA[ S.GMT_CREATE <= to_date(#endDate#,'yyyy-MM-dd')+1 ]]>
+        </isNotEmpty>
+		</dynamic>
+			order by
+			    	S.GMT_MODIFY desc
+		) t1
+			where rownum &lt;= #endIndex#) t2
+		where t2.linenum &gt;= #beginIndex#
+	</select>
+	<!-- 根据2级类目id查询所有内容 -->
+	<select id="getPaginatedPublicHelpPropertyTwo" parameterClass="publicHelpProperty"
+		resultMap="publicHelpPropertyResult">
+		select *
+		from (
+		select t1.* , rownum linenum
+		from (
+		select <include refid="columnSql"/>
+		from (select t3.* 
+  from public_help_category t1 
+   join public_help_category t2
+ 	on t1.id = t2.parent_id  
+  left join public_help_property t3 
+  	on t3.category_id = t2.id 
+  where t1.id = #categoryId#
+  and  t3.status = 0) S
+		<dynamic prepend="where">
+		<isNotEmpty prepend="and" property="title">
+			S.DESCRIPTION LIKE #title#||'%'
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="startDate">
+            <![CDATA[ S.GMT_CREATE >= to_date(#startDate#,'yyyy-MM-dd') ]]>
+        </isNotEmpty>
+        <isNotEmpty prepend="and" property="endDate">
+            <![CDATA[ S.GMT_CREATE <= to_date(#endDate#,'yyyy-MM-dd')+1 ]]>
+        </isNotEmpty>
+		</dynamic>
+			order by
+			    	S.GMT_MODIFY desc
+		) t1
+			where rownum &lt;= #endIndex#) t2
+		where t2.linenum &gt;= #beginIndex#
+	</select>
+	<!-- 根据3级类目id查询所有内容 -->
+	<select id="getPaginatedPublicHelpProperty" parameterClass="publicHelpProperty"
+		resultMap="publicHelpPropertyResult">
+		select *
+		from (
+		select t1.* , rownum linenum
+		from (
+		select <include refid="columnSql"/>
+		from PUBLIC_HELP_PROPERTY S
+		<dynamic prepend="where">
+		<isNotEmpty prepend="and" property="categoryId">
+			S.CATEGORY_ID = #categoryId#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="title">
+			S.DESCRIPTION LIKE #title#||'%'
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="startDate">
+            <![CDATA[ S.GMT_CREATE >= to_date(#startDate#,'yyyy-MM-dd') ]]>
+        </isNotEmpty>
+        <isNotEmpty prepend="and" property="endDate">
+            <![CDATA[ S.GMT_CREATE <= to_date(#endDate#,'yyyy-MM-dd')+1 ]]>
+        </isNotEmpty>
+        <isNotEmpty prepend="and" property="status">
+           S.STATUS &lt;&gt; 1
+        </isNotEmpty>
+        <isEmpty prepend="and" property="status">
+           S.STATUS &lt;&gt; 1
+        </isEmpty>
+		</dynamic>
+			order by
+			    	S.GMT_MODIFY desc
+		) t1
+			where rownum &lt;= #endIndex#) t2
+		where t2.linenum &gt;= #beginIndex#
+	</select>
+
+  <insert id="addPublicHelpProperty" parameterClass="publicHelpProperty" >
+    <selectKey keyProperty="id" resultClass="java.lang.Long">
+    select
+			SEQ_PUBLIC_HELP_PROPERTY.nextval from dual</selectKey>
+    insert into PUBLIC_HELP_PROPERTY (ID, GMT_CREATE, GMT_MODIFY, DESCRIPTION, CONTENT,
+       STATUS, OPERATOR,CATEGORY_ID,CAT_CODE)
+    values (#id#,sysdate,sysdate, #title:VARCHAR#, #content:VARCHAR#,
+      0, #operator:VARCHAR#,#categoryId:NUMBER#,'***')
+  </insert>
+
+  <!-- 根据1级类目id查询所有内容数量 -->
+  <select id="getPublicHelpPropertyCountOne" parameterClass="publicHelpProperty" resultClass="int" >
+    select count(1) from 
+		(select t4.* 
+  	from public_help_category t1 
+  	 join public_help_category t2
+ 		on t1.id = t2.parent_id  
+ 	left join public_help_category t3 
+ 		on t2.id = t3.parent_id
+ 	left join public_help_property t4 
+ 		on t4.category_id = t3.id 
+ 	where t1.id = #categoryId# 
+ 	and t4.status = 0) S
+    <dynamic prepend="where">
+    	<isNotEmpty prepend="and" property="title">
+			S.DESCRIPTION LIKE #title#||'%'
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="startDate">
+            <![CDATA[ S.GMT_CREATE >= to_date(#startDate#,'yyyy-MM-dd') ]]>
+        </isNotEmpty>
+        <isNotEmpty prepend="and" property="endDate">
+            <![CDATA[ S.GMT_CREATE <= to_date(#endDate#,'yyyy-MM-dd')+1 ]]>
+        </isNotEmpty>
+	</dynamic>
+  </select>
+  <!-- 根据2级类目id查询所有内容数量 -->
+  <select id="getPublicHelpPropertyCountTwo" parameterClass="publicHelpProperty" resultClass="int" >
+    select count(1) from (select t3.* 
+  from public_help_category t1 
+   join public_help_category t2
+ 	on t1.id = t2.parent_id  
+  left join public_help_property t3 
+  	on t3.category_id = t2.id 
+  where t1.id = #categoryId#
+   and t3.status = 0) S
+    <dynamic prepend="where">
+    	<isNotEmpty prepend="and" property="title">
+			S.DESCRIPTION LIKE #title#||'%'
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="startDate">
+            <![CDATA[ S.GMT_CREATE >= to_date(#startDate#,'yyyy-MM-dd') ]]>
+        </isNotEmpty>
+        <isNotEmpty prepend="and" property="endDate">
+            <![CDATA[ S.GMT_CREATE <= to_date(#endDate#,'yyyy-MM-dd')+1 ]]>
+        </isNotEmpty>
+	</dynamic>
+  </select>
+  <!-- 根据3级类目id查询所有内容数量 -->
+  <select id="getPublicHelpPropertyCount" parameterClass="publicHelpProperty" resultClass="int" >
+    select count(1) from 
+		PUBLIC_HELP_PROPERTY S
+    <dynamic prepend="where">
+    	<isNotEmpty prepend="and" property="categoryId">
+			S.CATEGORY_ID = #categoryId#
+		</isNotEmpty>
+    	<isNotEmpty prepend="and" property="title">
+			S.DESCRIPTION LIKE #title#||'%'
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="startDate">
+            <![CDATA[ S.GMT_CREATE >= to_date(#startDate#,'yyyy-MM-dd') ]]>
+        </isNotEmpty>
+        <isNotEmpty prepend="and" property="endDate">
+            <![CDATA[ S.GMT_CREATE <= to_date(#endDate#,'yyyy-MM-dd')+1 ]]>
+        </isNotEmpty>
+        <isNotEmpty prepend="and" property="status">
+           S.STATUS &lt;&gt; 1
+        </isNotEmpty>
+        <isEmpty prepend="and" property="status">
+           S.STATUS &lt;&gt; 1
+        </isEmpty>
+	</dynamic>
+  </select>
+   <!-- 逻辑删除 -->
+    <update id="updateStatus" parameterClass="publicHelpProperty" >
+     update PUBLIC_HELP_PROPERTY
+      Set
+      STATUS = #status#,
+      OPERATOR = #operator#,
+      GMT_MODIFY = sysdate
+      Where
+      ID = #id#
+  </update>
+  
+  	<!-- 编辑修改 -->
+  <update id="updatePublicHelpProperty" parameterClass="publicHelpProperty">
+  	update PUBLIC_HELP_PROPERTY
+  	Set 
+  	CATEGORY_ID = #categoryId#,
+  	DESCRIPTION = #title#,
+  	CONTENT = #content#,
+  	OPERATOR = #operator#,
+  	GMT_MODIFY = sysdate
+  	Where
+  	ID = #id#
+  </update>
+  
+</sqlMap>

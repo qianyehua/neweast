@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ART_CATEGORY">
+
+    <typeAlias alias="artCategory" type="com.skyjoo.neweast.biz.art.domain.ArtCategory"/>
+    
+    <resultMap id="artCategoryResultMap" class="artCategory" >
+    	<result column="ID" property="id"/>
+    	<result column="PARENT_ID" property="parentId"/>
+    	<result column="NAME" property="name"/>
+    	<result column="ART_CODE" property="artCode"/>
+    	<result column="DESCRIPTION" property="description"/>
+    	<result column="ORDERING" property="ordering"/>
+    	<result column="CAT_LEVEL" property="catLevel"/>
+    	<result column="IS_DELETED" property="isDeleted"/>
+    	<result column="OPERATOR" property="operator"/>
+    	<result column="GMT_CREATE" property="gmtCreate"/>
+    	<result column="GMT_MODIFY" property="gmtModify"/>
+    </resultMap>
+    
+    <!-- 获取一级类目 -->
+    <select id="getArtFirstCategoryList"  resultMap="artCategoryResultMap">
+    	select 
+    		ID,
+    		PARENT_ID,
+    		NAME,
+    		ART_CODE,
+    		DESCRIPTION,
+    		ORDERING,
+    		CAT_LEVEL,
+    		IS_DELETED,
+    		OPERATOR,
+    		GMT_CREATE,
+    		GMT_MODIFY
+    	from 
+    		ART_CATEGORY
+		where
+			CAT_LEVEL = 1 and IS_DELETED &lt;&gt; 1
+		order by
+			ORDERING
+    </select>
+    
+    <!-- 获取所有类目 -->
+    <select id="getArtCategoryList"  resultMap="artCategoryResultMap">
+    	select 
+    		ID,
+    		PARENT_ID,
+    		NAME,
+    		ART_CODE,
+    		DESCRIPTION,
+    		ORDERING,
+    		CAT_LEVEL,
+    		IS_DELETED,
+    		OPERATOR,
+    		GMT_CREATE,
+    		GMT_MODIFY
+    	from 
+    		ART_CATEGORY
+    	where
+    		IS_DELETED &lt;&gt; 1
+    	order by
+    		ORDERING
+    </select>
+    
+    <!-- 通过id获取类目 -->
+    <select id="getArtCategoryListById" parameterClass="java.lang.Long"  resultMap="artCategoryResultMap">
+    	select 
+    		ID,
+    		PARENT_ID,
+    		NAME,
+    		ART_CODE,
+    		DESCRIPTION,
+    		ORDERING,
+    		CAT_LEVEL,
+    		IS_DELETED,
+    		OPERATOR,
+    		GMT_CREATE,
+    		GMT_MODIFY
+    	from 
+    		ART_CATEGORY
+		where
+			ID = #id# and IS_DELETED &lt;&gt; 1
+		order by 
+			ORDERING
+    </select>
+    
+    <!-- 通过父id获取类目 -->
+    <select id="getArtCategoryListByParId" parameterClass="java.lang.Long" resultMap="artCategoryResultMap">
+    	select 
+    		ID,
+    		PARENT_ID,
+    		NAME,
+    		ART_CODE,
+    		DESCRIPTION,
+    		ORDERING,
+    		CAT_LEVEL,
+    		IS_DELETED,
+    		OPERATOR,
+    		GMT_CREATE,
+    		GMT_MODIFY
+    	from 
+    		ART_CATEGORY
+    	where 
+    		PARENT_ID=#pid# and IS_DELETED &lt;&gt; 1
+    	order by 
+    		ORDERING
+    </select>
+    
+    <!-- 增加类目 -->
+    <insert id="addFirstCategory" parameterClass="artCategory">
+    	<selectKey keyProperty="id" resultClass="java.lang.Long">
+    		select SEQ_ART_CATEGORY.nextval from dual
+    	</selectKey>
+    	insert into
+    		ART_CATEGORY(ID,PARENT_ID,NAME,DESCRIPTION,ORDERING,CAT_LEVEL,IS_DELETED,OPERATOR,GMT_CREATE,GMT_MODIFY)
+    	values
+    		(#id#,#parentId#,#name#,#description#,$ordering$,#catLevel#,0,#operator#,sysdate,sysdate)
+    </insert>
+    
+    <!-- 修改类目 -->
+    <update id="editArtCategory" parameterClass="artCategory">
+    	update 
+    		ART_CATEGORY
+    	set
+    		NAME=#name#,DESCRIPTION=#description#,ORDERING=#ordering#,GMT_MODIFY=sysdate
+    	where
+    		ID=#id#
+    </update>
+    
+    <!-- 删除类目 -->
+    <update id="removeArtCategory" parameterClass="java.lang.Long">
+    	update
+    		ART_CATEGORY
+    	set
+    		IS_DELETED = 1 ,GMT_MODIFY = sysdate
+    	where
+    		id=#categoryId#
+    </update>
+
+    <!-- 修改指定类目的前缀 -->
+    <update id="editArtCode" parameterClass="artCategory">
+    	update
+    		ART_CATEGORY
+    	set
+    		ART_CODE = upper(#artCode#),GMT_MODIFY=sysdate
+    	where
+    	 	id = #id#
+    </update>
+    
+    <!-- 检验类目名是否已经存在 -->
+    <select id="getCountByCategoryName" parameterClass="artCategory" resultClass="java.lang.Integer">
+    	select 
+    		COUNT(ac.ID)
+    	from 
+    		ART_CATEGORY ac
+    	where
+    		ac.NAME=#name#
+    	<isNotEmpty property="id" prepend="and">
+    		ac.ID &lt;&gt; #id#
+    	</isNotEmpty>
+    </select>
+    
+    <select id="getLastModifyCategoryDate" resultClass="java.util.Date">
+		Select Max(GMT_MODIFY) GMT_MODIFY From ART_CATEGORY
+	</select>
+</sqlMap>

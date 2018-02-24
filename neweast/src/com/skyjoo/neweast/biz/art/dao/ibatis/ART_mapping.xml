@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ART">
+
+	<typeAlias alias="art" type="com.skyjoo.neweast.biz.art.domain.Art" />
+	<typeAlias alias="artCheckQuery" type="com.skyjoo.neweast.biz.art.domain.query.ArtCheckQuery" />
+	<typeAlias alias="auditLog" type="com.skyjoo.neweast.biz.art.domain.AuditLog" />
+
+	<resultMap id="artResultMap" class="art">
+		<result column="ID" property="id"/>
+		<result column="CATEGORY_ID" property="categoryId"/>
+		<result column="USER_ID" property="userId"/>
+		<result column="NAME" property="name"/>
+		<result column="ART_CODE" property="artCode"/>
+		<result column="CAT_CODE" property="catCode"/>
+		<result column="PRICE" property="price"/>
+		<result column="ARTISE" property="artise"/>
+		<result column="FREIGHT_TYPE" property="freightType"/>
+		<result column="STOCK" property="stock"/>
+		<result column="STATUS" property="status"/>
+		<result column="OPERATOR" property="operator"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+		<result column="MEMO" property="memo"/>
+		<result column="CERT_NO" property="certNo"/>
+		<result column="SALES_VOLUME" property="salesVolume"/>
+	</resultMap>
+	
+	<resultMap id="auditLogResultMap" class="auditLog">
+		<result column="ID" property="id"/>
+		<result column="TYPE" property="type"/>
+		<result column="RELATED_ID" property="relatedID"/>
+		<result column="AUDIT_CONTENT" property="auditContent"/>
+		<result column="STATUS" property="status"/>
+		<result column="MEMO" property="memo"/>
+		<result column="AUDITOR" property="auditor"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+	</resultMap>
+	
+	<resultMap id="artExtResult" class="art" extends="artResultMap">
+		<result column="TYPE" property="type"/>
+		<result column="categoryContent" property="categoryContent"/>
+	</resultMap>
+	
+	<sql id="artColumn">
+		a.ID,
+		a.CATEGORY_ID,
+		a.USER_ID,
+		a.NAME,
+		a.ART_CODE,
+		a.CAT_CODE,
+		a.PRICE,
+		a.ARTISE,
+		a.FREIGHT_TYPE,
+		a.STOCK,
+		a.STATUS,
+		a.OPERATOR,
+		a.GMT_CREATE,
+		a.GMT_MODIFY,
+		a.MEMO,
+		a.CERT_NO,
+		a.SALES_VOLUME,
+		a.TYPE
+	</sql>
+	
+	<sql id="sqlColumn">
+		Select 
+              	t5.*,Rownum As num
+       		From(
+            	select t3.*, t4.name as categoryContent,t6.STOCK_ACCOUNT sellerEmail,t4.parent_id parentId,ae.ATTACHMENT,
+            	(SELECT ID FROM ART_LEDGER  WHERE ART_ID = t3."ID" AND IS_LEDGER = 1 AND <![CDATA[ ROWNUM <= 1  ]]> ) AS IS_LEDGER
+            	from art t3
+            	left join (select id, name,parent_id 
+                	 from art_category
+                	 where cat_level = 1
+                	 union
+                	 select t1.id, t2.name || '->' || t1.name,t1.parent_id 
+                 	from art_category t1
+                 	left join art_category t2 on t1.parent_id = t2.id
+                	 where t1.cat_level = 2) t4 on t3.category_id = t4.Id
+                	 left join USER_ACCOUNT t6 on  t6.id = t3.USER_ID
+					left join ART_EXT ae on ae.ART_ID = t3.ID
+                  ORDER BY t3.GMT_MODIFY DESC, t3.GMT_CREATE DESC) t5 
+             <dynamic prepend="where">
+             	<isEqual prepend="and" property="isAll" compareValue="2">
+             		t5.status=0
+             	</isEqual>
+             	<isEqual prepend="and" property="isAll" compareValue="3">
+             		(t5.status=0 or t5.status=1 or t5.status=3 or t5.status=5 )
+             	</isEqual>
+             	<isEqual prepend="and" property="isAll" compareValue="1">
+             		(t5.status=1 or t5.status=5)
+             	</isEqual>
+             	<isNotEmpty property="startDate" prepend="and">
+             		<![CDATA[ GMT_CREATE >= #startDate# ]]>
+             	</isNotEmpty>
+             	<isNotEmpty property="endDate" prepend="and">
+             		<![CDATA[ GMT_CREATE <= #endDate#+1 ]]>
+             	</isNotEmpty>
+             	<isNotEmpty property="name" prepend="and">
+             		NAME LIKE '$name$%'
+             	</isNotEmpty>
+             	 <isNotEmpty property="artise" prepend="and">
+             		ARTISE=#artise#
+             	</isNotEmpty>
+             	 <isNotEmpty property="id" prepend="and">
+             		ID=#id#
+             	</isNotEmpty>
+             	<isEqual property="freightType" compareValue="0" prepend="and">
+             		1=1
+             	</isEqual>
+             	<isEqual property="freightType" compareValue="1" prepend="and">
+             		FREIGHT_TYPE=1
+             	</isEqual>
+             	<isEqual property="freightType" compareValue="2" prepend="and">
+             		FREIGHT_TYPE=2
+             	</isEqual>
+             	<isNotEmpty property="email" prepend="and">
+             		sellerEmail=#email#
+             	</isNotEmpty>
+             	<isNotEmpty property="artParentCategoryId" prepend="and">
+             		parentId = #artParentCategoryId#
+             	</isNotEmpty>
+             	<isNotEmpty property="categoryId" prepend="and">
+<!--              	<isNotEqual property="categoryId" compareValue="0"> -->
+             		CATEGORY_ID=#categoryId#  
+<!--              		parentId=#categoryId# -->
+             		<isEqual prepend="and" property="isAll" compareValue="2">
+             			t5.status=0
+             		</isEqual>
+<!--              	</isNotEqual> -->
+             	</isNotEmpty>
+             	
+             	<isNotEmpty property="queryName" prepend="and">
+             		NAME LIKE '$queryName$%'
+             	</isNotEmpty>
+             	<isNotEmpty property="status" prepend="and">
+             		(t5.status = #status# 
+	             	<isNotNull>
+	             		<isEqual property="isArtiseWork" compareValue="true" prepend="or"> 
+	             		t5.status = 5
+	             		</isEqual>
+	             	</isNotNull>
+	             	)
+             	</isNotEmpty>
+             	<isNotEmpty property="artType" prepend="and">
+					TYPE = #artType#
+				</isNotEmpty>
+             	<isNotNull>
+					<isEqual property="isRecommend" compareValue="true" prepend="and">
+						ID in (select ART_ID from HOMEPAGE_RECOMMEND where STATUS = 0)
+					</isEqual>
+					<isEqual property="isRecommend" compareValue="false" prepend="and">
+						ID not in (select ART_ID from HOMEPAGE_RECOMMEND where STATUS = 0)
+					</isEqual>
+				</isNotNull>
+             </dynamic>
+            ORDER BY GMT_MODIFY DESC, GMT_CREATE DESC
+            
+	</sql>
+		<sql id="sqlColumn1">
+		Select 
+              	t5.*,Rownum As num
+       		From(
+            	select t3.*, t4.name as categoryContent,t4.parent_id parentId
+            	from art t3
+            	left join (select id, name,parent_id 
+                	 from art_category
+                	 where cat_level = 1
+                	 union
+                	 select t1.id, t2.name || '->' || t1.name,t1.parent_id 
+                 	from art_category t1
+                 	left join art_category t2 on t1.parent_id = t2.id
+                	 where t1.cat_level = 2) t4 on t3.category_id = t4.Id
+                  ORDER BY t3.GMT_MODIFY DESC, t3.GMT_CREATE DESC) t5 
+             <dynamic prepend="where">
+             	<isEqual prepend="and" property="isAll" compareValue="3">
+             		(t5.status=0 or t5.status=1 or t5.status=3 or t5.status=5 )
+             	</isEqual>          
+             	<isNotEmpty property="name" prepend="and">
+             		NAME LIKE '$name$%'
+             	</isNotEmpty>
+             	 <isNotEmpty property="artise" prepend="and">
+             		ARTISE LIKE '$artise$%'
+             	</isNotEmpty>
+             	 <isNotEmpty property="id" prepend="and">
+             		ID=#id#
+             	</isNotEmpty>
+             	<isNotEmpty property="artParentCategoryId" prepend="and">
+             		parentId = #artParentCategoryId#
+             	</isNotEmpty>
+             	<isNotEmpty property="categoryId" prepend="and">
+             		CATEGORY_ID=#categoryId# 
+             		<isEqual prepend="and" property="isAll" compareValue="2">
+             			t5.status=0
+             		</isEqual>
+             	</isNotEmpty>        	
+             	<isNotEmpty property="queryName" prepend="and">
+             		NAME LIKE '$queryName$%'
+             	</isNotEmpty> 
+              <isNotEmpty property="articleId" prepend="and">
+             		ID not in(select art_id from article_recommend_art t  where t.article_id =#articleId#)
+             	</isNotEmpty>          	
+             </dynamic>
+             ORDER BY GMT_MODIFY DESC, GMT_CREATE DESC
+	</sql>
+	
+	<sql id="sqlColumn2">
+		Select 
+              	t5.*,Rownum As num
+       		From(
+            	select r.ART_ID, t3.*, t4.name as categoryContent,t4.parent_id parentId, r.GMT_MODIFY GMT_RECOMMEND, ae.ATTACHMENT        
+            	from HOMEPAGE_RECOMMEND r
+            	left join art t3 on t3.ID=r.ART_ID
+            	left join (select id, name,parent_id 
+                	 from art_category
+                	 where cat_level = 1
+                	 union
+                	 select t1.id, t2.name || '->' || t1.name,t1.parent_id 
+                 	from art_category t1
+                 	left join art_category t2 on t1.parent_id = t2.id
+                	 where t1.cat_level = 2) t4 on t3.category_id = t4.Id     
+					left join ART_EXT ae on ae.ART_ID = t3.ID
+                  ORDER BY GMT_RECOMMEND DESC) t5 
+             <dynamic prepend="where">
+             	
+             	<isNotEmpty property="artParentCategoryId" prepend="and">
+             		parentId = #artParentCategoryId#
+             	</isNotEmpty>
+             	<isNotEmpty property="categoryId" prepend="and">
+<!--              	<isNotEqual property="categoryId" compareValue="0"> -->
+             		CATEGORY_ID=#categoryId#  
+<!--              		parentId=#categoryId# -->
+             		<isEqual prepend="and" property="isAll" compareValue="2">
+             			t5.status=0
+             		</isEqual>
+<!--              	</isNotEqual> -->
+             	</isNotEmpty>
+             	<isNotEmpty property="status" prepend="and">
+             		(t5.status = #status# 
+	             	<isNotNull>
+	             		<isEqual property="isArtiseWork" compareValue="true" prepend="or"> 
+	             		t5.status = 5
+	             		</isEqual>
+	             	</isNotNull>
+             	</isNotEmpty>
+             	<isNotNull>
+					<isEqual property="isRecommend" compareValue="true" prepend="and">
+						ID in (select ART_ID from HOMEPAGE_RECOMMEND where STATUS = 0)
+					</isEqual>
+					<isEqual property="isRecommend" compareValue="false" prepend="and">
+						ID not in (select ART_ID from HOMEPAGE_RECOMMEND where STATUS = 0)
+					</isEqual>
+				</isNotNull>
+             </dynamic>
+	         <isEqual property="isRecommend" compareValue="true">
+				ORDER BY GMT_RECOMMEND DESC
+			</isEqual>
+	</sql>
+	
+	<sql id="auditLogSqlColums">
+		log.ID,
+		log.TYPE,
+		log.RELATED_ID,
+		log.AUDIT_CONTENT,
+		log.STATUS,
+		log.MEMO,
+		log.AUDITOR ,
+		log.GMT_CREATE ,
+		log.GMT_MODIFY 
+	</sql>
+	
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum
+		&gt;= #beginIndex#
+	</sql>
+	
+	<!-- 根据类目id查询艺术品 -->
+	<select id="getArtByCategoryId" parameterClass="java.lang.Long" resultMap="artResultMap">
+		select 
+			ID,CATEGORY_ID,USER_ID,NAME,ART_CODE,CAT_CODE,PRICE,ARTISE,FREIGHT_TYPE,
+			STOCK,STATUS,OPERATOR,GMT_CREATE,GMT_MODIFY,MEMO,CERT_NO, SALES_VOLUME
+		from
+			ART
+		where
+			CATEGORY_ID=#categoryId#
+	</select>
+	
+	<!-- 根据id查询艺术品 -->
+	<select id="getArtById" parameterClass="java.lang.Long" resultMap="artResultMap">
+		select
+			ID,CATEGORY_ID,USER_ID,NAME,ART_CODE,CAT_CODE,PRICE,ARTISE,FREIGHT_TYPE,
+			STOCK,STATUS,OPERATOR,GMT_CREATE,GMT_MODIFY,MEMO,CERT_NO, SALES_VOLUME
+		from 
+			Art
+		where
+<!-- 		<isNotNull prepend="and" property="id"> -->
+			ID=#id#
+<!-- 		</isNotNull> -->
+	</select>
+	
+	<!-- 根据id得到艺术品的相关信息，连接查询, -->
+	<select id="getArtInform" resultClass="art" parameterClass="java.lang.Long">
+		select 
+			t1.Id As id,t1.CATEGORY_ID as categoryId,t1.NAME as name,t1.ART_CODE as artCode, t1.PRICE As price,t1.ARTISE As artise,t1.TYPE as type,t1.ARTISE_ID as artiseId,t1.USER_ID as userId,
+			t1.FREIGHT_TYPE As freightType,t1.MEMO,t2.ATTACHMENT As attachment,t2.Description As description, 
+			t1.cert_no as certNo, t1.stock, alf.FREE_AREA as freeArea, t1.SALES_VOLUME as salesVolume,t1.STATUS as status
+		from 
+			ART t1 Left Join ART_EXT t2 On t1.Id=t2.ART_ID
+			left join ART_LOGISTIC_FREE alf on alf.ART_ID = t1.ID
+		where
+			t1.ID=#id#
+	</select>
+	
+	<!-- 分页显示艺术品相关信息 -->
+	<select id="getPaginatedArtCheckQuery" resultClass="artCheckQuery" parameterClass="artCheckQuery">
+		Select 
+			ID as id,CATEGORY_ID as categoryId,USER_ID as userId,NAME as name,
+			ART_CODE as artCode,CAT_CODE as catCode,PRICE as price,ARTISE as artise,
+			FREIGHT_TYPE as freightType,STOCK as stock,STATUS as status,
+			OPERATOR as operator,GMT_CREATE as gmtCreate,GMT_MODIFY as gmtModify,
+			categoryContent as categoryContent,sellerEmail as email, ATTACHMENT as attachment, TYPE as artType,IS_LEDGER as isLedger
+		From (
+      		<include refid="sqlColumn"/>
+		)
+		Where num &gt;= #beginIndex# And num &lt;= #endIndex#
+		<isEqual property="isRecommend" compareValue="true">
+			ORDER BY GMT_RECOMMEND DESC
+		</isEqual>
+		<isNotEqual property="isRecommend" compareValue="true">
+            ORDER BY GMT_MODIFY DESC, GMT_CREATE DESC
+        </isNotEqual>
+	</select>
+	
+	<!-- 分页显示要推广艺术品相关信息 -->
+	<select id="getPaginatedRecommendArt" resultClass="artCheckQuery" parameterClass="artCheckQuery">
+		Select 
+			ID as id,CATEGORY_ID as categoryId,USER_ID as userId,NAME as name,
+			PRICE as price,ARTISE as artise,STATUS as status,
+			OPERATOR as operator,GMT_CREATE as gmtCreate,GMT_MODIFY as gmtModify,categoryContent as categoryContent,
+			TYPE as artType,STOCK as stock
+		From (
+      		<include refid="sqlColumn1"/>
+		)
+		Where num &gt;= #beginIndex# And num &lt;= #endIndex# 
+		ORDER BY GMT_MODIFY DESC, GMT_CREATE DESC
+	</select>
+	<!-- 分页显示要首页推荐艺术品相关信息 -->
+	<select id="getPaginatedHomeRecommendArt" resultClass="artCheckQuery" parameterClass="artCheckQuery">
+		Select 
+			ID as id,CATEGORY_ID as categoryId,USER_ID as userId,NAME as name,
+			PRICE as price,ARTISE as artise,STATUS as status,
+			OPERATOR as operator,GMT_CREATE as gmtCreate,GMT_MODIFY as gmtModify,ATTACHMENT as attachment,categoryContent as categoryContent	
+		From (
+      		<include refid="sqlColumn2"/>
+		)
+		Where num &gt;= #beginIndex# And num &lt;= #endIndex# 
+		ORDER BY GMT_RECOMMEND DESC
+	</select>
+	
+	<sql id="pageCondition">
+		ART a 
+			left join ARTISE ae on a.ARTISE_ID = ae.ID
+			left join ART_CATEGORY ac on ac.ID = a.CATEGORY_ID
+			left join ART_CATEGORY ac2 on ac.PARENT_ID = ac2.ID
+			left join USER_ACCOUNT ua on ua.ID = a.USER_ID
+			inner join SHOP s on s.ACCOUNT_ID = a.USER_ID
+			where ae.STATUS = 1 and a.STATUS = 0
+			<isNotEmpty property="startDate" prepend="and">
+             	<![CDATA[ GMT_CREATE >= #startDate# ]]>
+            </isNotEmpty>
+            <isNotEmpty property="endDate" prepend="and">
+             	<![CDATA[ GMT_CREATE <= #endDate#+1 ]]>
+            </isNotEmpty>
+            <isNotEmpty property="name" prepend="and">
+             	NAME LIKE '$name$%'
+            </isNotEmpty>
+            <isNotEmpty property="artise" prepend="and">
+             	ARTISE=#artise#
+            </isNotEmpty>
+            <isEqual property="freightType" compareValue="1" prepend="and">
+             	FREIGHT_TYPE=1
+            </isEqual>
+            <isEqual property="freightType" compareValue="2" prepend="and">
+             	FREIGHT_TYPE=2
+            </isEqual>
+            <isNotEmpty property="artParentCategoryId" prepend="and">
+             	ac.PARENT_ID = #artParentCategoryId#
+            </isNotEmpty>
+            <isNotEmpty property="categoryId" prepend="and">
+             	CATEGORY_ID=#categoryId#  
+            </isNotEmpty>
+            <isNotEmpty property="artType" prepend="and">
+				TYPE = #artType#
+			</isNotEmpty>
+	</sql>	
+	
+	<!-- 得到未审核的艺术品的数量 -->
+	<select id="getArtCount"  resultClass="java.lang.Integer" parameterClass="artCheckQuery">
+		Select count(1) From <include refid="pageCondition"/>
+	</select>
+	
+	<!-- 分页显示待审核艺术品相关信息 -->
+	<select id="getArtPage" resultClass="artCheckQuery" parameterClass="artCheckQuery">
+		<include refid="pageBeginSql" />
+		Select 
+			a.ID as id,a.CATEGORY_ID as categoryId,ua.STOCK_ACCOUNT as email,a.NAME as name,
+			a.ART_CODE as artCode,a.CAT_CODE as catCode,a.STATUS as status,
+			a.OPERATOR as operator,a.GMT_CREATE as gmtCreate,a.GMT_MODIFY as gmtModify,
+			(ac2.name || '->' || ac.name) as categoryContent
+		From 
+      		<include refid="pageCondition"/>
+        ORDER BY a.GMT_MODIFY DESC, a.GMT_CREATE DESC
+        <include refid="pageEndSql" />
+	</select>
+	
+	<!-- 得到所有的艺术品的数量 -->
+	<select id="getAllArtCount"  resultClass="java.lang.Integer" parameterClass="artCheckQuery">
+			Select count(1) From (<include refid="sqlColumn"/>) 
+	</select>
+	
+	
+	<!-- 得到所有的要推广的艺术品的数量 -->
+	<select id="getRecommendArtCount"  resultClass="java.lang.Integer" parameterClass="artCheckQuery">
+			Select count(1) From (<include refid="sqlColumn1"/>) 
+	</select>
+	<!-- 得到首页推荐艺术品的数量 -->
+	<select id="getHomeRecommendArtCount"  resultClass="java.lang.Integer" parameterClass="artCheckQuery">
+			Select count(1) From (<include refid="sqlColumn2"/>) 
+	</select>
+	<!-- 修改艺术品的信息 -->
+	<update id="editArt" parameterClass="art">
+		update
+			ART
+		set
+			GMT_MODIFY=sysdate
+			<isNotEmpty property="status">
+				,STATUS = #status#
+			</isNotEmpty>
+			<isNotEmpty property="operator">
+				,OPERATOR=#operator#
+			</isNotEmpty>
+			<isNotEmpty property="memo">
+				,MEMO=#memo#
+			</isNotEmpty>
+		where
+			ID = #id#
+	</update>
+
+	<update id="underCarriageByUserId" parameterClass="long">
+		update 	ART a
+		set		a.status = 4
+		where	a.USER_ID = #userId#
+	</update>
+
+		<!-- 强制  下架 -->
+	<update id="offshelf" parameterClass="art">
+		update
+			ART
+		set
+			GMT_MODIFY=sysdate,STATUS=4 
+			<isNotEmpty property="operator">
+				,OPERATOR=#operator#
+			</isNotEmpty>
+			<isNotEmpty property="memo">
+				,MEMO=#memo#
+			</isNotEmpty>
+		where
+			ID = #id#
+	</update>
+	
+	<!-- 新增 审核流水记录-->
+	<insert id="addAuditLog" parameterClass="auditLog">
+		<selectKey keyProperty="id" resultClass="long">
+			select SEQ_AUDIT_LOG.NEXTVAL from DUAL
+		</selectKey>
+		insert into AUDIT_LOG  log (<include refid="auditLogSqlColums"/>) 
+		values (#id#,#type#,#relatedID#,#auditContent#,#status#,#memo#,#auditor#,sysdate,sysdate) 
+	</insert>
+	
+	<select id="selectLimitCountForCancel" resultClass="int">
+		select 	count(*) 
+		from 	ART a
+		where 	a.USER_ID = #userId# and a.STATUS in (0, 1)
+	</select>
+	
+	<!-- 更新艺术品类目 -->
+	<update id="updateCategory" parameterClass="art">
+		update
+		ART
+		set
+		GMT_MODIFY=sysdate,
+		CATEGORY_ID = #categoryId#,
+		CAT_CODE = #catCode#,
+		ART_CODE = (#catCode# || to_char(sysdate,'yyMMdd') || substr(lpad(#id#, 13, '0'), -6))
+		where
+		ID = #id#
+	</update>
+	
+	<sql id="activityCondition">
+		ART a 
+			left join ART_EXT are on are.ART_ID = a.ID 
+			left join ARTISE ae on a.ARTISE_ID = ae.ID
+			left join ART_CATEGORY ac on ac.ID = a.CATEGORY_ID
+			left join ART_CATEGORY ac2 on ac.PARENT_ID = ac2.ID
+			where ae.STATUS = 1 and a.STATUS = 1 
+			and a.ID not in (select axa.ART_ID from ACTIVITY_X_ART axa where axa.ACTIVITY_ID = #activityId#)
+            <isNotEmpty property="queryName" prepend="and">
+             	a.NAME LIKE '$queryName$%'
+            </isNotEmpty>
+            <isNotEmpty property="artise" prepend="and">
+             	ae.ARTIST LIKE '$artise$%'
+            </isNotEmpty>
+            <isNotEmpty property="artParentCategoryId" prepend="and">
+             	ac.PARENT_ID = #artParentCategoryId#
+            </isNotEmpty>
+            <isNotEmpty property="categoryId" prepend="and">
+             	CATEGORY_ID=#categoryId#  
+            </isNotEmpty>
+	</sql>	
+	
+	<!-- 得到活动相关艺术品的数量 -->
+	<select id="getActivityXArtCount"  resultClass="java.lang.Integer" parameterClass="artCheckQuery">
+			Select count(1) From <include refid="activityCondition"/>
+	</select>
+	
+	<!-- 分页显示活动艺术品相关信息 -->
+	<select id="getPaginatedActivityXArt" resultClass="artCheckQuery" parameterClass="artCheckQuery">
+		<include refid="pageBeginSql" />
+		Select 
+			a.ID as id,a.NAME as name,ae.ARTIST as artise,are.ATTACHMENT as attachment,
+			(ac2.name || '->' || ac.name) as categoryContent
+		From 
+      		<include refid="activityCondition"/>
+        ORDER BY a.GMT_MODIFY DESC, a.GMT_CREATE DESC
+        <include refid="pageEndSql" />
+	</select>
+	
+	<!-- 根据艺术家id获取艺术品列表 -->
+	<select id="getArtListByArtiseId" parameterClass="java.lang.Long" resultMap="artExtResult">
+		select
+			<include refid="artColumn"/>,(ac2.name || '->' || ac.name) as categoryContent
+		from 
+			Art a
+			left join ART_CATEGORY ac on ac.ID = a.CATEGORY_ID
+			left join ART_CATEGORY ac2 on ac.PARENT_ID = ac2.ID
+		where
+			a.ARTISE_ID = #artiseId#
+	</select>
+
+</sqlMap>

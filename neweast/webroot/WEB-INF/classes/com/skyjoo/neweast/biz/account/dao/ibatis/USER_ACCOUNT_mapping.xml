@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="USER_ACCOUNT">
+
+	<typeAlias alias="userAccount" type="com.skyjoo.neweast.biz.account.domain.UserAccount" />
+	
+	<resultMap id="userAccountResultMap" class="userAccount">
+		<result column="ID" property="id"/>
+		<result column="FUND_ACCOUNT" property="fundAccount"/>
+		<result column="STOCK_ACCOUNT" property="stockAccount"/>
+		<result column="REAL_NAME" property="realName"/>
+		<result column="EMAIL" property="email"/>
+		<result column="MOBILE" property="mobile"/>
+		<result column="COUNTRY" property="country"/>
+		<result column="GMT_LAST_LOGIN" property="gmtLastLogin"/>
+		<result column="LAST_LOGIN_IP" property="lastLoginIp"/>
+		<result column="STATUS" property="status"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+		<result column="LICENSE_TYPE" property="licenseType"/>
+		<result column="LICENSE" property="license"/>
+		<result column="GENDER" property="gender"/>
+		<result column="NICK_NAME" property="nickName"/>
+		<result column="BIRTHDAY" property="birthday"/>		
+		<result column="ACCOUNT_TYPE" property="accountType"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		ua.ID,
+		ua.FUND_ACCOUNT,
+		ua.STOCK_ACCOUNT,
+		ua.REAL_NAME,
+		ua.EMAIL,
+		ua.MOBILE,
+		ua.COUNTRY,
+		ua.GMT_LAST_LOGIN,
+		ua.LAST_LOGIN_IP,
+		ua.STATUS,
+		ua.GMT_CREATE,
+		ua.GMT_MODIFY,
+		ua.LICENSE_TYPE,
+		ua.LICENSE,
+		ua.GENDER,
+		ua.NICK_NAME,
+		ua.BIRTHDAY,
+		ua.ACCOUNT_TYPE	
+	</sql>
+	
+	<insert id="insert" parameterClass="userAccount">
+		<selectKey keyProperty="id" resultClass="long">
+			select SEQ_USER_ACCOUNT.NEXTVAL from DUAL
+		</selectKey>
+		insert into USER_ACCOUNT ua (<include refid="columsSql"/>)
+		values (#id#, #fundAccount#, #stockAccount#, #realName#, #email#, #mobile#, #country#, 
+						#gmtLastLogin#, #lastLoginIp#, #status#, sysdate, sysdate,#licenseType#,#license#,#gender#,#nickName#,#birthday#,#accountType#)
+	</insert>
+	
+	<typeAlias alias="userAccountQuery" type="com.skyjoo.neweast.biz.account.domain.query.UserAccountQuery" />
+	
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+	
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum &gt;= #beginIndex#
+	</sql>
+		
+	<sql id="pageCondition">
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="email">
+				ua.EMAIL = #email#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="mobile">
+				ua.MOBILE = #mobile#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="country">
+				ua.COUNTRY = #country#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="status">
+				ua.STATUS = #status#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="realName">
+				ua.REAL_NAME like #realName#||'%'
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="stockAccount">
+				ua.STOCK_ACCOUNT = #stockAccount#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="gmtOpenStart">
+				ua.GMT_CREATE &gt;= to_date(#gmtOpenStart#, 'yyyy-MM-dd')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="gmtOpenEnd">
+				ua.GMT_CREATE &lt; to_date(#gmtOpenEnd#, 'yyyy-MM-dd') + 1
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+		
+	<select id="pageCount" parameterClass="userAccountQuery" resultClass="java.lang.Integer">
+		select count(*)
+		from USER_ACCOUNT ua
+		<include refid="pageCondition"/>
+	</select>
+	
+	<select id="page" parameterClass="userAccountQuery" resultMap="userAccountResultMap">
+		<include refid="pageBeginSql"/>
+		
+		select <include refid="columsSql"/>
+		from USER_ACCOUNT ua
+		<include refid="pageCondition"/>
+		order by ua.GMT_CREATE desc
+		
+		<include refid="pageEndSql"/>
+	</select>
+	
+	<select id="selectById" resultMap="userAccountResultMap" parameterClass="long">
+		select <include refid="columsSql"/>
+		from USER_ACCOUNT ua
+		where ua.ID = #id# 
+	</select>
+	
+	<select id="selectByStockAccount" resultMap="userAccountResultMap" parameterClass="string">
+		select <include refid="columsSql"/>
+		from USER_ACCOUNT ua
+		where ua.STOCK_ACCOUNT = #stockAccount# 
+	</select>
+	
+	<select id="selectByFundAccount" resultMap="userAccountResultMap" parameterClass="string">
+		select <include refid="columsSql"/>
+		from USER_ACCOUNT ua
+		where ua.FUND_ACCOUNT = #fundAccount# 
+	</select>
+	
+	<update id="update" parameterClass="userAccount">
+		update 	USER_ACCOUNT ua
+		set  	ua.GMT_MODIFY = sysdate
+			<isNotEmpty property="gmtLastLogin" prepend=",">
+				ua.GMT_LAST_LOGIN = #gmtLastLogin#
+			</isNotEmpty>
+			<isNotEmpty property="lastLoginIp" prepend=",">
+				ua.LAST_LOGIN_IP = #lastLoginIp#
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend=",">
+				ua.STATUS = #status#
+			</isNotEmpty>
+			<isNotEmpty property="email" prepend="," >
+				ua.EMAIL = #email#
+			</isNotEmpty>
+			<isNotEmpty property="mobile" prepend="," >
+				ua.MOBILE = #mobile#
+			</isNotEmpty>
+			<isNotEmpty property="country" prepend="," >
+				ua.COUNTRY = #country#
+			</isNotEmpty>
+			<isNotEmpty property="realName" prepend="," >
+				ua.REAL_NAME = #realName#
+			</isNotEmpty>
+			<isNotEmpty property="licenseType" prepend=",">
+				ua.LICENSE_TYPE = #licenseType#
+			</isNotEmpty>
+			<isNotEmpty property="license" prepend=",">
+				ua.LICENSE = #license#
+			</isNotEmpty>
+			<isNotEmpty property="gender" prepend=",">
+				ua.GENDER = #gender#
+			</isNotEmpty>
+			<isNotEmpty property="birthday" prepend=",">
+				ua.BIRTHDAY	 = #birthday#
+			</isNotEmpty>	
+			<isNotEmpty property="nickName" prepend=",">
+				ua.NICK_NAME = #nickName#
+			</isNotEmpty>	
+			<isNotEmpty property="accountType" prepend=",">
+				ua.ACCOUNT_TYPE = #accountType#
+			</isNotEmpty>								
+       	where 	ua.id = #id#
+	</update>
+	
+	<select id="getAllSellerId" resultClass="long">
+		select saa.ACCOUNT_ID from SHOP_AUTH_APPLY saa where saa.STATUS = 1
+	</select>
+
+	<select id="getChangeSellerId"  resultClass="long">
+		select saa.ACCOUNT_ID 
+		from SHOP_AUTH_APPLY saa, USER_ACCOUNT_CREDIT uac
+		where saa.STATUS = 1 and saa.ACCOUNT_ID = uac.ACCOUNT_ID
+		AND uac.GMT_MODIFY BETWEEN SYSDATE - (1 / 48) AND SYSDATE
+	</select>
+	
+</sqlMap>

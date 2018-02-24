@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="POINT_CHANGE_LOG">
+
+	<typeAlias alias="pointChangeLog"
+		type="com.skyjoo.neweast.biz.point.domain.PointChangeLog" />
+	<typeAlias alias="pclq"
+		type="com.skyjoo.neweast.biz.point.domain.query.PointChangeLogQuery" />
+	<resultMap id="PointChangeLogMap" class="pointChangeLog">
+		<result column="TRADE_ACCOUNT" property="tradeAccount" />
+		<result column="OCCUR_TIME" property="occurTime" />
+		<result column="POINT_AMOUNT" property="pointAmount" />
+		<result column="POINT_POST" property="pointPost" />
+		<result column="REASON" property="reason" />
+		<result column="ID" property="id" />
+		<result column="POINT_TYPE" property="pointType" />
+		<result column="OCCUR_CHANNEL" property="occurChannel" />
+		<result column="OCCUR_TIME" property="occurTime" />
+		<result column="RELATE_ID" property="relateId" />
+		<result column="RELATE_OBJECT" property="relateObject" />
+		<result column="RELATE_AMOUNT" property="relateAmount" />
+		<result column="POINT_PRE" property="pointPre" />
+		<result column="GMT_MODIFY" property="GMTModify" />
+	</resultMap>
+
+	<select id="count" parameterClass="pclq" resultClass="java.lang.Integer">
+		select count(1) from POINT_CHANGE_LOG pcl
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="tradeAccount">
+				pcl.TRADE_ACCOUNT =
+				#tradeAccount#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="startTime">
+				pcl.OCCUR_TIME &gt;=
+				to_date(#startTime#, 'yyyy-MM-dd')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="endTime">
+				pcl.OCCUR_TIME &lt;
+				to_date(#endTime#, 'yyyy-MM-dd')+1
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum
+		&gt;= #beginIndex#
+	</sql>
+	<select id="list" parameterClass="pclq" resultMap="PointChangeLogMap">
+		<include refid="pageBeginSql" />
+		select 
+		pcl.ID,
+		pcl.TRADE_ACCOUNT,
+		pcl.POINT_TYPE,
+		pcl.OCCUR_CHANNEL,
+		pcl.OCCUR_TIME,
+		pcl.RELATE_ID,
+		pcl.RELATE_OBJECT,
+		pcl.RELATE_AMOUNT,
+		pcl.POINT_PRE,
+		pcl.POINT_AMOUNT,
+		pcl.POINT_POST,
+		pcl.REASON,
+		pcl.GMT_CREATE,
+		pcl.GMT_MODIFY
+		from POINT_CHANGE_LOG pcl
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="tradeAccount">
+				pcl.TRADE_ACCOUNT =
+				#tradeAccount#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="startTime">
+				pcl.OCCUR_TIME &gt;=
+				to_date(#startTime#, 'yyyy-MM-dd')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="endTime">
+				pcl.OCCUR_TIME &lt;
+				to_date(#endTime#, 'yyyy-MM-dd')+1
+			</isNotEmpty>
+		</dynamic>
+		order by pcl.OCCUR_TIME desc,pcl.ID desc,pcl.POINT_POST desc
+		<include refid="pageEndSql" />
+	</select>
+
+	<!-- <insert id="insert" parameterClass="pointChangeLog">
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+			select
+			SEQ_POINT_CHANGE_LOG.NEXTVAL from dual
+		</selectKey>
+		INSERT INTO
+		POINT_CHANGE_LOG(ID,TRADE_ACCOUNT,POINT_TYPE,OCCUR_CHANNEL,
+		OCCUR_TIME,RELATE_ID,RELATE_OBJECT,RELATE_AMOUNT,POINT_PRE,POINT_AMOUNT,POINT_POST,REASON,GMT_CREATE,GMT_MODIFY)
+		VALUES (
+		#id#,#tradeAccount#,#pointType#,#occurChannel#,sysdate,
+		#relateId#,#relateObject#,#relateAmount#,#pointPre#,#pointAmount#,#pointPost#,#reason#,sysdate,sysdate)
+	</insert> -->
+
+
+</sqlMap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

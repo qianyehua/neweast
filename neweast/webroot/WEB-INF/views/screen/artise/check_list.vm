@@ -1,0 +1,120 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+     var num = 0;
+     function verify(flag, id) {
+             num ++;
+             if(num <= 1){
+        	    var url = "verify.htm?id=" + id + "&flag=" + flag;
+       		    document.location = url;
+        		}
+         }
+         jQuery( function() {
+         //设置日期
+         $('.date-pick').datePicker( {
+         clickInput : true,
+         startDate : "2010-01-01"
+         });
+         });
+</script>
+<!-- 搜索框 -->
+<form id="artiseCheckForm" name="artiseCheckForm" action="check_list.htm" method="get">
+	<div class="search-box">
+        <input type="hidden" name="rececjId" id="rececjId" value=""/>
+        <table>
+            <tr>
+				<th>申请时间</th>
+                <td>
+                	#springBind("query.startDate")
+					<input type="text" id="startDate" name="startDate"  value="$!{dateTool.format('yyyy-MM-dd',$!page.startDate)}"  readonly="readonly" size="10" class="date-pick" />
+					-
+					#springBind("query.endDate")
+                    <input type="text" id="endDate" name="endDate" value="$!{dateTool.format('yyyy-MM-dd',$!page.endDate)}" readonly="readonly"  size="10" class="date-pick" />
+                 </td>
+                 <th>艺术家名称</th>
+				 <td>#springBind("query.artiseName")
+					<input type="text" name="artiseName" id="artiseName" class="inp required" value="$!{page.artiseName}"/>	
+				 </td>
+				 <th>艺术家类型</th>
+				 <td>#springBind("query.roleType")
+					<select  id="roleType" name="roleType" class="inp" style="width:150px">
+                		<option value="-1" #if($page.roleType == -1) selected="selected" #end>全部</option>
+						<option value="1" #if($page.roleType == 1) selected="selected" #end>个人</option>
+						<option value="2" #if($page.roleType == 2) selected="selected" #end>机构</option>
+					</select>
+				 </td>
+           </tr>
+           <tr>			
+				<th>审核状态</th>
+				<td>#springBind("query.status")
+                	<select  id="status" name="status" class="inp" style="width:150px">
+                		<option value="-1" #if($page.status == -1) selected="selected" #end>全部</option>
+						<option value="0" #if($page.status == 0) selected="selected" #end>未审核</option>
+						<option value="2" #if($page.status == 2) selected="selected" #end>审核未通过</option>
+					</select>
+                </td> 
+                <th>
+   					 <input type="submit" name="search" value="查询" class="but-61" />
+   				</th>
+				<td>
+					<input type="reset" value="重置" onclick="window.location = 'check_list.htm'" class="but-62"/>
+				</td>
+		   </tr>
+</table>
+</div>
+<!-- 搜索框 END -->
+ <div class="basic">
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="10%">申请ID</th>
+			<th width="10%">艺术家头像</th>
+			<th width="25%">艺术家名称</th>
+			<th width="5%">用户类型</th>
+			<th width="15%">申请时间 </th>
+			<th width="15%">审核状态</th>
+			<th width="10%" >审核时间</th>
+			<th width="10%">操作</th>
+        </tr>
+		#if($!{page} && ${page.totalCount} > 0)
+			#foreach($artise in $page.getData())
+				<tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+					<td>$!{artise.artiseId}</td>
+					<td width="50" height="50">
+						#if($!{artise.portrait})
+							<img width="50" height="50" src="$!{uploadServer.get($!{artise.portrait})}?x-oss-process=image/resize,m_pad,h_50,w_50"/>
+						#end
+					</td>
+					<td>$!{artise.artiseName}</td>
+					<td> #if($!{artise.roleType} ==2) 机构 #else 个人 #end					
+					</td>
+					<td>$!{dateTool.format($!{artise.gmt_Create})}</td>
+					<td>
+						#if($!{artise.status}==0)未审核
+							 #elseif($!{artise.status}==1)正常
+							 #elseif($!{artise.status}==2)审核不通过
+						#end
+					</td>
+					<td>$!{dateTool.format($!{artise.gmt_Identify})}</td>
+					<td class="link-td">
+						#if($!{artise.status}!=2)
+							<a href="$!{appServer}/artise/check_editIni.htm?artiseId=$!{artise.artiseId}">审核</a>
+						#end
+						
+					</td>
+				</tr>	
+			#end
+        #else
+            <tr>
+                <td colspan="7">
+                    <p class="ts">没有结果</p>
+                </td>
+            </tr>
+        #end
+    </table>
+	 #pager($page, "artiseCheckForm")
+	
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

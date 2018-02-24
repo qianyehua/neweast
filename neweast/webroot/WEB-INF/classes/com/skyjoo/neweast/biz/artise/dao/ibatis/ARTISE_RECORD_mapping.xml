@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ARTISE_RECORD">
+	<typeAlias alias="artiseRecord"
+		type="com.skyjoo.neweast.biz.artise.domain.ArtiseRecord" />
+	<typeAlias alias="artise"
+		type="com.skyjoo.neweast.biz.artise.domain.Artise" />		
+
+		
+	<resultMap id="artiseRecordResultMap" class="artiseRecord">
+		<result column="ID" property="id"/>
+		<result column="USER_ID" property="userId"/>
+		<result column="ARTISE_ID" property="artiseId"/>
+		<result column="STARTTIME" property="startTime"/>
+		<result column="ENDTIME" property="endTime"/>
+		<result column="CONTENT" property="content"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		a.ID,
+		a.USER_ID,
+		a.ARTISE_ID,
+		a.STARTTIME,
+		a.ENDTIME,
+		a.CONTENT,
+		a.GMT_CREATE,
+		a.GMT_MODIFY
+	</sql>			
+
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum
+		&gt;= #beginIndex#
+	</sql>
+	
+	<select id="queryList" parameterClass="artise" resultMap="artiseRecordResultMap">
+		select <include refid="columsSql"/> from ARTISE_RECORD a
+		<dynamic prepend="where">
+			<isNotEmpty property="userId" prepend="and">
+			a.USER_ID = #userId#
+			</isNotEmpty>
+			<isNotEmpty property="artiseId" prepend="and">
+			a.ARTISE_ID = #artiseId#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY to_date(a.STARTTIME,'yyyy-MM') DESC
+	</select>
+</sqlMap>

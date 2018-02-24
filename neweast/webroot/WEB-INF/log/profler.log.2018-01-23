@@ -1,0 +1,567 @@
+2018-01-23 11:00:59,413 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[701] in http://localhost:8080/neweast/ 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[93->93]=0 0%
+Task:render screen:screen/index.vm running time(millis)[164->166]=2 0%
+Task:merge template:layout/index.vm running time(millis)[173->701]=528 75%
+--Task:execute contain :/contain/header.htm running time(millis)[179->201]=22 3%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[190->190]=0 0%
+----Task:render contain:screen/contain/header.vm running time(millis)[196->201]=5 0%
+--Task:execute contain :/contain/menu.htm running time(millis)[201->687]=486 69%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[203->203]=0 0%
+----Trace:prepareStatement: SELECT    sf.ID,   sf.PARENT_ID,   sf.NAME,   sf.URL,   sf.DESCRIPTION,   sf.ORDERING,   sf.IS_MENU,   sf.IS_DELETED,   sf.OPERATOR,   sf.GMT_CREATE,   sf.GMT_MODIFY      FROM SYSTEM_FUNCTION sf where IS_DELETED <> 1 order by   ORDERING
+----Task:render contain:screen/contain/menu.vm running time(millis)[670->687]=17 2%
+------Task:UserFuncsCacheService:getOffset running time(millis)[679->679]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[679->679]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[680->680]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[680->680]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[680->680]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[680->680]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[680->680]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[681->681]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[681->681]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[681->681]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[681->681]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[681->681]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[681->681]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[682->682]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[682->682]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[682->682]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[683->683]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[683->683]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[683->683]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[683->683]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[683->683]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[684->684]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[684->684]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[684->684]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[684->684]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[684->684]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[684->684]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[684->685]=1 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[685->685]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[685->685]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[685->685]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[685->685]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[685->685]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[685->685]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[685->685]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[686->686]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[686->686]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[686->686]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[686->686]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[686->686]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[687->687]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[687->687]=0 0%
+--Task:execute contain :/contain/footer.htm running time(millis)[687->701]=14 1%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[696->696]=0 0%
+----Task:render contain:screen/contain/footer.vm running time(millis)[700->700]=0 0%
+Task:write output to servlet outputstream with size:13KB. running time(millis)[701->701]=0 0%
+2018-01-23 11:00:59,712 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[164] in http://localhost:8080/neweast/main.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select      su.ID,   su.LOGIN_NAME,   su.REAL_NAME,   su.PASSWORD,   su.EMAIL,   su.TEL,   su.MOBILE,   su.GMT_CREATE,   su.GMT_MODIFY,   su.OPERATOR,   su.GMT_LAST_LOGIN,   su.LAST_LOGIN_IP,   su.GMT_CURRENT_LOGIN,   su.CURRENT_LOGIN_IP,   su.LOGIN_COUNT     from   SYSTEM_USER su   where   su.ID = ?
+Task:render screen:screen/main.vm running time(millis)[152->153]=1 0%
+Task:merge template:layout/default.vm running time(millis)[164->164]=0 0%
+Task:write output to servlet outputstream with size:1KB. running time(millis)[164->164]=0 0%
+2018-01-23 11:05:51,813 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[655] in http://localhost:8080/neweast/ 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[91->91]=0 0%
+Task:render screen:screen/index.vm running time(millis)[154->156]=2 0%
+Task:merge template:layout/index.vm running time(millis)[157->654]=497 75%
+--Task:execute contain :/contain/header.htm running time(millis)[161->180]=19 2%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[173->173]=0 0%
+----Task:render contain:screen/contain/header.vm running time(millis)[175->179]=4 0%
+--Task:execute contain :/contain/menu.htm running time(millis)[180->647]=467 71%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[182->182]=0 0%
+----Trace:prepareStatement: SELECT    sf.ID,   sf.PARENT_ID,   sf.NAME,   sf.URL,   sf.DESCRIPTION,   sf.ORDERING,   sf.IS_MENU,   sf.IS_DELETED,   sf.OPERATOR,   sf.GMT_CREATE,   sf.GMT_MODIFY      FROM SYSTEM_FUNCTION sf where IS_DELETED <> 1 order by   ORDERING
+----Task:render contain:screen/contain/menu.vm running time(millis)[633->646]=13 1%
+------Task:UserFuncsCacheService:getOffset running time(millis)[641->641]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[641->641]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[641->641]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[641->641]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[642->642]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[642->642]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[642->642]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[642->642]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[642->642]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[642->642]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[642->642]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[642->642]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[643->643]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[643->643]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[643->643]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[643->643]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[643->643]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[644->644]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[644->644]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[644->644]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[644->644]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[644->644]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[644->644]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[644->644]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[644->644]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[645->645]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[645->645]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[645->645]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[645->645]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[645->645]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[645->645]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[645->645]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[645->645]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[645->645]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[645->645]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[646->646]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[646->646]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[646->646]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[646->646]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[646->646]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[646->646]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[646->646]=0 0%
+--Task:execute contain :/contain/footer.htm running time(millis)[647->654]=7 1%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[652->652]=0 0%
+----Task:render contain:screen/contain/footer.vm running time(millis)[654->654]=0 0%
+Task:write output to servlet outputstream with size:13KB. running time(millis)[654->654]=0 0%
+2018-01-23 11:05:52,055 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[183] in http://localhost:8080/neweast/main.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select      su.ID,   su.LOGIN_NAME,   su.REAL_NAME,   su.PASSWORD,   su.EMAIL,   su.TEL,   su.MOBILE,   su.GMT_CREATE,   su.GMT_MODIFY,   su.OPERATOR,   su.GMT_LAST_LOGIN,   su.LAST_LOGIN_IP,   su.GMT_CURRENT_LOGIN,   su.CURRENT_LOGIN_IP,   su.LOGIN_COUNT     from   SYSTEM_USER su   where   su.ID = ?
+Task:render screen:screen/main.vm running time(millis)[179->181]=2 1%
+Task:merge template:layout/default.vm running time(millis)[183->183]=0 0%
+Task:write output to servlet outputstream with size:1KB. running time(millis)[183->183]=0 0%
+2018-01-23 11:19:25,864 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[649] in http://localhost:8080/neweast/ 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[88->88]=0 0%
+Task:render screen:screen/index.vm running time(millis)[151->152]=1 0%
+Task:merge template:layout/index.vm running time(millis)[153->648]=495 76%
+--Task:execute contain :/contain/header.htm running time(millis)[158->178]=20 3%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[170->170]=0 0%
+----Task:render contain:screen/contain/header.vm running time(millis)[172->177]=5 0%
+--Task:execute contain :/contain/menu.htm running time(millis)[178->640]=462 71%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[180->180]=0 0%
+----Trace:prepareStatement: SELECT    sf.ID,   sf.PARENT_ID,   sf.NAME,   sf.URL,   sf.DESCRIPTION,   sf.ORDERING,   sf.IS_MENU,   sf.IS_DELETED,   sf.OPERATOR,   sf.GMT_CREATE,   sf.GMT_MODIFY      FROM SYSTEM_FUNCTION sf where IS_DELETED <> 1 order by   ORDERING
+----Task:render contain:screen/contain/menu.vm running time(millis)[628->640]=12 1%
+------Task:UserFuncsCacheService:getOffset running time(millis)[635->635]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[635->635]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[635->635]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[635->635]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[635->635]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[635->635]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[635->635]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[636->636]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[636->636]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[636->636]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[636->636]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[636->636]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[636->636]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[636->636]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[636->636]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[637->637]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[637->637]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[637->637]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[637->637]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[637->637]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[638->638]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[638->638]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[638->638]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[638->638]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[638->638]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[638->638]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[638->638]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[639->639]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[639->639]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[639->639]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[639->639]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[639->639]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[639->639]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[639->639]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[639->639]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[639->639]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[640->640]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[640->640]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[640->640]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[640->640]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[640->640]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[640->640]=0 0%
+--Task:execute contain :/contain/footer.htm running time(millis)[641->648]=7 1%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[646->646]=0 0%
+----Task:render contain:screen/contain/footer.vm running time(millis)[648->648]=0 0%
+Task:write output to servlet outputstream with size:13KB. running time(millis)[648->648]=0 0%
+2018-01-23 11:19:26,200 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[270] in http://localhost:8080/neweast/main.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select      su.ID,   su.LOGIN_NAME,   su.REAL_NAME,   su.PASSWORD,   su.EMAIL,   su.TEL,   su.MOBILE,   su.GMT_CREATE,   su.GMT_MODIFY,   su.OPERATOR,   su.GMT_LAST_LOGIN,   su.LAST_LOGIN_IP,   su.GMT_CURRENT_LOGIN,   su.CURRENT_LOGIN_IP,   su.LOGIN_COUNT     from   SYSTEM_USER su   where   su.ID = ?
+Task:render screen:screen/main.vm running time(millis)[266->268]=2 0%
+Task:merge template:layout/default.vm running time(millis)[270->270]=0 0%
+Task:write output to servlet outputstream with size:1KB. running time(millis)[270->270]=0 0%
+2018-01-23 11:30:10,698 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[506] in http://localhost:8080/neweast/ 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[16->16]=0 0%
+Task:render screen:screen/index.vm running time(millis)[16->16]=0 0%
+Task:merge template:layout/index.vm running time(millis)[17->506]=489 96%
+--Task:execute contain :/contain/header.htm running time(millis)[17->22]=5 0%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[21->21]=0 0%
+----Task:render contain:screen/contain/header.vm running time(millis)[21->22]=1 0%
+--Task:execute contain :/contain/menu.htm running time(millis)[22->495]=473 93%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[22->22]=0 0%
+----Trace:prepareStatement: SELECT    sf.ID,   sf.PARENT_ID,   sf.NAME,   sf.URL,   sf.DESCRIPTION,   sf.ORDERING,   sf.IS_MENU,   sf.IS_DELETED,   sf.OPERATOR,   sf.GMT_CREATE,   sf.GMT_MODIFY      FROM SYSTEM_FUNCTION sf where IS_DELETED <> 1 order by   ORDERING
+----Task:render contain:screen/contain/menu.vm running time(millis)[484->495]=11 2%
+------Task:UserFuncsCacheService:getOffset running time(millis)[484->484]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[484->484]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[484->484]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[485->485]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[485->485]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[485->485]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[485->485]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[486->486]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[486->486]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[486->486]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[486->486]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[486->486]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[487->487]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[487->487]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[487->487]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[487->487]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[488->488]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[488->488]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[488->488]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[488->488]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[489->489]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[489->489]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[489->489]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[489->489]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[490->490]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[490->490]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[490->490]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[491->491]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[491->491]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[491->491]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[492->492]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[493->493]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[493->493]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[493->493]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[493->493]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[494->494]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[494->494]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[494->494]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[494->494]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[494->494]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[495->495]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[495->495]=0 0%
+--Task:execute contain :/contain/footer.htm running time(millis)[495->506]=11 2%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[505->505]=0 0%
+----Task:render contain:screen/contain/footer.vm running time(millis)[505->505]=0 0%
+Task:write output to servlet outputstream with size:13KB. running time(millis)[506->506]=0 0%
+2018-01-23 11:30:10,934 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[147] in http://localhost:8080/neweast/main.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select      su.ID,   su.LOGIN_NAME,   su.REAL_NAME,   su.PASSWORD,   su.EMAIL,   su.TEL,   su.MOBILE,   su.GMT_CREATE,   su.GMT_MODIFY,   su.OPERATOR,   su.GMT_LAST_LOGIN,   su.LAST_LOGIN_IP,   su.GMT_CURRENT_LOGIN,   su.CURRENT_LOGIN_IP,   su.LOGIN_COUNT     from   SYSTEM_USER su   where   su.ID = ?
+Task:render screen:screen/main.vm running time(millis)[146->146]=0 0%
+Task:merge template:layout/default.vm running time(millis)[146->146]=0 0%
+Task:write output to servlet outputstream with size:1KB. running time(millis)[147->147]=0 0%
+2018-01-23 15:27:31,584 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[677] in http://localhost:8080/neweast/ 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[70->70]=0 0%
+Task:render screen:screen/index.vm running time(millis)[128->130]=2 0%
+Task:merge template:layout/index.vm running time(millis)[130->676]=546 80%
+--Task:execute contain :/contain/header.htm running time(millis)[134->195]=61 9%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[144->144]=0 0%
+----Task:render contain:screen/contain/header.vm running time(millis)[146->195]=49 7%
+--Task:execute contain :/contain/menu.htm running time(millis)[195->671]=476 70%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[196->196]=0 0%
+----Trace:prepareStatement: SELECT    sf.ID,   sf.PARENT_ID,   sf.NAME,   sf.URL,   sf.DESCRIPTION,   sf.ORDERING,   sf.IS_MENU,   sf.IS_DELETED,   sf.OPERATOR,   sf.GMT_CREATE,   sf.GMT_MODIFY      FROM SYSTEM_FUNCTION sf where IS_DELETED <> 1 order by   ORDERING
+----Task:render contain:screen/contain/menu.vm running time(millis)[662->671]=9 1%
+------Task:UserFuncsCacheService:getOffset running time(millis)[667->667]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[667->667]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[667->667]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[667->667]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[667->667]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[667->667]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[667->667]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[667->667]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[667->667]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[668->668]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[668->668]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[668->668]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[668->668]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[668->668]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[668->668]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[668->668]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[669->669]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[669->669]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[669->669]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[669->669]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[669->669]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[669->669]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[669->669]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[669->669]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[670->670]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[670->670]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[670->670]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[670->670]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[670->670]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[670->670]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[670->670]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[670->670]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[670->670]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[670->670]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[670->670]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[671->671]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[671->671]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[671->671]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[671->671]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[671->671]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[671->671]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[671->671]=0 0%
+--Task:execute contain :/contain/footer.htm running time(millis)[671->676]=5 0%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[675->675]=0 0%
+----Task:render contain:screen/contain/footer.vm running time(millis)[676->676]=0 0%
+Task:write output to servlet outputstream with size:13KB. running time(millis)[676->676]=0 0%
+2018-01-23 15:27:31,797 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[161] in http://localhost:8080/neweast/main.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[0->0]=0 0%
+Trace:prepareStatement: select      su.ID,   su.LOGIN_NAME,   su.REAL_NAME,   su.PASSWORD,   su.EMAIL,   su.TEL,   su.MOBILE,   su.GMT_CREATE,   su.GMT_MODIFY,   su.OPERATOR,   su.GMT_LAST_LOGIN,   su.LAST_LOGIN_IP,   su.GMT_CURRENT_LOGIN,   su.CURRENT_LOGIN_IP,   su.LOGIN_COUNT     from   SYSTEM_USER su   where   su.ID = ?
+Task:render screen:screen/main.vm running time(millis)[157->159]=2 1%
+Task:merge template:layout/default.vm running time(millis)[161->161]=0 0%
+Task:write output to servlet outputstream with size:1KB. running time(millis)[161->161]=0 0%
+2018-01-23 15:27:34,940 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[103] in http://localhost:8080/neweast/test/test_list.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select count(*)   from TEST_QYH t
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (     select    t.ID,   t.NAME,   t.PASSWORD     from TEST_QYH t                              order by t.id desc      ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/test/list.vm running time(millis)[81->103]=22 21%
+--Task:execute contain :/contain/pager.htm running time(millis)[84->103]=19 18%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[87->87]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[98->103]=5 4%
+Task:merge template:layout/default.vm running time(millis)[103->103]=0 0%
+Task:write output to servlet outputstream with size:11KB. running time(millis)[103->103]=0 0%
+2018-01-23 15:27:37,835 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[342] in http://localhost:8080/neweast/test/test_list.htm [id=] [pageNo=2] 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select count(*)   from TEST_QYH t
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (     select    t.ID,   t.NAME,   t.PASSWORD     from TEST_QYH t                              order by t.id desc      ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/test/list.vm running time(millis)[337->342]=5 1%
+--Task:execute contain :/contain/pager.htm running time(millis)[337->342]=5 1%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[341->341]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[341->342]=1 0%
+Task:merge template:layout/default.vm running time(millis)[342->342]=0 0%
+Task:write output to servlet outputstream with size:4KB. running time(millis)[342->342]=0 0%
+2018-01-23 15:27:39,677 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[421] in http://localhost:8080/neweast/test/test_list.htm [id=] [pageNo=1] 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[0->0]=0 0%
+Trace:prepareStatement: select count(*)   from TEST_QYH t
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (     select    t.ID,   t.NAME,   t.PASSWORD     from TEST_QYH t                              order by t.id desc      ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/test/list.vm running time(millis)[401->421]=20 4%
+--Task:execute contain :/contain/pager.htm running time(millis)[406->421]=15 3%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[414->414]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[415->421]=6 1%
+Task:merge template:layout/default.vm running time(millis)[421->421]=0 0%
+Task:write output to servlet outputstream with size:11KB. running time(millis)[421->421]=0 0%
+2018-01-23 16:49:22,230 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[277] in http://localhost:8080/neweast/system/ownInfo/list.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[7->7]=0 0%
+Trace:prepareStatement: select *   from SYSTEM_USER su   where su.LOGIN_NAME = ?
+Task:render screen:screen/system/user/ownInfo.vm running time(millis)[218->276]=58 20%
+Task:merge template:layout/default.vm running time(millis)[277->277]=0 0%
+Task:write output to servlet outputstream with size:6KB. running time(millis)[277->277]=0 0%
+2018-01-23 16:52:37,732 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[359] in http://localhost:8080/neweast/getMenus.htm [id=10012] [pid=10009] 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[15->15]=0 0%
+Trace:prepareStatement: select    sf.ID,   sf.PARENT_ID,   sf.NAME,   sf.URL,   sf.DESCRIPTION,   sf.ORDERING,   sf.IS_MENU,   sf.IS_DELETED,   sf.OPERATOR,   sf.GMT_CREATE,   sf.GMT_MODIFY     from SYSTEM_FUNCTION sf    where ID=? and IS_DELETED != 1
+Trace:prepareStatement: select    sf.ID,   sf.PARENT_ID,   sf.NAME,   sf.URL,   sf.DESCRIPTION,   sf.ORDERING,   sf.IS_MENU,   sf.IS_DELETED,   sf.OPERATOR,   sf.GMT_CREATE,   sf.GMT_MODIFY     from SYSTEM_FUNCTION sf    where ID=? and IS_DELETED != 1
+Task:write output to servlet outputstream with size:0KB. running time(millis)[359->359]=0 0%
+2018-01-23 16:52:44,216 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[125] in http://localhost:8080/neweast/account/list.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[10->10]=0 0%
+Trace:prepareStatement: select count(*)   from USER_ACCOUNT ua
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (        select    ua.ID,   ua.FUND_ACCOUNT,   ua.STOCK_ACCOUNT,   ua.REAL_NAME,   ua.EMAIL,   ua.MOBILE,   ua.COUNTRY,   ua.GMT_LAST_LOGIN,   ua.LAST_LOGIN_IP,   ua.STATUS,   ua.GMT_CREATE,   ua.GMT_MODIFY,   ua.LICENSE_TYPE,   ua.LICENSE,   ua.GENDER,   ua.NICK_NAME,   ua.BIRTHDAY,   ua.ACCOUNT_TYPE      from USER_ACCOUNT ua                                              order by ua.GMT_CREATE desc         ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/account/list.vm running time(millis)[99->125]=26 20%
+--Task:execute contain :/contain/pager.htm running time(millis)[116->125]=9 7%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[121->121]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[121->125]=4 3%
+Task:merge template:layout/default.vm running time(millis)[125->125]=0 0%
+Task:write output to servlet outputstream with size:13KB. running time(millis)[125->125]=0 0%
+2018-01-23 16:52:50,894 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[251] in http://localhost:8080/neweast/artise/list.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[8->8]=0 0%
+Task:ArtiseService:getArtisePage running time(millis)[10->199]=189 75%
+--Task:ArtiseDAO:getArtisePage running time(millis)[10->199]=189 75%
+----Trace:prepareStatement: SELECT    COUNT(1)   FROM    ARTISE a   LEFT JOIN USER_ACCOUNT c ON c."ID" = a.USER_ID   LEFT JOIN HOMEPAGE_RECOMMEND_ARTISE b ON b.ARTISE_ID = a ."ID"    WHERE a.STATUS = 1
+----Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (     SELECT    a.*,c.PORTRAIT,c.ACCOUNT_TYPE,c.REAL_NAME as ARTISENAME, (     SELECT      COUNT (1)     FROM      ART     WHERE      USER_ID = A .USER_ID     AND (STATUS = 1 OR STATUS = 5 OR STATUS=0)    ) arts,    nvl(b.STATUS ,-1)as IFRECOMMEND   FROM    ARTISE a   LEFT JOIN USER_ACCOUNT c ON c."ID" = a.USER_ID   LEFT JOIN HOMEPAGE_RECOMMEND_ARTISE b ON b.ARTISE_ID = a ."ID"    WHERE a.STATUS = 1                                             order by IFRECOMMEND desc,a.GMT_MODIFY desc      ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/artise/list.vm running time(millis)[214->250]=36 14%
+--Task:execute contain :/contain/pager.htm running time(millis)[239->250]=11 4%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[244->244]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[244->250]=6 2%
+Task:merge template:layout/default.vm running time(millis)[250->250]=0 0%
+Task:write output to servlet outputstream with size:26KB. running time(millis)[250->250]=0 0%
+2018-01-23 16:52:54,351 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[111] in http://localhost:8080/neweast/artise/check_list.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[7->7]=0 0%
+Task:ArtiseService:getCheckArtisePage running time(millis)[7->79]=72 64%
+--Task:ArtiseDAO:getCheckArtisePage running time(millis)[8->79]=71 63%
+----Trace:prepareStatement: Select count(1) From (   Select   t5.*,Rownum As num   From(   select ar.*,ua.PORTRAIT,ua.REAL_NAME,ua.ACCOUNT_TYPE   from   ARTISE ar,USER_ACCOUNT ua where ar.user_id = ua.id   ORDER BY ar.STATUS ASC,ar.GMT_MODIFY DESC   ) t5   where                           status in (0,2)                             )
+----Trace:prepareStatement: Select   ID as artiseId,USER_ID as userId,PORTRAIT as portrait,REAL_NAME as   artiseName,STATUS as   status,OPERATOR as   operator,GMT_IDENTIFY as   gmt_Identify,GMT_CREATE as   gmt_Create,ACCOUNT_TYPE as roleType   From (      Select   t5.*,Rownum As num   From(   select ar.*,ua.PORTRAIT,ua.REAL_NAME,ua.ACCOUNT_TYPE   from   ARTISE ar,USER_ACCOUNT ua where ar.user_id = ua.id   ORDER BY ar.STATUS ASC,ar.GMT_MODIFY DESC   ) t5   where                           status in (0,2)                                )   Where num >= ? And num <= ?
+Task:render screen:screen/artise/check_list.vm running time(millis)[90->111]=21 18%
+--Task:execute contain :/contain/pager.htm running time(millis)[101->111]=10 9%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[104->104]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[105->111]=6 5%
+Task:merge template:layout/default.vm running time(millis)[111->111]=0 0%
+Task:write output to servlet outputstream with size:16KB. running time(millis)[111->111]=0 0%
+2018-01-23 16:53:05,705 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[246] in http://localhost:8080/neweast/getMenus.htm [id=11078] [pid=11060] 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[0->0]=0 0%
+Trace:prepareStatement: select    sf.ID,   sf.PARENT_ID,   sf.NAME,   sf.URL,   sf.DESCRIPTION,   sf.ORDERING,   sf.IS_MENU,   sf.IS_DELETED,   sf.OPERATOR,   sf.GMT_CREATE,   sf.GMT_MODIFY     from SYSTEM_FUNCTION sf    where ID=? and IS_DELETED != 1
+Trace:prepareStatement: select    sf.ID,   sf.PARENT_ID,   sf.NAME,   sf.URL,   sf.DESCRIPTION,   sf.ORDERING,   sf.IS_MENU,   sf.IS_DELETED,   sf.OPERATOR,   sf.GMT_CREATE,   sf.GMT_MODIFY     from SYSTEM_FUNCTION sf    where ID=? and IS_DELETED != 1
+Task:write output to servlet outputstream with size:0KB. running time(millis)[246->246]=0 0%
+2018-01-23 16:53:05,750 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[285] in http://localhost:8080/neweast/artise/check_list.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[8->8]=0 0%
+Task:ArtiseService:getCheckArtisePage running time(millis)[9->255]=246 86%
+--Task:ArtiseDAO:getCheckArtisePage running time(millis)[9->255]=246 86%
+----Trace:prepareStatement: Select count(1) From (   Select   t5.*,Rownum As num   From(   select ar.*,ua.PORTRAIT,ua.REAL_NAME,ua.ACCOUNT_TYPE   from   ARTISE ar,USER_ACCOUNT ua where ar.user_id = ua.id   ORDER BY ar.STATUS ASC,ar.GMT_MODIFY DESC   ) t5   where                           status in (0,2)                             )
+----Trace:prepareStatement: Select   ID as artiseId,USER_ID as userId,PORTRAIT as portrait,REAL_NAME as   artiseName,STATUS as   status,OPERATOR as   operator,GMT_IDENTIFY as   gmt_Identify,GMT_CREATE as   gmt_Create,ACCOUNT_TYPE as roleType   From (      Select   t5.*,Rownum As num   From(   select ar.*,ua.PORTRAIT,ua.REAL_NAME,ua.ACCOUNT_TYPE   from   ARTISE ar,USER_ACCOUNT ua where ar.user_id = ua.id   ORDER BY ar.STATUS ASC,ar.GMT_MODIFY DESC   ) t5   where                           status in (0,2)                                )   Where num >= ? And num <= ?
+Task:render screen:screen/artise/check_list.vm running time(millis)[257->284]=27 9%
+--Task:execute contain :/contain/pager.htm running time(millis)[276->284]=8 2%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[280->280]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[280->284]=4 1%
+Task:merge template:layout/default.vm running time(millis)[284->284]=0 0%
+Task:write output to servlet outputstream with size:16KB. running time(millis)[284->285]=1 0%
+2018-01-23 16:53:08,077 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[182] in http://localhost:8080/neweast/artise/list.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[6->6]=0 0%
+Task:ArtiseService:getArtisePage running time(millis)[7->153]=146 80%
+--Task:ArtiseDAO:getArtisePage running time(millis)[7->153]=146 80%
+----Trace:prepareStatement: SELECT    COUNT(1)   FROM    ARTISE a   LEFT JOIN USER_ACCOUNT c ON c."ID" = a.USER_ID   LEFT JOIN HOMEPAGE_RECOMMEND_ARTISE b ON b.ARTISE_ID = a ."ID"    WHERE a.STATUS = 1
+----Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (     SELECT    a.*,c.PORTRAIT,c.ACCOUNT_TYPE,c.REAL_NAME as ARTISENAME, (     SELECT      COUNT (1)     FROM      ART     WHERE      USER_ID = A .USER_ID     AND (STATUS = 1 OR STATUS = 5 OR STATUS=0)    ) arts,    nvl(b.STATUS ,-1)as IFRECOMMEND   FROM    ARTISE a   LEFT JOIN USER_ACCOUNT c ON c."ID" = a.USER_ID   LEFT JOIN HOMEPAGE_RECOMMEND_ARTISE b ON b.ARTISE_ID = a ."ID"    WHERE a.STATUS = 1                                             order by IFRECOMMEND desc,a.GMT_MODIFY desc      ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/artise/list.vm running time(millis)[154->181]=27 14%
+--Task:execute contain :/contain/pager.htm running time(millis)[170->181]=11 6%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[175->175]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[175->181]=6 3%
+Task:merge template:layout/default.vm running time(millis)[181->181]=0 0%
+Task:write output to servlet outputstream with size:26KB. running time(millis)[182->182]=0 0%
+2018-01-23 16:57:19,895 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[201] in http://localhost:8080/neweast/artcomment/list.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[0->0]=0 0%
+Trace:prepareStatement: select Count(t1.ID) from (SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                     ORDER BY a.GMT_CREATE DESC) t1
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (      SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                       ORDER BY a.GMT_CREATE DESC            ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/art/artComment/list.vm running time(millis)[173->201]=28 13%
+--Task:execute contain :/contain/pager.htm running time(millis)[194->201]=7 3%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[198->198]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[198->200]=2 0%
+Task:merge template:layout/default.vm running time(millis)[201->201]=0 0%
+Task:write output to servlet outputstream with size:15KB. running time(millis)[201->201]=0 0%
+2018-01-23 16:57:26,491 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[121] in http://localhost:8080/neweast/artcomment/list.htm [startDate=] [endDate=] [artName=] [buyerStockAccount=] [sellerStockAccount=] [pageNo=3] 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select Count(t1.ID) from (SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                     ORDER BY a.GMT_CREATE DESC) t1
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (      SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                       ORDER BY a.GMT_CREATE DESC            ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/art/artComment/list.vm running time(millis)[84->118]=34 28%
+--Task:execute contain :/contain/pager.htm running time(millis)[104->118]=14 11%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[112->112]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[113->117]=4 3%
+Task:merge template:layout/default.vm running time(millis)[118->119]=1 0%
+Task:write output to servlet outputstream with size:16KB. running time(millis)[119->121]=2 1%
+2018-01-23 16:57:30,740 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[251] in http://localhost:8080/neweast/artcomment/list.htm [startDate=] [endDate=] [artName=] [buyerStockAccount=] [sellerStockAccount=] [pageNo=5] 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select Count(t1.ID) from (SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                     ORDER BY a.GMT_CREATE DESC) t1
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (      SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                       ORDER BY a.GMT_CREATE DESC            ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/art/artComment/list.vm running time(millis)[217->251]=34 13%
+--Task:execute contain :/contain/pager.htm running time(millis)[239->251]=12 4%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[246->246]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[247->251]=4 1%
+Task:merge template:layout/default.vm running time(millis)[251->251]=0 0%
+Task:write output to servlet outputstream with size:15KB. running time(millis)[251->251]=0 0%
+2018-01-23 16:57:35,370 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[455] in http://localhost:8080/neweast/artcomment/list.htm [startDate=] [endDate=] [artName=] [buyerStockAccount=] [sellerStockAccount=] [pageNo=3] 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select Count(t1.ID) from (SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                     ORDER BY a.GMT_CREATE DESC) t1
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (      SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                       ORDER BY a.GMT_CREATE DESC            ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/art/artComment/list.vm running time(millis)[415->453]=38 8%
+--Task:execute contain :/contain/pager.htm running time(millis)[438->453]=15 3%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[447->447]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[448->453]=5 1%
+Task:merge template:layout/default.vm running time(millis)[455->455]=0 0%
+Task:write output to servlet outputstream with size:16KB. running time(millis)[455->455]=0 0%
+2018-01-23 16:57:38,275 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[436] in http://localhost:8080/neweast/artcomment/list.htm [startDate=] [endDate=] [artName=] [buyerStockAccount=] [sellerStockAccount=] [pageNo=2] 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select Count(t1.ID) from (SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                     ORDER BY a.GMT_CREATE DESC) t1
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (      SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                       ORDER BY a.GMT_CREATE DESC            ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/art/artComment/list.vm running time(millis)[399->435]=36 8%
+--Task:execute contain :/contain/pager.htm running time(millis)[422->435]=13 2%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[430->430]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[430->434]=4 0%
+Task:merge template:layout/default.vm running time(millis)[435->435]=0 0%
+Task:write output to servlet outputstream with size:15KB. running time(millis)[435->436]=1 0%
+2018-01-23 16:57:41,467 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[104] in http://localhost:8080/neweast/artcomment/list.htm [startDate=] [endDate=] [artName=] [buyerStockAccount=] [sellerStockAccount=] [pageNo=1] 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[0->0]=0 0%
+Trace:prepareStatement: select Count(t1.ID) from (SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                     ORDER BY a.GMT_CREATE DESC) t1
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (      SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                       ORDER BY a.GMT_CREATE DESC            ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/art/artComment/list.vm running time(millis)[75->103]=28 26%
+--Task:execute contain :/contain/pager.htm running time(millis)[87->103]=16 15%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[97->97]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[97->103]=6 5%
+Task:merge template:layout/default.vm running time(millis)[103->104]=1 0%
+Task:write output to servlet outputstream with size:15KB. running time(millis)[104->104]=0 0%
+2018-01-23 16:57:44,981 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[150] in http://localhost:8080/neweast/artcomment/list.htm [startDate=] [endDate=] [artName=] [buyerStockAccount=] [sellerStockAccount=] [pageNo=2] 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select Count(t1.ID) from (SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                     ORDER BY a.GMT_CREATE DESC) t1
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (      SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                       ORDER BY a.GMT_CREATE DESC            ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/art/artComment/list.vm running time(millis)[128->149]=21 14%
+--Task:execute contain :/contain/pager.htm running time(millis)[140->149]=9 6%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[147->147]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[147->149]=2 1%
+Task:merge template:layout/default.vm running time(millis)[149->149]=0 0%
+Task:write output to servlet outputstream with size:15KB. running time(millis)[149->150]=1 0%
+2018-01-23 16:57:47,600 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[141] in http://localhost:8080/neweast/artConsulting/consulting_list.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select Count(t1.ID) from (SELECT    a.ID,   a.BUYER_ID,   a.SELLER_ID,   a.ART_ID,   a.CONTENT,   a.REPLY_CONTENT,   a.STATUS,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.BUYER_NAME,t4.BUYER_STOCKACCOUNT,t5.SELLER_STOCKACCOUNT    FROM ART_CONSULTING_INFORMATION a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME BUYER_NAME,"ID" FROM USER_ACCOUNT) t3 ON t3."ID" = a.BUYER_ID    LEFT JOIN (SELECT STOCK_ACCOUNT BUYER_STOCKACCOUNT,"ID" FROM USER_ACCOUNT) t4 ON t4."ID" = a.BUYER_ID         LEFT JOIN (SELECT STOCK_ACCOUNT SELLER_STOCKACCOUNT,"ID" FROM USER_ACCOUNT ) t5 ON t5."ID" = a.SELLER_ID                                                                                     ORDER BY a.GMT_CREATE DESC) t1
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (      SELECT    a.ID,   a.BUYER_ID,   a.SELLER_ID,   a.ART_ID,   a.CONTENT,   a.REPLY_CONTENT,   a.STATUS,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.BUYER_NAME,t4.BUYER_STOCKACCOUNT,t5.SELLER_STOCKACCOUNT    FROM ART_CONSULTING_INFORMATION a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME BUYER_NAME,"ID" FROM USER_ACCOUNT) t3 ON t3."ID" = a.BUYER_ID    LEFT JOIN (SELECT STOCK_ACCOUNT BUYER_STOCKACCOUNT,"ID" FROM USER_ACCOUNT) t4 ON t4."ID" = a.BUYER_ID         LEFT JOIN (SELECT STOCK_ACCOUNT SELLER_STOCKACCOUNT,"ID" FROM USER_ACCOUNT ) t5 ON t5."ID" = a.SELLER_ID                                                                                       ORDER BY a.GMT_CREATE DESC            ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/art/artConsulting/art_consulting_list.vm running time(millis)[124->140]=16 11%
+--Task:execute contain :/contain/pager.htm running time(millis)[135->140]=5 3%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[138->138]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[138->140]=2 1%
+Task:merge template:layout/default.vm running time(millis)[140->140]=0 0%
+Task:write output to servlet outputstream with size:15KB. running time(millis)[141->141]=0 0%
+2018-01-23 16:57:53,842 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[344] in http://localhost:8080/neweast/getMenus.htm [id=11018] [pid=11016] 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select    sf.ID,   sf.PARENT_ID,   sf.NAME,   sf.URL,   sf.DESCRIPTION,   sf.ORDERING,   sf.IS_MENU,   sf.IS_DELETED,   sf.OPERATOR,   sf.GMT_CREATE,   sf.GMT_MODIFY     from SYSTEM_FUNCTION sf    where ID=? and IS_DELETED != 1
+Trace:prepareStatement: select    sf.ID,   sf.PARENT_ID,   sf.NAME,   sf.URL,   sf.DESCRIPTION,   sf.ORDERING,   sf.IS_MENU,   sf.IS_DELETED,   sf.OPERATOR,   sf.GMT_CREATE,   sf.GMT_MODIFY     from SYSTEM_FUNCTION sf    where ID=? and IS_DELETED != 1
+Task:write output to servlet outputstream with size:0KB. running time(millis)[344->344]=0 0%
+2018-01-23 16:57:53,940 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[438] in http://localhost:8080/neweast/artcomment/list.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select Count(t1.ID) from (SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                     ORDER BY a.GMT_CREATE DESC) t1
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (      SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                       ORDER BY a.GMT_CREATE DESC            ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/art/artComment/list.vm running time(millis)[427->437]=10 2%
+--Task:execute contain :/contain/pager.htm running time(millis)[432->437]=5 1%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[435->435]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[436->437]=1 0%
+Task:merge template:layout/default.vm running time(millis)[437->438]=1 0%
+Task:write output to servlet outputstream with size:15KB. running time(millis)[438->438]=0 0%
+2018-01-23 16:58:01,511 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[413] in http://localhost:8080/neweast/artcomment/list.htm [startDate=] [endDate=] [artName=] [buyerStockAccount=] [sellerStockAccount=] [pageNo=3] 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select Count(t1.ID) from (SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                     ORDER BY a.GMT_CREATE DESC) t1
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (      SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                       ORDER BY a.GMT_CREATE DESC            ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/art/artComment/list.vm running time(millis)[377->413]=36 8%
+--Task:execute contain :/contain/pager.htm running time(millis)[395->413]=18 4%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[407->407]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[407->412]=5 1%
+Task:merge template:layout/default.vm running time(millis)[413->413]=0 0%
+Task:write output to servlet outputstream with size:16KB. running time(millis)[413->413]=0 0%
+2018-01-23 16:58:04,541 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[228] in http://localhost:8080/neweast/artcomment/list.htm [startDate=] [endDate=] [artName=] [buyerStockAccount=] [sellerStockAccount=] [pageNo=4] 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[0->0]=0 0%
+Trace:prepareStatement: select Count(t1.ID) from (SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                     ORDER BY a.GMT_CREATE DESC) t1
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (      SELECT    a.ID,   a.ART_ID,   a.USER_ID,   a.REPLY_ID,   a.CONTENT,   a.GMT_CREATE,   a.GMT_MODIFY  ,b."NAME" ART_NAME,    t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT    FROM ART_COMMENT a     LEFT JOIN ART b ON b."ID" = a.ART_ID    LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID    LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID                                                                                       ORDER BY a.GMT_CREATE DESC            ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/art/artComment/list.vm running time(millis)[187->227]=40 17%
+--Task:execute contain :/contain/pager.htm running time(millis)[205->227]=22 9%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[219->219]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[220->227]=7 3%
+Task:merge template:layout/default.vm running time(millis)[228->228]=0 0%
+Task:write output to servlet outputstream with size:15KB. running time(millis)[228->228]=0 0%

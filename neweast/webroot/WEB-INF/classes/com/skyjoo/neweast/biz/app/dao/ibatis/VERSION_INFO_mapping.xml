@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="VERSION_INFO">
+    <typeAlias alias="versionInfo" type="com.skyjoo.neweast.biz.app.domain.VersionInfo"/>
+    
+    <resultMap id="versionInfoResultMap" class="versionInfo" >
+    	<result column="VERSION_ID" property="id"/>
+    	<result column="VERSION_NO" property="versionNo"/>
+    	<result column="VERSION_NUM" property="versionNum"/>
+    	<result column="TYPE" property="type"/>
+    	<result column="IS_FORCE" property="isForce"/>
+    	<result column="URL" property="url"/>
+    	<result column="REMARK" property="remark"/>
+    	<result column="SOFT_DESC" property="softDesc"/>
+    	<result column="SOFT_BACK_PIC" property="softBackPic"/>
+    	<result column="MIN_SUPPORT_VERSION" property="minSupportVersion"/>
+    </resultMap>
+    
+    <!-- 获取版本列表 -->
+    <select id="getVersionList"  resultMap="versionInfoResultMap">
+    	select 
+    		VERSION_ID,
+    		VERSION_NO,
+    		VERSION_NUM,
+    		TYPE,
+    		IS_FORCE,
+    		URL,
+    		REMARK,
+    		SOFT_DESC,
+    		SOFT_BACK_PIC,
+    		MIN_SUPPORT_VERSION
+    	from 
+    		VERSION_INFO
+    </select>
+
+    <!-- 获取版本列表 -->
+    <select id="getVersionById"  resultMap="versionInfoResultMap">
+    	select 
+    		VERSION_ID,
+    		VERSION_NO,
+    		VERSION_NUM,
+    		TYPE,
+    		IS_FORCE,
+    		URL,
+    		REMARK,
+    		SOFT_DESC,
+    		SOFT_BACK_PIC,
+    		MIN_SUPPORT_VERSION
+    	from 
+    		VERSION_INFO
+    	where VERSION_ID = #id#
+    </select>
+
+    <!-- 修改版本信息 -->
+    <update id="updateVersion" parameterClass="versionInfo">
+    	update 
+    		VERSION_INFO
+    	set
+    		VERSION_NO = #versionNo#,
+    		VERSION_NUM = #versionNum#,
+    		TYPE = #type#,
+    		IS_FORCE = #isForce#,
+    		URL = #url#,
+    		REMARK = #remark#,
+    		SOFT_DESC = #softDesc#,
+    		SOFT_BACK_PIC = #softBackPic#,
+    		MIN_SUPPORT_VERSION = #minSupportVersion#
+    	where
+    		VERSION_ID=#id#
+    </update>
+</sqlMap>

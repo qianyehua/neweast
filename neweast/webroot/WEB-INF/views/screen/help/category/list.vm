@@ -1,0 +1,45 @@
+   <div class="main-right" >        	
+  <div class="basic">            
+    <div class="tool">
+        <span><a href="add-init.htm?parentId=$!{pid}" class="bt_add" hidefocus="true">新增</a></span> 
+    </div>
+  	<div class="listbox" >
+   	<table class="list-table">
+      <tr>
+		<th width="25">父类目</th>
+		<th width="25%">标题</th>
+		<th width="5%">排序号</th>
+		<th width="20%">创建时间</th>
+		<th width="25%">操作 </th>
+      </tr>
+#if("$!list_cat"=="")
+	<tr>    
+    	<td colspan="5">
+        	<p class="ts">没有结果</p>
+        </td>
+    </tr>
+#end
+#foreach($cat in $!list_cat)
+      <tr #if($velocityCount%2==0) class="bg"   #end>
+        <td><p title="$!{cat.parentName}">$!stringUtils.abbreviate($!{cat.parentName},18)</p></td>
+		<td><p title="$!{cat.name}">$!stringUtils.abbreviate($!{cat.name},18)</p></td>
+        <td align="center" >$!{cat.ordering}</td>
+        <td align="center" >$dateTool.format('yyyy-MM-dd HH:mm:ss',$!{cat.gmtCreate})</td>
+        <td class="link-td" align="center"><a href="edit-init.htm?id=$!{cat.id}">修改</a>		
+        <a name="delete" onclick="#if($cat.canDeleted) return confirm('确定删除该类目吗？');
+		#else alert('该类目下存在子类目或内容，无法删除!');return false; #end" href="remove.htm?id=$!{cat.id}&pid=$!{pid}">删除</a>
+		#if($cat.catLevel<3)
+			<a href="list.htm?pid=$!{cat.id}">子类目</a>
+		#end	
+		</td>
+      </tr>
+#end
+    </table>
+    </div>
+#if($!pid!=0)
+	<div class="form-but"><!-- 表单按钮区 -->
+    	<input type="button" onclick="location='back.htm?pid=$!{pid}'" class="but" value="返回" /> 
+    </div><!-- 表单按钮区 END -->
+#end
+  </div>
+</div>

@@ -1,0 +1,80 @@
+<!-- 搜索框 -->
+<form id="artSceneForm" name="artSceneForm" action="scene_list.htm" method="get">
+<!--	<div class="search-box">
+        <table>
+            <tr>
+                <th>类目</th>
+                <td>
+				<select  id="categoryId" name="categoryId" class="inp" style="width:150px">
+					<option value="">请选择</option>
+        		#foreach(${menu} in $!{list_menus})
+        			<option value="${menu.id}" title="$!{menu.name}" #if($!{page.categoryId}==$!{menu.id}) selected="selected" #end>
+        				#foreach($str in $!stringUtils.split($!{menu.name},";") )
+        					#if($str=="&nbsp")
+        						&nbsp;&nbsp;
+        					#else
+        						$str
+        					#end
+        				#end			
+                    </option>
+        		#end
+                </select>
+                </td>
+				<td>	
+					<input type="submit" name="search" value="查询" class="but-61" />
+					<input type="reset" value="重置" onclick="window.location = 'scene_list.htm'" class="but-62"/>
+				</td>
+           </tr>    
+		</table>
+	</div> -->
+<!-- 搜索框 END --> 
+ <div class="basic">
+    <div class="tool">
+        <span><a href="$!{appServer}/art/artScene/scene_add.htm" class="bt_add" hidefocus="true">新增</a></span> 
+    </div>	
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="10%">编号</th>
+			<th width="45%">名称</th>
+			<th width="15%">状态</th>
+			<th width="20%">操作</th>
+        </tr>
+		#if($!{page} && ${page.totalCount} > 0)
+			#foreach($scene in $page.getData())
+				<tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+					<td>$!{scene.id}</td>
+					<td><p title="$!{scene.name}">$!{scene.name}</p></td>
+					<td>
+						#if($!{scene.isdisable} == 1)
+							正常
+							#else
+							弃用
+						#end
+					</td>
+					<td class="link-td">
+						<!--  <a href="$!{appServer}/art/artScene/detail.htm?id=${scene.id}">详情</a> -->
+						<a href="$!{appServer}/art/artScene/scene_edit.htm?id=${scene.id}">修改</a>
+						<!-- 不可用 -->
+						#if($!{scene.isdisable}==1)
+							<a href="$!{appServer}/art/artScene/scene_disable.htm?id=${scene.id}&isdisable=0">弃用</a>
+						#else
+							<a href="$!{appServer}/art/artScene/scene_disable.htm?id=${scene.id}&isdisable=1">可用</a>
+						#end
+						<!-- 不可用 -->
+					</td>
+				</tr>	
+			#end 
+        #else
+            <tr>
+                <td colspan="7">
+                    <p class="ts">没有结果</p>
+                </td>
+            </tr>
+        #end
+    </table>
+	 #pager($page, "artSceneForm")
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

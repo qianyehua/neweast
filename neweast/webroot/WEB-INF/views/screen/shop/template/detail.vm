@@ -1,0 +1,78 @@
+<script charset="utf-8" src="$!{imageServer}/scripts/kindeditor/kindeditor-all-min.js"></script>
+<script charset="utf-8" src="$!{imageServer}/scripts/kindeditor/kindeditor-zh_CN.js"></script>
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/editor.css" />
+<script  type="text/javascript">
+    KindEditor.ready(function(K) {
+			var options = {
+                filterMode : true,
+				height : '500px',
+				items : [],
+				readonlyMode : true
+            };
+            window.editor = K.create('#description',options);
+    });
+</script>
+
+<div class="basic">
+    <ul class="form-tab">
+        <li class="c">
+            <span>店铺模版详情</span>
+        </li>
+    </ul>
+    <div class="formbox">
+        <div class="clear"></div>
+        <div class="nr">
+            <div class="nr-t"></div>
+            <div class="nr-c">
+                <table class="c2">
+                    <tr >
+                        <th>模版标题：</th>
+                        <td>$!{template.title}</td>
+                    </tr>
+					<tr >
+						<th>模版提交日期： </th>
+						<td>$!dateTool.format('yyyy-MM-dd HH:mm:ss', $!{template.gmtCreate}) </td>
+                    </tr>
+					<tr >
+						<th>模版预览图：</th>
+						<td> </td>
+                    </tr>
+					#if($!{template.previewPic} && $template.previewPic ne '')
+                        #foreach ($element in $template.previewPic.split(",") )
+						<tr >
+							<td > </td>
+							<td > 
+                                <a href="$!{uploadServer}/$element" title="点击看大图" target="_blank">
+        							<img width="200" height="200" src="$!{uploadServer}/$element"/>
+                                </a>
+							</td>
+                        </tr>
+                        #end
+                    #end
+					<tr >
+						<th>简要说明：</th>
+						<td>
+							$!{template.desp}</td>
+                    </tr>
+					<tr >
+						<th>详细说明：</th>
+						<td > </td>
+                    </tr>
+					<tr >
+						<td colspan="2">
+							 #springBind("template.description")
+							 <textarea id="description" name="${status.expression}" >$!{status.value} </textarea>
+						</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="nr-b"></div>
+        </div>
+    </div>
+    <!-- 表单按钮区-->
+    <div class="form-but">
+        <input type="button" onclick="location.href='list.htm'" class="but" value="返回" />
+    </div>
+    <!-- 表单按钮区 END -->
+    <div class="clear"></div>
+</div>

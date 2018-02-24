@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ART_CATEGORY_PROPERTY">
+
+	<typeAlias alias="artCategoryProperty" type="com.skyjoo.neweast.biz.art.domain.ArtCategoryProperty"/>
+	<typeAlias alias="artCategoryProperty1" type="com.skyjoo.neweast.biz.art.domain.ArtCategoryProperty"/>
+	<typeAlias alias="artCategoryPropertyName" type="com.skyjoo.neweast.biz.art.domain.ArtCategoryPropertyName"/>
+	<typeAlias alias="categoryProperty" type="com.skyjoo.neweast.biz.art.domain.CategoryProperty"/>
+	<resultMap id="artCategoryProperty1ResultMap" class="artCategoryProperty1">
+		<result column="ID" property="id"/>
+		<result column="NAME" property="content"/>
+		<result column="TYPE" property="type"/>
+		<result column="ORDERING" property="ordering"/>
+		<result column="PROPERTY_TYPE" property="propertyType"/>
+		<result column="OPERATOR" property="operator"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>	
+	</resultMap>
+	
+	<resultMap id="artCategoryPropertyNameResultMap" class="artCategoryPropertyName">
+		<result column="ID" property="id"/>
+		<result column="NAME" property="name"/>
+		<result column="PROPERTY_TYPE" property="propertyType"/>
+		<result column="OPERATOR" property="operator"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>	
+	</resultMap>
+	
+	<resultMap id="categoryPropertyResultMap" class="categoryProperty">
+		<result column="ID" property="id"/>
+		<result column="CATEGORY_ID" property="categoryId"/>
+		<result column="PROPERTY_ID" property="propertyId"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>	
+	</resultMap>
+	
+	<resultMap id="artCategoryPropertyResultMap" class="artCategoryProperty">
+		<result column="ID" property="id"/>
+		<result column="NAME" property="content"/>
+		<result column="ORDERING" property="ordering"/>
+		<result column="TYPE" property="type"/>
+		<result column="PROPERTY_TYPE" property="propertyType"/>
+		<result column="CATEGORY_ID" property="categoryId"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>	
+	</resultMap>
+	
+	<!-- 根据类目id查询属性 -->
+	<select id="getCategoryPropertyByCatId" parameterClass="java.lang.Long" resultMap="artCategoryProperty1ResultMap">
+		select a.ID,
+		       a.NAME, 
+		       a.PROPERTY_TYPE,
+		       a.ORDERING,
+		       a.TYPE,
+		       b.CATEGORY_ID,
+		       a.OPERATOR,
+		       a.GMT_CREATE,
+		       a.GMT_MODIFY
+		  from ART_CATEGORY_PROPERTY a
+		  left join CATEGORY_X_PROPERTY b on b."PROPERTY_ID" = a.ID
+		 where b.CATEGORY_ID = #categoryId# 
+		 order by ORDERING , GMT_CREATE DESC
+	</select>
+	
+	<!-- 根据类目id查询属性 包含全局属性 -->
+	<select id="getAllCategoryPropertyByCatId" parameterClass="java.lang.Long" resultMap="artCategoryProperty1ResultMap">
+		select
+		acp.ID,
+		acp.NAME,
+		acp.TYPE,
+		cxp.CATEGORY_ID,
+		acp.ORDERING,
+		acp.PROPERTY_TYPE,
+		acp.OPERATOR,
+		acp.GMT_CREATE,
+		acp.GMT_MODIFY
+		from
+		ART_CATEGORY_PROPERTY acp
+		left join CATEGORY_X_PROPERTY cxp on
+		acp.ID = cxp.PROPERTY_ID
+		where
+			cxp.CATEGORY_ID=#categoryId# or cxp.CATEGORY_ID is null
+		order by acp.TYPE,acp.ORDERING
+	</select>
+	
+	<select id="getArtCategoryPropertyList" parameterClass="artCategoryProperty"
+		resultMap="artCategoryPropertyResultMap">
+		select
+		acp.ID,
+		acp.NAME,
+		acp.TYPE,
+		cxp.CATEGORY_ID,
+		acp.ORDERING,
+		acp.PROPERTY_TYPE,
+		acp.OPERATOR,
+		acp.GMT_CREATE,
+		acp.GMT_MODIFY
+		from
+		ART_CATEGORY_PROPERTY acp
+		left join CATEGORY_X_PROPERTY cxp on
+		acp.ID = cxp.PROPERTY_ID
+		order
+		by acp.TYPE,acp.ORDERING
+	</select>
+	
+	<!-- 查询全局属性 -->
+	<select id="getWholeProperty" resultMap="artCategoryProperty1ResultMap">
+		select a.ID,
+		       a.NAME, 
+		       a.TYPE,
+		       a.PROPERTY_TYPE,
+		       a.ORDERING,
+		       a.OPERATOR,
+		       a.GMT_CREATE,
+		       a.GMT_MODIFY
+      from ART_CATEGORY_PROPERTY a
+     where a.TYPE =1
+     order by ORDERING, GMT_CREATE DESC
+	</select>
+	<!-- 根据id查询未删除的属性!!!!!!!!! -->
+	<select id="getCategoryPropertyById" parameterClass="java.lang.Long" resultMap="artCategoryProperty1ResultMap">
+		 select a.ID,
+		       b.NAME, 
+		       b.PROPERTY_TYPE,
+		       a.ORDERING,
+		       a.PROPERTY_NAME_ID,
+		       a.CATEGORY_ID,
+		       a.OPERATOR,
+		       a.GMT_CREATE,
+		       a.GMT_MODIFY
+		  from ART_CATEGORY_PROPERTY1 a
+		  left join ART_CATEGORY_PROPERTY_NAME b on b."ID" = a.PROPERTY_NAME_ID
+		 where a.ID=#id#  
+	</select>
+	<!-- 根据id得到属性，包括已删除的属性!!!!!!!!!!! -->
+	<select id="getAllPropertybyId" parameterClass="java.lang.Long" resultMap="artCategoryProperty1ResultMap">
+		select a.ID,
+		       a.NAME, 
+		       a.PROPERTY_TYPE,
+		       a.ORDERING,
+		       a.TYPE,
+		       b.CATEGORY_ID,
+		       a.OPERATOR,
+		       a.GMT_CREATE,
+		       a.GMT_MODIFY
+		  from ART_CATEGORY_PROPERTY a
+		  left join CATEGORY_X_PROPERTY b on b.PROPERTY_ID = a.ID
+		 where a.ID=#propertyId#  
+	</select>
+	<select id="getNewCategoryPropertyById" resultMap="artCategoryProperty1ResultMap" parameterClass="map">
+		select a.ID,
+		       a.NAME, 
+		       a.PROPERTY_TYPE,
+		       a.ORDERING,
+		       a.TYPE,
+		       b.CATEGORY_ID,
+		       a.OPERATOR,
+		       a.GMT_CREATE,
+		       a.GMT_MODIFY
+		  from ART_CATEGORY_PROPERTY a
+		  left join CATEGORY_X_PROPERTY b on b.PROPERTY_ID = a.ID
+		 where a.ID=#propertyId#
+		 <isNotEmpty property="categoryId" prepend="and" >
+				 b.CATEGORY_ID = #categoryId#
+		</isNotEmpty>
+	</select>
+	<!-- 根据属性名id得到属性名对象-->
+	<select id="selectPropertyNameById" parameterClass="java.lang.Long" resultMap="artCategoryProperty1ResultMap">
+		select a.*
+		  from  ART_CATEGORY_PROPERTY a
+		 where a.ID=#nameId#
+	</select>
+	
+	<!-- 修改指定id的类目属性 -->
+	<update id="editCategoryProperty" parameterClass="artCategoryProperty1">
+		update 
+			ART_CATEGORY_PROPERTY a
+		set  a.GMT_MODIFY = sysdate
+		<isNotEmpty property="content" prepend=",">
+			a.NAME = #content#
+		</isNotEmpty>
+		<isNotEmpty property="operator" prepend=",">
+			a.OPERATOR = #operator#
+		</isNotEmpty>
+		<isNotEmpty property="ordering" prepend=",">
+			a.ORDERING = #ordering#
+		</isNotEmpty>
+		where
+		 	a.ID = #id#  
+	</update>
+	
+	<update id="editCategoryPropertyName" parameterClass="artCategoryProperty1">
+		update 
+			ART_CATEGORY_PROPERTY a
+		set  a.GMT_MODIFY = sysdate
+		<isNotEmpty property="name" prepend=",">
+			a.NAME = #content#
+		</isNotEmpty>
+		<isNotEmpty property="operator" prepend=",">
+			a.OPERATOR = #operator#
+		</isNotEmpty>
+		<isNotEmpty property="ordering" prepend=",">
+			a.ORDERING = #ordering#
+		</isNotEmpty>
+		where
+		 	a.ID = #id# 
+	</update>
+	<!-- 增加属性 -->
+	<!--  insert id="addCategoryProperty" parameterClass="artCategoryProperty">
+		insert into 
+			ART_CATEGORY_PROPERTY(ID,CONTENT,CATEGORY_ID,ORDERING,PROPERTY_TYPE,
+			OPERATOR,GMT_CREATE,GMT_MODIFY,IS_DELETED)
+		values
+			(SEQ_ART_CATEGORY_PROPERTY.nextval,#content#,#categoryId#,#ordering#,
+			#propertyType#,#operator#,sysdate,sysdate,0)
+	</insert-->
+	<!-- 增加属性名称 -->
+	<insert id="addCategoryPropertyName" parameterClass="artCategoryPropertyName" >
+	 <selectKey keyProperty="id" resultClass="java.lang.Long"> 
+	  select SEQ_ART_CATEGORY_PROPERTY.nextval from dual</selectKey>
+		insert into  	
+		ART_CATEGORY_PROPERTY_NAME(ID,NAME,PROPERTY_TYPE,GMT_CREATE,GMT_MODIFY)
+		values
+			(#id#,#name#,#propertyType#,sysdate,sysdate)
+	</insert>
+	<!-- 新增加属性 -->
+	<insert id="addnewCategoryProperty" parameterClass="artCategoryProperty1">
+	<selectKey keyProperty="id" resultClass="java.lang.Long"> 
+	 select SEQ_ART_CATEGORY_PROPERTY.nextval from dual</selectKey>
+		insert into 
+			ART_CATEGORY_PROPERTY(ID,NAME,TYPE,PROPERTY_TYPE,ORDERING,
+			OPERATOR,GMT_CREATE,GMT_MODIFY)
+		values
+			(#id#,#content#,#type#,#propertyType#,#ordering#,
+			#operator#,sysdate,sysdate)
+	</insert>
+	<!-- 增加属性类目关联 -->
+	<insert id="addCategoryProperty" parameterClass="categoryProperty">
+	<selectKey keyProperty="id" resultClass="java.lang.Long"> 
+	 select SEQ_CATEGORY_X_PROPERTY.nextval from dual</selectKey>
+		insert into 
+			CATEGORY_X_PROPERTY(ID,CATEGORY_ID,PROPERTY_ID,GMT_CREATE,GMT_MODIFY)
+		values
+			(#id#,#categoryId#,#propertyId#,sysdate,sysdate)
+	</insert>
+	<!-- 删除指定的属性 -->
+	<delete  id="removeCatecoryProperty" parameterClass="java.lang.Long" >
+		delete from ART_CATEGORY_PROPERTY where ID=#propertyId#
+	</delete >
+	
+	<!-- 删除指定的属性 -->
+	<delete  id="removeCatecoryPropertyName" parameterClass="java.lang.Long" >
+		delete from ART_CATEGORY_PROPERTY where ID=#nameId#
+	</delete >
+	
+	<!-- 删除指定的类目属性属性关联 -->
+	<delete  id="removeCategoryXProperty" parameterClass="map" >
+		delete from CATEGORY_X_PROPERTY where CATEGORY_ID=#categoryId# and  PROPERTY_ID=#propertyId#
+	</delete >
+	
+	<select id="selectPropertyIdByName" parameterClass="java.lang.String" resultClass="java.lang.Long">
+		select 
+			ID
+		from 
+			ART_CATEGORY_PROPERTY
+		where
+			NAME=#content# 
+	</select>
+	<select id="getartCategoryPropertyCount" resultClass="java.lang.Integer" parameterClass="map">
+		select count(1)
+		  from (select b.*,c.category_id from ART_CATEGORY_PROPERTY b
+        	left join CATEGORY_X_PROPERTY c on c.property_id = b.id 
+		         where b.ID = #nameId# and b.ID&lt;&gt;#propertyId#) a
+		 where a.CATEGORY_ID is null
+		    or a.CATEGORY_ID = #categoryId#
+	</select>
+	<select id="selectartCategoryPropertyCount" resultClass="java.lang.Integer" parameterClass="map">
+		select count(1)
+		  from (select b.*,c.category_id from ART_CATEGORY_PROPERTY b
+        	left join CATEGORY_X_PROPERTY c on c.property_id = b.id 
+        	where b.id=#nameId# ) a
+		 where 	 a.CATEGORY_ID is null
+		<isNotEmpty property="categoryId" prepend="or" >
+				 a.CATEGORY_ID = #categoryId#
+		</isNotEmpty>
+	</select>
+	
+	<select id="selectALLartCategoryPropertyCount" resultClass="java.lang.Integer" parameterClass="map">
+		select count(1)
+		  from (select b.* from ART_CATEGORY_PROPERTY b
+		         where b.ID = #nameId#) a
+	</select>
+	
+	<select id="getALLartCategoryPropertyCount" resultClass="java.lang.Integer" parameterClass="map">
+		select count(1)
+		  from (select b.* from ART_CATEGORY_PROPERTY b
+		         where b.ID = #nameId# and b.ID&lt;&gt;#propertyId#) a
+	</select>
+	
+	<select id="getartCountByPropertyId" resultClass="java.lang.Integer" parameterClass="java.lang.Long">
+	select count(1)
+      from ART a
+      left join ART_PROPERTY_VALUE b on b."ART_ID" = a.ID
+      where b.PROPERTY_ID=#propertyId# and (a.STATUS=0 or a.STATUS=1 or a.STATUS=3 or a.STATUS=5 or a.STATUS =6)
+	</select>	
+	
+	<select id="getartCountByCategoryProperty" resultClass="java.lang.Integer" parameterClass="map">
+	select count(1)
+      from ART a
+      left join ART_PROPERTY_VALUE b on b."ART_ID" = a.ID
+      where b.PROPERTY_ID=#propertyId# and a.STATUS in( 0,1,3,5,6) and a.CATEGORY_ID=#categoryId#
+	</select>	
+	
+	<select id="getOtherCategoryProperty" resultClass="java.lang.Integer" parameterClass="map">
+		select count(1)
+		  from (select b.*,c.category_id from ART_CATEGORY_PROPERTY b
+        		left join CATEGORY_X_PROPERTY c on c.property_id = b.id 
+		         where b.ID = #propertyId# and c.category_id&lt;&gt;#categoryId#) a
+	</select>
+	<select id="getArtValueCount" resultClass="java.lang.Integer" parameterClass="map">
+		select count(1)
+		  from (select b.*,c.property_id from ART b
+           		 left join CATEGORY_X_PROPERTY c on c.category_id = b.category_id
+ 				where c.property_id = #propertyId# and c.category_id&lt;&gt;#categoryId# and b.STATUS in( 0,1,3,5,6)) a
+	</select>
+	<update id="editCategoryXProperty" parameterClass="map">
+		update 
+			CATEGORY_X_PROPERTY a
+		set  a.GMT_MODIFY = sysdate,a.PROPERTY_ID=#newPropertyId#	
+		where a.PROPERTY_ID=#oldPropertyId# and a.CATEGORY_ID=#categoryId#	
+	</update>
+	
+	<select id="getLastModifyPropertyDate" resultClass="java.util.Date">
+		Select
+		max(c.GMT_MODIFY) GMT_MODIFY
+		From
+		(
+		Select Max(acp.GMT_MODIFY) GMT_MODIFY
+		From ART_CATEGORY_PROPERTY acp
+		Union
+		Select Max(apo.GMT_MODIFY)
+		GMT_MODIFY From ART_PROPERTY_OPTION apo
+		) c
+	</select>
+</sqlMap>

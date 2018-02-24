@@ -1,0 +1,58 @@
+<div class="listbox">
+	<form id="form1" action="list.htm" method="get">
+		#springBind("query.isRecommend")
+		<input type="hidden" name="$!{status.expression}" value="$!{status.value}"/>
+		#if(!$!{query.isRecommend})
+		<table  class="list-table" id="shopTab">
+			<tr>
+				<th width="35%">店铺名称</th>
+				<td>
+					#springBind("query.name")
+					<input name="$!{status.expression}" value="$!{status.value}"/>
+				</td>
+				<td>
+					<input type="submit" value="查询" class="but-61">
+				</td>
+			</tr>
+			<tr>
+				<th width="20%">卖家账号</th>
+				<td>
+					#springBind("query.email")
+					<input name="$!{status.expression}" value="$!{status.value}"/>
+				</td>
+			</tr>
+		</table>
+		#end
+	</form>
+	<table  class="list-table" id="shopTab">
+		<tr>
+			<th>店铺Logo</th>
+			<th>店铺名称</th>
+			<th>卖家账号</th>
+			<th>是否推荐</th>
+		</tr>
+		#if($!{query} && ${query.totalCount} > 0)
+			#foreach($shop in $query.getData())
+				<tr #if($!{velocityCount}%2 == 0) class="bg" #end id="$!{shop.shopId}" #if($shop.isClosed()) style="color:red" #end> 
+					<td><a href="$!{uploadServer}/$!{shop.logoPath}" title="点击看大图" target="_blank">
+						<img height="50" width="50"src="$!{uploadServer}/$!{shop.logoPath}?x-oss-process=image/resize,m_pad,h_50,w_50"/>
+					</a></td>
+					<td><p title="$!{shop.shopName}">$!stringUtils.abbreviate($!{shop.name},12)</p></td>
+					<td>$shop.email
+					</td>
+					<td> 
+					<input type="checkbox" onclick="parent.chRecommend($!{shop.id}, this);" #if($!{query.isRecommend})checked #end></input>
+					</td>
+				</tr>
+			#end
+		#else
+			<tr>
+				<td colspan="4">
+					<p class="ts">没有结果</p>
+				</td>
+			</tr>
+		#end
+	</table>
+	#pager($query, "form1")
+	<div class="clear"></div>
+</div>

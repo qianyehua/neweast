@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SYSTEM_USER">
+
+	<typeAlias alias="systemUser" type="com.skyjoo.neweast.biz.system.domain.SystemUser" />
+	
+	<resultMap id="systemUserResultMap" class="systemUser">
+		<result column="ID" property="id"/>
+		<result column="LOGIN_NAME" property="loginName"/>
+		<result column="REAL_NAME" property="realName"/>
+		<result column="PASSWORD" property="password"/>
+		<result column="EMAIL" property="email"/>
+		<result column="TEL" property="tel"/>
+		<result column="MOBILE" property="mobile"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+		<result column="OPERATOR" property="operator"/>
+		<result column="GMT_LAST_LOGIN" property="gmtLastLogin"/>
+		<result column="LAST_LOGIN_IP" property="lastLoginIp"/>
+		<result column="GMT_CURRENT_LOGIN" property="gmtCurrentLogin"/>
+		<result column="CURRENT_LOGIN_IP" property="currentLoginIp"/>
+		<result column="LOGIN_COUNT" property="loginCount"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		su.ID,
+		su.LOGIN_NAME,
+		su.REAL_NAME,
+		su.PASSWORD,
+		su.EMAIL,
+		su.TEL,
+		su.MOBILE,
+		su.GMT_CREATE,
+		su.GMT_MODIFY,
+		su.OPERATOR,
+		su.GMT_LAST_LOGIN,
+		su.LAST_LOGIN_IP,
+		su.GMT_CURRENT_LOGIN,
+		su.CURRENT_LOGIN_IP,
+		su.LOGIN_COUNT
+	</sql>
+	
+
+	<update id="update" parameterClass="systemUser">
+		update SYSTEM_USER su
+		set su.GMT_MODIFY = sysdate
+			<isNotEmpty property="loginName" prepend=",">
+				su.LOGIN_NAME = #loginName#
+			</isNotEmpty>
+			<isNotEmpty property="realName" prepend=",">
+				su.REAL_NAME = #realName#
+			</isNotEmpty>
+			<isNotEmpty property="password" prepend=",">
+				su.PASSWORD = #password#
+			</isNotEmpty>
+			<isNotEmpty property="email" prepend=",">
+				su.EMAIL = #email#,
+			</isNotEmpty>
+				su.TEL = #tel#,
+				su.MOBILE = #mobile#
+			<isNotEmpty property="operator" prepend=",">
+				su.OPERATOR = #operator#
+			</isNotEmpty>
+			<isNotEmpty property="gmtLastLogin" prepend=",">
+				su.GMT_LAST_LOGIN = #gmtLastLogin#
+			</isNotEmpty>
+			<isNotEmpty property="lastLoginIp" prepend=",">
+				su.LAST_LOGIN_IP = #lastLoginIp#
+			</isNotEmpty>
+			<isNotEmpty property="gmtCurrentLogin" prepend=",">
+				su.GMT_CURRENT_LOGIN = #gmtCurrentLogin#
+			</isNotEmpty>
+			<isNotEmpty property="currentLoginIp" prepend=",">
+				su.CURRENT_LOGIN_IP = #currentLoginIp#
+			</isNotEmpty>
+			<isNotEmpty property="loginCount" prepend=",">
+				su.LOGIN_COUNT = #loginCount#
+			</isNotEmpty>
+		where su.ID = #id#
+	</update>
+	
+	<select id="getSystemUsersCount" resultClass="int" parameterClass="SystemUser">
+        select count(id)
+		from
+		SYSTEM_USER su
+		    <dynamic prepend="where">
+		   <isNotEmpty prepend="and" property="loginName">
+					su.LOGIN_NAME like '%$loginName$%'
+		   </isNotEmpty>
+        </dynamic>
+	</select>
+	
+	<select id="getPaginatedSystemUser" resultMap="systemUserResultMap">
+		select *
+		from (
+		select t1.* , rownum linenum
+		from (
+	    select
+		<include refid="columsSql"/>
+       from system_user su
+       <dynamic prepend="where">
+		   <isNotEmpty prepend="and" property="loginName">
+					su.LOGIN_NAME like '%$loginName$%'
+		   </isNotEmpty>
+        </dynamic>
+			    order by
+			    	su.GMT_CREATE desc
+			) t1
+			where rownum &lt;= #endIndex#) t2
+		where t2.linenum &gt;= #beginIndex# 
+	</select>
+	
+	<select id="getByLoginName" parameterClass="java.lang.String" resultMap="systemUserResultMap">
+		select *
+		from SYSTEM_USER su
+		where su.LOGIN_NAME = #loginName#
+	</select>
+	
+	<!-- 检验用户名是否存在 -->
+	<select id="getCountByLoginName" parameterClass="systemUser" resultClass="int">
+		select
+		Count(su.ID)
+		from
+		SYSTEM_USER su
+		where
+		su.LOGIN_NAME = #loginName#
+		<isNotEmpty prepend="and" property="id">
+					su.ID &lt;&gt;#id#
+		</isNotEmpty>
+	</select>
+	
+	<select id="getSystemUserByUserId" parameterClass="long"
+		resultMap="systemUserResultMap">
+		select
+		<include refid="columsSql"/>
+		from
+		SYSTEM_USER su
+		where
+		su.ID = #userId#
+	</select>
+	
+	<delete id="removeSystemUserByUserId" >
+		delete from SYSTEM_USER su
+		where
+		su.ID = #UserId#
+   </delete>
+	
+	<update id="updateOwnInfo" parameterClass="SystemUser">
+		update SYSTEM_USER SU
+		Set
+		SU.GMT_MODIFY = sysdate
+		<isNotEmpty property="realName" prepend=",">
+			SU.REAL_NAME = #realName#
+		</isNotEmpty>
+        <isNotEmpty property="password" prepend=",">
+		  SU.PASSWORD = #password#
+        </isNotEmpty>
+         <isNotEmpty property="email" prepend=",">
+			SU.EMAIL = #email#,
+        </isNotEmpty>
+			SU.TEL = #tel#,
+			SU.MOBILE = #mobile#
+        <isNotEmpty property="operator" prepend=",">
+			SU.OPERATOR = #operator#
+		</isNotEmpty>
+		Where
+		SU.LOGIN_NAME = #loginName#
+   </update>
+   
+   <insert id="addSystemUser" parameterClass="SystemUser">
+		<selectKey keyProperty="id" resultClass="long">
+			select
+			SEQ_SYSTEM_USER.NEXTVAL from DUAL
+        </selectKey>
+		insert into SYSTEM_USER SU(<include refid="columsSql"/>)
+		values (#id#,#loginName#, #realName#, #password#, #email#,
+		#tel#, #mobile#, sysdate, sysdate,#operator#,
+		#gmtLastLogin#,#lastLoginIp#,#gmtCurrentLogin#,#currentLoginIp#,#loginCount#)
+	</insert>
+	
+	<update id="editSystemUserLoginInfoByLoginName" parameterClass="SystemUser">
+		update
+			SYSTEM_USER
+		set
+			GMT_MODIFY = sysdate,
+			OPERATOR = #operator#,
+			LAST_LOGIN_IP = CURRENT_LOGIN_IP,
+			GMT_LAST_LOGIN = GMT_CURRENT_LOGIN,
+			CURRENT_LOGIN_IP = #currentLoginIp#,
+			GMT_CURRENT_LOGIN = sysdate,
+			LOGIN_COUNT = LOGIN_COUNT + 1
+		where
+			LOGIN_NAME = #loginName#
+	</update>
+	<update id="initPassword" parameterClass="SystemUser">
+		update SYSTEM_USER SU
+		Set
+		SU.GMT_MODIFY = sysdate
+        <isNotEmpty property="password" prepend=",">
+		  SU.PASSWORD = #password#
+        </isNotEmpty>
+        <isNotEmpty property="operator" prepend=",">
+			SU.OPERATOR = #operator#
+		</isNotEmpty>
+		Where
+		SU.ID =#id#
+	</update>
+</sqlMap>

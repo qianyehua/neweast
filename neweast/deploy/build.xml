@@ -1,0 +1,257 @@
+<?xml version="1.0"  encoding="gb2312"?>
+
+<project name="neweast" basedir="." default="usage">
+	<property file="setup.properties" />
+	<!--<input addproperty="name" defaultValue="neweast" message="Please enter the package name:" />-->
+	<property name="name" value="neweast" />
+	<property name="root.dir" value=".." />
+	<property name="war.dir" value="${root.dir}/webroot" />
+	<property name="src.dir" value="${root.dir}/src" />
+	<property name="websrc.dir" value="${root.dir}/websrc" />
+	<property name="deploy.dir" value="${root.dir}/deploy" />
+	<property name="build.dir" value="${deploy.dir}/.classes" />
+	<property name="weblib.dir" value="${war.dir}/WEB-INF/lib" />
+	<property name="work.dir" value="${deploy.dir}/deploy" />
+	<!--<property name="dist.dir" value="${deploy.dir}/dist" />-->
+	<property name="dist.dir" value="${deploy.distPath}" />
+	<property name="conf.dir" value="${deploy.dir}/conf" />
+	<property name="webclass.dir" value="${work.dir}/WEB-INF/classes" />
+	<property name="servlet.api" value="${root.dir}/extlib" />
+	<property name="ant.api" value="${deploy.dir}/lib/ant">
+	</property>
+
+	<!-- 定义classpath，将ant的第三方包也引入进来 -->
+	<path id="master-classpath">
+		<fileset dir="${servlet.api}/">
+			<include name="servlet-api.jar" />
+		</fileset>
+		<fileset dir="${weblib.dir}/">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${ant.api}/">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<!-- 定义第三方的任务，主要包含ant的处理流程逻辑 -->
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath refid="master-classpath" />
+	</taskdef>
+
+	<target name="build-number" description="Increase build number">
+		<buildnumber file="./version.properties" />
+
+		<propertyfile file="./version.properties">
+			<entry key="build.date" operation="=" value="${build-date}" />
+			<entry key="build.date" type="date" operation="=" value="now" pattern="yyyy-MM-dd HH:mm:ss z" />
+		</propertyfile>
+	</target>
+
+	<target name="usage">
+		<tstamp>
+			<format property="today" pattern="yyyy-MM-dd hh:mm:ss" />
+		</tstamp>
+		<echo message="${today}" />
+		<echo message="" />
+		<echo message="product hundsun pay gateway website build file" />
+		<echo message="------------------------------------------------------" />
+		<echo message="" />
+		<echo message="Available targets are:" />
+		<echo message="" />
+		<echo message="clean    --> Clean output dirs" />
+		<echo message="build    --> Compile main Java sources and copy libraries" />
+		<echo message="deploy   --> Build the web application archive" />
+		<echo message="" />
+	</target>
+
+	<target name="confirmDeployType">
+		<if>
+			<not>
+				<isset property="mode" />
+			</not>
+			<then>
+				<property name="mode" value="normal" />
+				<echo message="Deploy mode:normal" />
+			</then>
+			<else>
+				<echo message="Deploy mode:${mode}" />
+			</else>
+		</if>
+	</target>
+
+	<target name="showProperties">
+		<echo message="" />
+		<echo message="==========Please confirm the config message=========" />
+		<echo message="" />
+		<echo message="DB Config:" />
+		<echo message="DB driver:${jdbc.driverClassName}" />
+		<echo message="DB url:${jdbc.url}" />
+		<echo message="DB username:${jdbc.username}" />
+		<echo message="DB password:${jdbc.password}" />
+		<echo message="" />
+	</target>
+
+	<target name="clean" description="Clean output dirs (build, weblib, dist)">
+		<echo message="" />
+		<echo message="================delete temp files=================" />
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+		<delete dir="${work.dir}" />
+		<echo message="==================delete finished===================" />
+	</target>
+
+
+	<target name="build" description="Compile main source tree java files into class files, generate jar files">
+		<echo message="=================build src file==================" />
+		<mkdir dir="${build.dir}" />
+		<javac destdir="${build.dir}" debug="true" deprecation="false" optimize="false" failonerror="true" encoding="GB18030">
+			<src path="${src.dir}" />
+			<classpath refid="master-classpath" />
+		</javac>
+		<copy todir="${build.dir}" preservelastmodified="true">
+			<fileset dir="${src.dir}">
+				<include name="**/*.xml" />
+				<include name="**/*.properties" />
+			</fileset>
+		</copy>
+		<echo message="===============build finish================" />
+	</target>
+
+	<target name="jar" description="Build the archive">
+		  <echo message="================start to package=================" />
+	      <mkdir dir="${dist.dir}" />
+
+	      <jar destfile="${dist.dir}/${name}.jar" basedir="${build.dir}" />
+	      <echo message="/*********************************************/" />
+		  <echo message="=================package finished=================" />
+	      <echo message="/*********************************************/" />
+	</target>
+
+	<target name="copyFiles" depends="showProperties,confirmDeployType" description="copy all file to dist dir">
+		<echo message="=================start to copy files==================" />
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${work.dir}" />
+		<!--copy all file excludes classes directory-->
+		<copy todir="${work.dir}/" preservelastmodified="true">
+			<fileset dir="${war.dir}">
+				<exclude name="WEB-INF/classes/" />
+				<!--include name="**/*.*" /-->
+			</fileset>
+		</copy>
+		<delete file="${work.dir}/WEB-INF/conf/server.properties" />
+		<delete file="${work.dir}/WEB-INF/conf/log4j.properties" />
+		<delete file="${work.dir}/WEB-INF/conf/mail.properties" />
+		<copy todir="${work.dir}/WEB-INF/conf/" preservelastmodified="false">
+			<fileset dir="${conf.dir}">
+				<include name="server.properties" />
+				<include name="log4j.properties" />
+				<include name="mail.properties" />
+			</fileset>
+		</copy>
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@jdbc.driverClassName@" value="${jdbc.driverClassName}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@jdbc.url@" value="${jdbc.url}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@jdbc.username@" value="${jdbc.username}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@jdbc.password@" value="${jdbc.password}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@jdbc.minIdle@" value="${jdbc.minIdle}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@jdbc.maxActive@" value="${jdbc.maxActive}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@jdbc.maxWait@" value="${jdbc.maxWait}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@system.devMode@" value="${system.devMode}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@app.server.host@" value="${app.server.host}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@app.server.port@" value="${app.server.port}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@image.server.host@" value="${image.server.host}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@image.server.port@" value="${image.server.port}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@upload.server.host@" value="${upload.server.host}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@inner.upload.server.host@" value="${inner.upload.server.host}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@upload.server.port.upload@" value="${upload.server.port.upload}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@upload.server.port.download@" value="${upload.server.port.download}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@web.stamp@" value="${web.stamp}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@vm.file.encoding@" value="${vm.file.encoding}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@web.encoding@" value="${web.encoding}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@web.contentType@" value="${web.contentType}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@cookie.aes.key@" value="${cookie.aes.key}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@cookie.aes.iv@" value="${cookie.aes.iv}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@app.domain@" value="${app.domain}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@performance.monitor.threshold@" value="${performance.monitor.threshold}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@system.password.salt@" value="${system.password.salt}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@trade.password.reset.seperator@" value="${trade.password.reset.seperator}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@trade.password.reset.key@" value="${trade.password.reset.key}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@bluefly.host@" value="${bluefly.host}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@bluefly.port@" value="${bluefly.port}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@bluefly.context@" value="${bluefly.context}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@greenbird.host@" value="${greenbird.host}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@greenbird.port@" value="${greenbird.port}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@greenbird.context@" value="${greenbird.context}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@recommend.shop.max@" value="${recommend.shop.max}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@recommend.art.max@" value="${recommend.art.max}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@upload.root.path@" value="${upload.root.path}" />
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@aliyun.bucket@" value="${aliyun.bucket}" />	
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@aliyun.accessKeyId@" value="${aliyun.accessKeyId}" />	
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@aliyun.accessKeySecret@" value="${aliyun.accessKeySecret}" />	
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@aliyun.endpoint@" value="${aliyun.endpoint}" />
+		<replace file="${work.dir}/WEB-INF/conf/log4j.properties" token="@log.level@" value="${log.level}" />
+		<replace file="${work.dir}/WEB-INF/conf/log4j.properties" token="@log.path@" value="${log.path}" />
+		<replace file="${work.dir}/WEB-INF/conf/mail.properties" token="@mail.host@" value="${mail.host}" />
+		<replace file="${work.dir}/WEB-INF/conf/mail.properties" token="@mail.username@" value="${mail.username}" />
+		<replace file="${work.dir}/WEB-INF/conf/mail.properties" token="@mail.password@" value="${mail.password}" />
+		<replace file="${work.dir}/WEB-INF/conf/mail.properties" token="@mail.smtp.auth@" value="${mail.smtp.auth}" />
+		<replace file="${work.dir}/WEB-INF/conf/mail.properties" token="@mail.smtp.timeout@" value="${mail.smtp.timeout}" />
+		<replace file="${work.dir}/WEB-INF/conf/mail.properties" token="@mail.from@" value="${mail.from}" />
+
+		<replace file="${work.dir}/WEB-INF/conf/server.properties" token="@article.html.filePath@" value="${article.html.filePath}" />
+		
+		<mkdir dir="${webclass.dir}/" />
+		<copy todir="${webclass.dir}/" preservelastmodified="true">
+			<fileset dir="${build.dir}">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+		<echo message="===============copy finished================" />
+	</target>
+
+
+	<target name="warfile" depends="copyFiles" description="Build the web application archive">
+		<echo message="================start to package=================" />
+		<war warfile="${dist.dir}/${name}.war" basedir="${work.dir}" webxml="${work.dir}/WEB-INF/web.xml">
+			<include name="*" />
+			<include name="images/**" />
+			<include name="scripts/**" />
+			<include name="styles/**" />
+			<include name="WEB-INF/*.*" />
+			<include name="WEB-INF/lib/**" />
+			<include name="WEB-INF/conf/**" />
+			<include name="WEB-INF/mail/**" />
+			<include name="WEB-INF/classes/**" />
+			<include name="WEB-INF/views/**" />
+			<include name="WEB-INF/web.xml" />
+			<exclude name="**/.*" />
+		</war>
+		<echo message="/*********************************************/" />
+		<echo message="package finished,please go to ${dist.dir} to get ${name}.war" />
+		<echo message="/*********************************************/" />
+	</target>
+
+	<target name="unwar" depends="warfile" description="unzip the war file">
+		<echo message="================start to unzip the package=================" />
+		<unwar src="${dist.dir}/${name}.war" dest="${dist.dir}/${name}-war" />
+		<echo message="================unzip finished========================" />
+	</target>
+
+
+	<target name="tar" depends="warfile" description="zip the war file to linux file">
+		<echo message="================start to gzip the package=================" />
+		<tar destfile="${dist.dir}/${name}.tar.gz" compression="gzip">
+			<tarfileset dir="${work.dir}">
+				<include name="**/**"/>
+			</tarfileset>
+		</tar>
+		<echo message="================gzip finished==========================" />
+	</target>
+
+	<target name="del" description="Clean output dirs (build, weblib, dist)">
+		<delete dir="${build.dir}" />
+		<delete dir="${work.dir}" />
+	</target>
+
+	<target name="deploy" depends="clean,build,warfile,unwar,tar,del" description="Clean,build,warfile" />
+	<target name="deployJar" depends="clean,build,jar,del" description="Clean,build,jar" />
+</project>

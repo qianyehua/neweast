@@ -1,0 +1,59 @@
+<script >
+$('document').ready(function(){
+	$('#form1').validate({
+		rules:{
+    		memo:{
+    			required: true
+    		}
+    	},
+    	messages:{
+    		memo:{
+    			required: "请填写关闭原因"
+    		}
+    	}
+	});
+
+});
+</script>
+<div class="basic">
+    <ul class="form-tab">
+        <li class="c">
+            <span>关闭店铺</span>
+        </li>
+    </ul>
+	<form id="form1" action="close.htm" method="post">
+        <div class="formbox">
+            <div class="clear"></div>
+            <div class="nr">
+                <div class="nr-t"></div>
+                <div class="nr-c">
+                    <table class="c2">
+                        <tr >
+                            <th>店铺名称：</th>
+                            <td>
+    							#springBind("shop.id")
+    							<input type="hidden" name="$!{status.expression}" value="$!{status.value}"/>
+    							$!{shop.name}
+    						</td>
+                        </tr>
+    					<tr>
+    						<th>关闭原因：</th>
+    						<td>
+    							#springBind("shop.memo")
+    							<textarea name="$!{status.expression}" class="maxlength_80" style="width:270px;height:70px"></textarea>
+    						</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="nr-b"></div>
+            </div>
+        </div>
+        <!-- 表单按钮区-->
+        <div class="form-but">
+    		<input type="submit" class="but" value="强制关闭" />
+            <input type="button" onclick="location.href='list.htm'" class="but" value="返回" />
+        </div>
+        <!-- 表单按钮区 END -->
+        <div class="clear"></div>
+    </form>
+</div>

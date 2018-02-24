@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="tradeLogistic">
+	<typeAlias alias="tradeLogistic"
+		type="com.skyjoo.neweast.biz.trade.domain.TradeLogistic" />
+
+	<resultMap class="tradeLogistic" id="tradeLogisticResultMap">
+		<result property="id" column="ID" />
+		<result property="orderId" column="ORDER_ID" />
+		<result property="tradeNo" column="TRADE_NO" />
+		<result property="direction" column="DIRECTION" />
+		<result property="refundId" column="REFUND_ID" />
+		<result property="type" column="TYPE" />
+		<result property="fund.cent" column="FUND" />
+		<result property="company" column="COMPANY" />
+		<result property="logisticNo" column="LOGISTIC_NO" />
+		<result property="name" column="NAME" />
+		<result property="country" column="COUNTRY" />
+		<result property="province" column="PROVINCE" />
+		<result property="city" column="CITY" />
+		<result property="address" column="ADDRESS" />
+		<result property="postCode" column="POST_CODE" />
+		<result property="mobile" column="MOBILE" />
+		<result property="deliverTime" column="DELIVER_TIME" />
+		<result property="confirmReceive" column="CONFIRM_RECEIVE" />
+		<result property="gmtCreate" column="GMT_CREATE" />
+		<result property="gmtModify" column="GMT_MODIFY" />
+	</resultMap>
+
+	<sql id="columsSql">
+		tg.ID,
+		tg.ORDER_ID ,
+		tg.TRADE_NO ,
+		tg.DIRECTION ,
+		tg.REFUND_ID,
+		tg.TYPE ,
+		tg.FUND ,
+		tg.COMPANY ,
+		tg.LOGISTIC_NO ,
+		tg.NAME ,
+		tg.COUNTRY ,
+		tg.PROVINCE ,
+		tg.CITY ,
+		tg.ADDRESS ,
+		tg.POST_CODE ,
+		tg.MOBILE ,
+		tg.DELIVER_TIME ,
+		tg.CONFIRM_RECEIVE ,
+		tg.GMT_CREATE,
+		tg.GMT_MODIFY
+	</sql>
+	
+	<select id="select" resultMap="tradeLogisticResultMap">
+		select <include refid="columsSql"/>
+		from TRADE_LOGISTIC tg
+		where tg.ORDER_ID = #orderId# and tg.DIRECTION = #direction#
+		<isNotEmpty prepend="and" property="refundId">
+			tg.REFUND_ID = #refundId#
+		</isNotEmpty>
+	</select>
+
+</sqlMap>

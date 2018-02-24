@@ -1,0 +1,140 @@
+<link href="$!{imageServer}/styles/validate.css" rel="stylesheet" type="text/css" />
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<script type="text/javascript">
+jQuery.validator.addMethod("isEnglish", function(value, element) {         
+    return this.optional(element) || /^[A-Za-z]+$/.test(value);         
+}, "请输入4位英文字母");  
+jQuery(function(){
+	$("#addForm").validate(
+	{
+		/*自定义验证规则*/
+		rules:{
+			artCode:{required:true,maxlength:4,minlength:4,isEnglish:true}
+		},
+		messages:{
+			artCode:{
+				maxlength:"请输入4位英文字母",
+				minlength:"请输入4位英文字母",
+				isEnglish:"请输入4位英文字母"
+			}
+		}
+	});
+})   
+</script>
+<script type="text/javascript">
+        function JudgeArtCode()
+        {
+        	jQuery.ajax({
+            type:"post",
+            url:"$!{appServer}/checkArtCode.htm",<!-- 待修改 -->
+            dataType:"html",
+            data:"artCode="+jQuery("#artCode").val()+"&categoryId=$!{categoryId}",
+            beforeSend:function(XMLHttpRequest)
+                {
+                    //jQuery("#showResult").text("正在查询");
+                },
+            success:function(msg)
+                {   
+            	jQuery("#showResult").html("");
+                    if(msg == "该前缀已经存在"){
+                    	jQuery("#showResult").html(msg);
+                    	jQuery("#sub").attr("disabled", true); 
+                    }else{
+                    	jQuery("#sub").attr("disabled", false);
+                    }
+                    jQuery("#showResult").css("color","red");
+                },
+           complete:function(XMLHttpRequest,textStatus)
+                {
+                    //隐藏正在查询图片
+                },
+          error:function()
+               {
+                    //错误处理
+               }
+            });
+        }
+
+        function JudgeOptionName()
+        {
+            jQuery.ajax({
+            type:"post",
+            url:"$!{appServer}/checkOptionContent.htm",
+            dataType:"html",
+            data:"content="+jQuery("#content").val()+"&propertyId=$!{propertyId}",
+            beforeSend:function(XMLHttpRequest)
+                {
+                   // jQuery("#showResult").text("正在查询");
+                },
+            success:function(msg)
+                {   
+            		jQuery("#showResult").html("");            		
+                    if(msg == "该前缀已经存在"){
+                    	jQuery("#showResult").html(msg);
+                    	jQuery("#sub").attr("disabled", true); 
+                    }
+                    if(msg == "该前缀可以使用"){
+                    	jQuery("#sub").attr("disabled", false);
+                    }
+                    jQuery("#showResult").css("color","red");
+                },
+           complete:function(XMLHttpRequest,textStatus)
+                {
+                    
+                },
+          error:function()
+               {
+                   
+               }
+            });
+        }    
+</script>
+<div class="main-right">
+ 
+            <div class="basic">
+            <ul class="form-tab">
+        <li class="c">
+            <span>前缀修改</span>
+        </li>
+    </ul>
+<div class="formbox">
+					
+                    <div class="clear"></div>
+
+<form id="addForm" name="addForm" action="$!{appServer}/art/artCategory/artCode_edit.htm?categoryId=$!{categoryId}" method="post" >
+	 <div class="nr">
+                    	<div class="nr-t"></div>
+                        
+                        <div class="nr-c">
+
+<table class="c2">
+<tr>
+	<th width="30%"><font color="red">*</font>请输入修改后的艺术品前缀</th>
+	<td>#springBind("category.artCode")
+		<input name="artCode" id="artCode" type="text" maxlength="4" class="inp required" value="$!{artCode}" onkeyup="JudgeArtCode()"/>
+		<span id="showResult"></span>
+		
+	</td>
+</tr>
+
+</table>
+ </div>
+                        
+                        <div class="nr-b"></div>
+                    </div>
+<div class="form-but"><!-- 表单按钮区 -->
+                    
+                    	<input id="sub" name="sub" type="submit" class="but" value="保存" />
+                    	<input type="button" onclick="history.go(-1)" class="but" value="返回" />
+                        
+                    </div><!-- 表单按钮区 END -->
+                                        
+                    <div class="clear"></div>
+                    	
+</form>
+	</div>
+ 
+                <div class="clear"></div>
+                
+            </div>
+</div>

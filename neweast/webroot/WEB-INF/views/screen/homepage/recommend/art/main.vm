@@ -1,0 +1,43 @@
+<script >
+function chRecommend(id, obj) {
+	jQuery.ajax({
+		url: appServer + "/homepage/recommend/art/chRecommend.htm",
+		data: "artId=" + id + "&isRecommend=" + obj.checked,
+		async: false,
+		dataType: 'json',
+		success: function(result){
+			if(result.success) {
+				refresh();
+			} else {
+				obj.checked = !obj.checked;
+				alert(result.message);
+			}
+			
+		}
+	});
+}
+
+function refresh() {
+	$('#iframe1').attr('src', "$!{appServer}/homepage/recommend/art/list.htm?" + $(window.frames["iframe1"].document).find('#form1').serialize());
+	$('#iframe2').attr('src', "$!{appServer}/homepage/recommend/art/list.htm?" + $(window.frames["iframe2"].document).find('#form1').serialize());
+}
+</script>
+<div class="listbox">
+	<table  class="list-table" id="artTab">
+		<tr>
+			
+				<th width="30%">ÒÑÍÆ¼ö</th>
+				<th width="70%">Î´ÍÆ¼ö</th>
+			
+		</tr>
+		<tr>
+			<td>
+				<iframe id="iframe1" name="iframe1" src="$!{appServer}/homepage/recommend/art/list.htm?isRecommend=true" width="400px" height="850px" frameborder="0"></iframe>
+			</td>
+			<td>
+				<iframe id="iframe2" name="iframe2" src="$!{appServer}/homepage/recommend/art/list.htm?isRecommend=false"width="400px" height="850px"   frameborder="0"></iframe>
+			</td>
+		</tr>
+	</table>
+	<div class="clear"></div>
+</div>

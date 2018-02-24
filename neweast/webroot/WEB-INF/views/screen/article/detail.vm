@@ -1,0 +1,87 @@
+</script>
+		
+<div class="basic">
+    <ul class="form-tab">
+        <li class="c">
+            <span>文章详情</span>
+        </li>
+    </ul>
+    <form id="form1" action="list.htm" method="post">
+		
+        <div class="formbox">
+            <div class="clear"></div>
+            <div class="nr">
+                <div class="nr-t"></div>
+                <div class="nr-c">
+                    <table class="c2">
+						<tr >
+							<th>文章名称：</th>
+							<td>$!{article.articleTitle}</td>			      
+                        </tr>
+						<tr >
+							<th>所属媒体：</th>
+							<td>$!{article.mediaName}</td>
+                        </tr>
+						<tr >
+							<th>所属专题：</th>
+							<td>$!{article.subjects}</td>
+                        </tr>
+						<tr >
+							<th>文章摘要：</th>
+							<td>$!{article.articleAbstract}</td>
+                        </tr>
+							<tr >
+							<th>文章图片：</th>
+							<td>
+								<a href="$!{uploadServer}/$!{article.articlePic}" title="点击看大图" target="_blank">
+									<img width="100" height="100" src="$!{uploadServer.get($!{article.articlePic})}?x-oss-process=image/resize,m_pad,h_100,w_100"/>
+                                </a>
+							</td>
+                        </tr>
+						<tr >#if($!{article.transitionPic})
+							<th>过度图片：</th>
+							<td>
+								<a href="$!{uploadServer}/$!{article.transitionPic}" title="点击看大图" target="_blank">
+									<img width="100" height="100" src="$!{uploadServer.get($!{article.transitionPic})}?x-oss-process=image/resize,m_pad,h_100,w_100"/>
+                                </a>
+							</td>
+							#end
+                        </tr>
+                        <tr>
+                            <th>原文链接：</th>
+                            <td>$!{article.originalUrl}</td>
+                        </tr>
+						<tr>
+                            <th>文章状态：</th>
+                            <td>#if($!{article.status} == 0)待审核#elseif($!{article.status} == -1)审核驳回#else 正常#end</td>
+                        </tr>
+						<tr>
+                            <th>创建时间：</th>
+                            <td>$!{dateTool.format($!{article.gmtCreate})} </td>
+                        </tr>
+						<tr>
+                            <th>修改时间：</th>
+                            <td> $!{dateTool.format($!{article.gmtModify})}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="nr-b"></div>
+            </div>
+        </div>
+        <!-- 表单按钮区-->
+        <div class="form-but">
+          #if($!{artise.ifrecommend}==1&&$!{artise.status}==1) <input type="button" onclick="location.href='$!{appServer}/artise/recommend.htm?artiseId=${artise.artiseId}'" class="but" value="取消推荐" />
+			<input type="button" onclick="location.href='list.htm'" class="but" value="返回" />
+			#elseif($!{artise.status}==1) <input type="button" onclick="location.href='$!{appServer}/artise/recommend.htm?artiseId=${artise.artiseId}'" class="but" value="推荐首页" />
+			<input type="button" onclick="location.href='list.htm'" class="but" value="返回" />
+			#else  <input type="button" onclick="location.href='list.htm'" class="but" value="返回" />
+		#end
+		</div>
+        <!-- 表单按钮区 END -->
+        <div class="clear"></div>
+    </form>
+</div>
+
+
+
+</script>

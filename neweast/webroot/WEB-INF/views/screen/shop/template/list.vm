@@ -1,0 +1,91 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+    jQuery( function() {
+        $('.date-pick').datePicker( {clickInput : true, startDate : "2010-01-01"});
+	});
+</script>
+<!-- 搜索框 -->
+<form id="queryForm" name="queryForm" action="list.htm" method="post">
+	<div class="search-box"">
+        <table>
+            <tr>
+				<th>标题</th>
+                <td>
+					#springBind("query.title")
+					<input type="text" name="$!{status.expression}" value="$!{status.value}" onKeyUp="this.value=this.value.trim()" class="inp" style="width:140px">
+				</td>
+				<th>申请日期</th>
+                <td >
+					#springBind("query.gmtCreateStart")
+					<input type="text" name="$!{status.expression}" value="$!{status.value}" readonly="readonly" size="10" class="date-pick" style="width:85px;"/>
+                    -
+					#springBind("query.gmtCreateEnd")
+                    <input type="text" name="$!{status.expression}" value="$!{status.value}" readonly="readonly"  size="10" class="date-pick" style="width:85px;"/>
+                </td>
+				
+				<th>状态</th>
+				<td>
+					#springBind("query.status")
+					<select id="status" name="$!{status.expression}">
+						<option value="" >请选择</option>
+						<option value="0" #if($!{query.status} == 0 ) selected #end>未发布</option>
+						<option value="1" #if($!{query.status} == 1 ) selected #end>正常</option>
+						<option value="-1" #if($!{query.status} == -1 ) selected #end>已删除</option>
+					</select>
+                </td>
+				<td >
+					<input type="submit" name="search" value="查询" class="but-61" />
+                </td>
+			</tr>
+		</table>
+	</div>
+<!-- 搜索框 END -->
+ <div class="basic">
+    <div class="tool">
+        <span>
+            <a href="add-init.htm" class="bt_add"  hidefocus="true" >新增</a>
+        </span>
+    </div>
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="">模版标题</th>
+			<th width="">简要说明 </th>
+			<th width="">模版提交日期</th>
+			<th width="">状态</th>
+			<th width="170px">操作</th>
+        </tr>
+		#if($!{query.getData()} && $!{query.getData().size()} > 0)
+            #foreach($item in $!query.getData())
+                <tr #if($!{velocityCount}%2 == 0) class="bg" #end align="center">
+						<td >$!{item.title}</td>
+                        <td >$!{item.desp}</td>
+						<td >$!dateTool.format('yyyy-MM-dd HH:mm:ss', $!{item.gmtCreate})</td>
+						<td >#if($!{item.status}==0)未发布
+							 #elseif($!{item.status}==1)正常
+							 #elseif($!{item.status}==-1)已删除
+							 #end
+						</td>
+                        <td class="link-td">
+							 <a href="detail.htm?id=$!{item.id}" >查看</a>
+							 &nbsp;&nbsp;&nbsp;&nbsp;
+							 #if($!{item.status}!=-1)
+								<a href="remove.htm?id=$!{item.id}" >删除</a>
+							 #end
+						</td>
+                </tr>
+            #end
+        #else
+            <tr>
+                <td colspan="6">
+                    <p class="ts">没有结果</p>
+                </td>
+            </tr>
+        #end
+    </table>
+	 #pager($query, "queryForm")
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

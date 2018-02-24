@@ -1,0 +1,133 @@
+
+</script>
+   <div class="main-right" >        	
+  <div class="basic">  
+  	 <ul class="form-tab">
+        <li class="c">
+            <span>文章审核</span>
+        </li>
+    </ul>
+    <form id="checkForm" name="checkForm" action="$!{appServer}/article/check.htm?articleId=$!{article.id}" method="post">        
+		<input type="hidden" name="id"  id="id" value="$!{article.id}">
+  	
+	  <div class="formbox">
+            <div class="clear"></div>
+            <div class="nr">
+                <div class="nr-t"></div>
+                <div class="nr-c">
+                    <table class="c2">
+						<tr >
+							<th>文章名称：</th>
+							<td>$!{article.articleTitle}</td>			      
+                        </tr>
+						<tr >
+							<th>所属媒体：</th>
+							<td>$!{article.mediaName}</td>
+                        </tr>
+						<tr >
+							<th>所属专题：</th>
+							<td>$!{article.subjects}</td>
+                        </tr>
+						<tr >
+							<th>文章摘要：</th>
+							<td>$!{article.articleAbstract}</td>
+                        </tr>
+							<tr >
+							<th>文章图片：</th>
+							<td>
+								<a href="$!{uploadServer}/$!{article.articlePic}" title="点击看大图" target="_blank">
+									<img width="100" height="100" src="$!{uploadServer.get($!{article.articlePic})}?x-oss-process=image/resize,m_pad,h_100,w_100"/>
+                                </a>
+							</td>
+                        </tr>
+						<tr >#if($!{article.transitionPic})
+							<th>过度图片：</th>
+							<td>
+								<a href="$!{uploadServer}/$!{article.transitionPic}" title="点击看大图" target="_blank">
+									<img width="100" height="100" src="$!{uploadServer.get($!{article.transitionPic})}?x-oss-process=image/resize,m_pad,h_100,w_100"/>
+                                </a>
+							</td>
+							#end
+                        </tr>
+                        <tr>
+                            <th>原文链接：</th>
+                            <td>$!{article.originalUrl}</td>
+                        </tr>
+						<tr>
+                            <th>文章状态：</th>
+                            <td>#if($!{article.status} == 0)待审核#elseif($!{article.status} == -1)审核驳回#else 正常#end</td>
+                        </tr>
+						<tr>
+                            <th>创建时间：</th>
+                            <td>$!{dateTool.format($!{article.gmtCreate})} </td>
+                        </tr>
+						<tr>
+                            <th>修改时间：</th>
+                            <td> $!{dateTool.format($!{article.gmtModify})}</td>
+                        </tr>
+						<tr>
+							<td width="20%" align="right">备注：</td>
+							<td width="80%">
+								#springBind("article.memo")
+								<textarea rows="6" cols="40" maxlength="200" id="memo" name="memo"></textarea><span></span>
+							</td>
+						</tr>
+						#if($!{articleRecommendArt} && ${articleRecommendArt.size()} > 0)
+							<tr>
+								<th>推广艺术品列表：</th>
+							</tr>
+							<tr>
+								<table  class="list-table">
+									<tr>
+										<th width="20%">艺术品名称</th>
+										<th width="20%">艺术家</th>
+										<th width="60%">推广介绍</th>
+									</tr>
+							#foreach($art in ${articleRecommendArt})
+									<tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+										<td align="center">$!{art.artName}</td>
+										<td align="center">$!{art.artistName}</td>
+										<td align="center">$!{art.introduction}</td>
+									</tr>
+							#end
+								</table>
+							</tr>
+						#end
+                    </table>
+                </div>
+                <div class="nr-b"></div>
+            </div>
+        </div>
+	<div class="form-but" style="margin-bottom:30px;"><!-- 表单按钮区 -->
+		<input type="button"  class="but" value="通过" onclick="canBlank(1)"/>
+		<input type="button" id="sub" name="sub" class="but" value="驳回" onclick="canBlank(-1)" />
+<!--     	<input type="button" onclick="location='$!{appServer}/art/check_list.htm'" class="but" value="返回" /> -->
+		<input type="button" id="back" name="back" class="but" value="返回" />
+    </div><!-- 表单按钮区 END -->
+</form>
+  </div>
+</div>
+
+<script >
+
+
+
+function canBlank(checkResult){
+	if(checkResult == 1){
+		var nums = $("input[name='title']").length;		
+    		jQuery("#checkForm").attr("action","$!{appServer}/article/check.htm?articleId=${article.articleId}&checkResult=1")
+    		jQuery("#checkForm").submit();	
+	}else{
+		if(jQuery("#memo").val().trim() == ""){
+			alert("审核不通过时必须填写备注");
+			return;
+		}else{
+			jQuery("#checkForm").attr("action","$!{appServer}/article/check.htm?articleId=${article.articleId}&checkResult=-1")
+			jQuery("#checkForm").submit();
+		}	
+	}	
+}
+</script>
+
+</script>
+		

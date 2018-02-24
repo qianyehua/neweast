@@ -1,0 +1,114 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+     var num = 0;
+     function verify(flag, id) {
+             num ++;
+             if(num <= 1){
+        	    var url = "verify.htm?id=" + id + "&flag=" + flag;
+       		    document.location = url;
+        		}
+         }
+         jQuery( function() {
+         //设置日期
+         $('.date-pick').datePicker( {
+         clickInput : true,
+         startDate : "2010-01-01"
+         });
+         });
+</script>
+<!-- 搜索框 -->
+<form id="messageForm" name="messageForm" action="list.htm" method="get">
+	<div class="search-box">
+        <input type="hidden" name="rececjId" id="rececjId" value=""/>
+        <table>
+        	<tr>
+        		<th>发件人</th>
+        		<td>#springBind("message.messageSender")
+        			<input type="text" name="messageSender" id="messageSender" value="$!{page.messageSender}" class="inp"/>
+        		</td>
+        		<th>收件人</th>
+        		<td>#springBind("message.addressee")
+        			<input type="text" name="addressee" id="addressee"  value="$!page.addressee" class="inp"/>
+        		</td>
+        		<th>状态</th>
+        		<td>#springBind("message.replyStatus")
+        			<select id="replyStatus" name="replyStatus">
+        				<option value="-1">请选择</option>
+        				#foreach($replyStatus in ${replyStatusMap.keySet()})
+        					<option value="$replyStatus" #if($page.replyStatus == $replyStatus) selected="selected" #end>$replyStatusMap.get($replyStatus)</option>
+        				#end
+        			</select>
+        		</td>
+        	</tr>
+        	<tr>
+        		<th>发件时间</th>
+        		<td>#springBind("message.sendStart")
+        			<input type="text" id="sendStart" name="sendStart" readonly="readonly" size="10" value="$!{dateTool.format('yyyy-MM-dd',$!{page.sendStart})}" class="date-pick" />
+        			-
+        			#springBind("message.sendEnd")
+        			<input type="text" id="sendEnd" name="sendEnd" readonly="readonly" size="10" value="$!{dateTool.format('yyyy-MM-dd',$!{page.sendEnd})}" class="date-pick" />
+        		</td>
+        		<th>回复时间</th>
+        		<td>
+        			#springBind("message.replyStart")
+        			<input type="text" id="replyStart" name="replyStart" readonly="readonly" size="10" value="$!{dateTool.format('yyyy-MM-dd',$!{page.replyStart})}" class="date-pick" />
+        			-
+        			#springBind("message.replyEnd")
+        			<input type="text" id="replyEnd" name="replyEnd" readonly="readonly" size="10" value="$!{dateTool.format('yyyy-MM-dd',$!{page.replyEnd})}" class="date-pick" />
+        		</td>
+        		<th>
+        			<input type="submit" name="search" value="查询" class="but-61" />
+        		</th>
+        		<td>
+					<input type="reset" value="重置" onclick="window.location = 'list.htm'" class="but-62"/>
+        		</td>
+        	</tr>
+</table>
+</div>
+<!-- 搜索框 END -->
+ <div class="basic">
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="15%">发件人</th>
+			<th width="15%">收件人</th>
+			<th width="20%">发件时间</th>
+			<th width="20%">回复时间</th>
+			<th width="20%">标题</th>
+			<th width="30%">操作</th>
+			
+        </tr>
+		#if($!{page} && ${page.totalCount} > 0)
+			#foreach($internal in $page.getData())
+				<tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+					<td>#if($!{internal.addressType}==0)  $!{internal.messageSender}  #else $!{internal.adminLoginName} #end</td>
+					<td>#if($!{internal.addressType}==0)  客户服务   #else $!{internal.addressee} #end</td>
+					<td>$!{dateTool.format($!{internal.sendDate})} </td>
+					<td>$!{dateTool.format($!{internal.replyDate})} </td>
+					<td>$!{internal.theme}</td>
+					<td class="link-td">
+						#if($!{internal.addressType} != 2)
+							#if($!{internal.replyStatus} == 0 )
+								<a href="$!{appServer}/internalMessage/replyIni.htm?messageId=$!{internal.id}">回复</a>
+							#else
+								已回复
+							#end
+						#end
+					</td>
+				</tr>	
+			#end
+		#end    
+        #if(${page.totalCount} == 0)
+                    <tr>
+                        <td colspan="7">
+                            <p class="ts">没有结果</p>
+                        </td>
+                    </tr>
+        #end
+    </table>
+	 #pager($page, "messageForm")
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

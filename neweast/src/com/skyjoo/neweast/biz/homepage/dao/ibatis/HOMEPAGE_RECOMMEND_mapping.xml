@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="HOMEPAGE_RECOMMEND">
+	<typeAlias alias="homepageRecommend" type="com.skyjoo.neweast.biz.homepage.domain.HomepageRecommend" />
+	
+	<resultMap id="homepageRecommendResultMap" class="homepageRecommend">
+		<result column="ID" property="id"/>
+		<result column="ART_ID" property="artId"/>
+		<result column="STATUS" property="status"/>
+		<result column="OPERATOR" property="operator"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+		<result column="ART_CATEGORY_ID" property="artCategoryId"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		hr.ID,
+		hr.ART_ID,
+		hr.STATUS,
+		hr.OPERATOR,
+		hr.GMT_CREATE,
+		hr.GMT_MODIFY,
+		hr.ART_CATEGORY_ID
+	</sql>
+
+	<select id="selectByArtId" parameterClass="long" resultMap="homepageRecommendResultMap">
+		select <include refid="columsSql"/>
+		from HOMEPAGE_RECOMMEND hr
+		where hr.ART_ID = #artId#	
+	</select>
+	
+	<insert id="insert" parameterClass="homepageRecommend">
+		<selectKey keyProperty="id" resultClass="long">
+			select SEQ_HOMEPAGE_RECOMMEND.NEXTVAL from DUAL
+		</selectKey>
+		insert into HOMEPAGE_RECOMMEND hr (<include refid="columsSql"/>)
+		values (#id#, #artId#, #status#, #operator#, sysdate, sysdate, #artCategoryId#)
+	</insert>
+	
+	<update id="update" parameterClass="homepageRecommend">
+		update HOMEPAGE_RECOMMEND hr
+		set 	hr.GMT_MODIFY = sysdate
+			<isNotEmpty property="status" prepend=",">
+				hr.STATUS = #status#
+			</isNotEmpty>
+			<isNotEmpty property="operator" prepend=",">
+				hr.OPERATOR = #operator#
+			</isNotEmpty>
+		where hr.ID = #id#
+	</update>
+	
+	<select id="selectTotalCount" resultClass="int" parameterClass="long">
+		select COUNT(*)
+		from HOMEPAGE_RECOMMEND hr
+		LEFT JOIN ART a on a."ID" = HR.ART_ID
+		where hr.STATUS = 0 and a.CATEGORY_ID = #categroyId#
+	</select>
+	
+	<update id="updateByArtId" parameterClass="homepageRecommend">
+		update HOMEPAGE_RECOMMEND hr
+		set 	hr.GMT_MODIFY = sysdate
+			<isNotEmpty property="status" prepend=",">
+				hr.STATUS = #status#
+			</isNotEmpty>
+			<isNotEmpty property="operator" prepend=",">
+				hr.OPERATOR = #operator#
+			</isNotEmpty>
+		where hr.ART_ID = #artId#	
+	</update>
+	
+</sqlMap>

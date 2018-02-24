@@ -1,0 +1,90 @@
+   <div class="main-right" >        	
+  <div class="basic">  
+   <ul class="form-tab">
+        <li class="c">
+            <span>编辑推广介绍</span>
+        </li>
+    </ul>
+	 <form id="form" action="editRecommendArt.htm" method="post"
+  	<div class="listbox" >
+   	<table class="list-table">
+		<tr>
+			<td width="20%" align="right">艺术品分类：</td><td width="80%">$!{art.categoryContent}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">艺术品名称：</td><td width="80%">$!{art.name}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">艺术品价格：</td><td width="80%">￥$!moneyUtils.getMoneyDesc($!{art.price})</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">库存：</td><td width="80%">$!{art.stock}</td>
+		</tr>
+		<tr >
+			<td width="20%" align="right">销量：</td><td width="80%">$!{art.salesVolume}</td>
+        </tr>
+		<tr >
+			<td width="20%" align="right">属性：</td>
+			<td width="80%"> 
+			#if($!{stringUtils.contains($!{propertyContent[0]},"=")})
+					$!{stringUtils.split($!{propertyContent[0]},"=")[0]}
+					<font color="red">($!{stringUtils.split($!{propertyContent[0]},"=")[1]})</font>
+				#else
+					$!{propertyContent[0]}
+				#end
+			</td>
+		</tr>
+    		#foreach($strProperty in $propertyContent)
+    			#if($strProperty != $!{propertyContent[0]})
+    				<tr>
+    					<td width="20%"></td>
+    					<td width="80%">
+    						#if($!{stringUtils.contains($strProperty,":")} == false) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #end
+    						#if( $!{stringUtils.contains($strProperty,"=")})							
+    							$!{stringUtils.split($strProperty,"=")[0]}
+    							<font color="red">($!{stringUtils.split($strProperty,"=")[1]})</font>
+    						#else
+    							$strProperty
+    						#end
+    					</td>
+    				</tr>
+    			#end
+    		#end
+			</td>		
+		 </tr>
+		<tr>
+			<td width="20%" align="right">艺术家：</td><td width="80%">$!{art.artise}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">图片：</td>
+			<td width="80%">
+				#foreach(${image} in ${imgStr})
+						<a href="$!{uploadServer}/${image}" title="点击看大图" target="_blank">
+							<img width="100" height="100" src="$!{uploadServer.get(${image})}?x-oss-process=image/resize,m_pad,h_100,w_100"/>
+                        </a>
+				#end
+			</td>
+		</tr>
+		
+		<tr>
+			<td width="20%" align="right" style="color:red">*推广介绍：</td>
+				<td>#springBind("articleRecommendArt.introduction")
+				<textarea   cols=60 rows=6 class="textarea"  id="introduction" name="introduction" maxLength="200">$!{status.value}</textarea>
+				<label for="${status.expression}" generated="true" class="error">$!{status.errorMessage}</label>
+			</td>
+		<tr/>
+		<input type="hidden" name="articleId" id="articleId" value="$!{articleRecommendArt.articleId}"/>
+		<input type="hidden" name="id" id="id" value="$!{articleRecommendArt.id}"/>
+    </table>
+    </div>
+	
+	<div class="form-but"><!-- 表单按钮区 -->
+<!--     	<input type="button" onclick="location='$!{appServer}$!{uri}'" class="but" value="返回" /> -->
+	<input type="submit"  class="but" value="保存" />
+	<input type="button" id="back" name="back" class="but" value="返回" />
+    </div><!-- 表单按钮区 END -->
+  </div>
+   </form>
+	
+</div>
+		

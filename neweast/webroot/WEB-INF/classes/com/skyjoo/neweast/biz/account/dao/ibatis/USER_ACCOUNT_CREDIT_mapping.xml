@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="USER_ACCOUNT_CREDIT">
+
+	<typeAlias alias="userAccountCredit" type="com.skyjoo.neweast.biz.account.domain.UserAccountCredit" />
+	
+	<resultMap id="userAccountCreditResultMap" class="userAccountCredit">
+		<result column="ID" property="id"/>
+		<result column="ACCOUNT_ID" property="accountId"/>
+		<result column="CREDIT_SCORE" property="creditScore"/>
+		<result column="CREDIT_LEVEL_NO" property="creditLevelNo"/>
+		<result column="CREDIT_LEVEL_NAME" property="creditLevelName"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+		<result column="CREDIT_TYPE" property="creditType"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		uac.ID,
+		uac.ACCOUNT_ID,
+		uac.CREDIT_SCORE,
+		uac.CREDIT_LEVEL_NO,
+		uac.CREDIT_LEVEL_NAME,
+		uac.GMT_CREATE,
+		uac.GMT_MODIFY,
+		uac.CREDIT_TYPE
+	</sql>
+	
+	<insert id="insert" parameterClass="userAccountCredit">
+		<selectKey keyProperty="id" resultClass="long">
+			select SEQ_USER_ACCOUNT_CREDIT.NEXTVAL from DUAL
+		</selectKey>
+		insert into USER_ACCOUNT_CREDIT uac (<include refid="columsSql"/>)
+		values (#id#, #accountId#, #creditScore#, #creditLevelNo#, #creditLevelName#, sysdate, sysdate, #creditType#)
+	</insert>
+	
+	<select id="selectByAccountIdAndType" resultMap="userAccountCreditResultMap">
+		select 	<include refid="columsSql" />
+		from  	USER_ACCOUNT_CREDIT uac
+		where 	uac.ACCOUNT_ID = #accountId# and uac.CREDIT_TYPE = #creditType#
+	</select>
+	
+	<select id="selectByAccountIdsAndType" resultMap="userAccountCreditResultMap" parameterClass="map">
+		select 	<include refid="columsSql" />
+		from  	USER_ACCOUNT_CREDIT uac
+		where 	uac.ACCOUNT_ID in <iterate property="accountIds" open="(" close=")" conjunction=",">#accountIds[]#</iterate>
+				<isNotEmpty property="creditType" prepend="and">
+				uac.CREDIT_TYPE = #creditType# 
+				</isNotEmpty>
+	</select>
+
+	<update id="updateLevel" parameterClass="userAccountCredit">
+	    update 	USER_ACCOUNT_CREDIT uac
+        set 	uac.GMT_MODIFY = #gmtModify#,
+        		uac.CREDIT_LEVEL_NO = #creditLevelNo#,
+				uac.CREDIT_LEVEL_NAME =#creditLevelName#
+	    where uac.ID = #id#
+	</update>
+</sqlMap>

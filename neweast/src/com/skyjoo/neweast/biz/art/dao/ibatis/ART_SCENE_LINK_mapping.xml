@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="artSceneLink">
+	<typeAlias alias="artSceneLink"  type="com.skyjoo.neweast.biz.art.domain.ArtSceneLink" />
+
+	<resultMap class="artSceneLink" id="artSceneLinkResultMap">
+		<result property="id" column="ID" />
+		<result property="artId" column="ART_ID" />
+		<result property="sceneId" column="SCENE_ID" />
+		<result property="sceneUrl" column="SCENE_URL" />
+		<result property="description" column="DESCRIPTION" />
+		<result property="gmtCreate" column="GMT_CREATE" />
+		<result property="gmtModify" column="GMT_MODIFY" />
+	</resultMap>
+
+	<sql id="columsSql">
+		ID,
+		ART_ID,
+		SCENE_ID,
+		SCENE_URL,
+		DESCRIPTION,
+		GMT_CREATE,
+		GMT_MODIFY
+	</sql>
+
+	
+	<select id="getByArtId" parameterClass="long" resultMap="artSceneLinkResultMap">
+		SELECT <include refid="columsSql"/>
+		FROM ART_SCENE_LINK asl
+		WHERE asl.ART_ID = #id#
+		order by asl.ID asc
+	</select>
+	
+</sqlMap>

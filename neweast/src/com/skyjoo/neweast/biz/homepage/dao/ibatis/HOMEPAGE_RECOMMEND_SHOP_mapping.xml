@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="HOMEPAGE_RECOMMEND_SHOP">
+	<typeAlias alias="homepageRecommendShop" type="com.skyjoo.neweast.biz.homepage.domain.HomepageRecommendShop" />
+	
+	<resultMap id="homepageRecommendShopResultMap" class="homepageRecommendShop">
+		<result column="ID" property="id"/>
+		<result column="SHOP_ID" property="shopId"/>
+		<result column="STATUS" property="status"/>
+		<result column="OPERATOR" property="operator"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		hrs.ID,
+		hrs.SHOP_ID,
+		hrs.STATUS,
+		hrs.OPERATOR,
+		hrs.GMT_CREATE,
+		hrs.GMT_MODIFY
+	</sql>
+	
+	<select id="selectByShopId" parameterClass="long" resultMap="homepageRecommendShopResultMap">
+		select <include refid="columsSql"/>
+		from HOMEPAGE_RECOMMEND_SHOP hrs
+		where hrs.SHOP_ID = #shopId#
+	
+	</select>
+	
+	<insert id="insert" parameterClass="homepageRecommendShop">
+		<selectKey keyProperty="id" resultClass="long">
+			select SEQ_HOMEPAGE_RECOMMEND_SHOP.NEXTVAL from DUAL
+		</selectKey>
+		insert into HOMEPAGE_RECOMMEND_SHOP hrs (<include refid="columsSql"/>)
+		values (#id#, #shopId#, #status#, #operator#, sysdate, sysdate)
+	</insert>
+	
+	<update id="update" parameterClass="homepageRecommendShop">
+		update 	HOMEPAGE_RECOMMEND_SHOP hrs
+		set		hrs.GMT_MODIFY = sysdate
+			<isNotEmpty property="status" prepend=",">
+				hrs.STATUS = #status#
+			</isNotEmpty>
+			<isNotEmpty property="operator" prepend=",">
+				hrs.OPERATOR = #operator#
+			</isNotEmpty>
+		where hrs.ID = #id#
+	</update>
+	
+	<select id="selectTotalCount" resultClass="int">
+		select count(*) 
+		from HOMEPAGE_RECOMMEND_SHOP hrs
+		where hrs.STATUS = 1
+	</select>
+	
+	<select id="getRecommendShopByID" parameterClass="long" resultClass="int">
+		Select Count(id) from HOMEPAGE_RECOMMEND_SHOP where SHOP_ID = #shopId#
+	</select>
+	
+	<update id="updateRecommendShop" parameterClass="long"> 
+		update HOMEPAGE_RECOMMEND_SHOP set GMT_MODIFY = sysdate where SHOP_ID = #shopId#
+	</update>
+</sqlMap>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="homepagePic">
+	<typeAlias alias="homepagePic"
+		type="com.skyjoo.neweast.biz.homepage.domain.common.HomepagePic" />
+	<resultMap id="homepagePicResult" class="homepagePic">
+		<result column="ID" property="id" />
+		<result column="GMT_CREATE" property="gmtCreate" />
+		<result column="GMT_MODIFY" property="gmtModify" />
+		<result column="EXTEND_URL" property="extendUrl" />
+		<result column="ATTACHMENT" property="attachment" />
+		<result column="STATUS" property="status" />
+		<result column="PIC_ORDER" property="picOrder" />
+		<result column="OPERATOR" property="operator" />
+		<result column="TYPE" property="type" />
+	</resultMap>
+
+	<select id="getHomepagePic" resultMap="homepagePicResult">
+		select ID, GMT_CREATE,
+		GMT_MODIFY, EXTEND_URL, ATTACHMENT,PIC_ORDER,
+		STATUS,
+		OPERATOR,TYPE
+		from
+		HOMEPAGE_PIC
+		Where STATUS = 0 
+		order by TYPE,PIC_ORDER
+	</select>
+
+	<select id="getPCHomepagePic" resultMap="homepagePicResult">
+		select ID, GMT_CREATE,
+		GMT_MODIFY, EXTEND_URL, ATTACHMENT,PIC_ORDER,
+		STATUS,
+		OPERATOR,TYPE
+		from
+		HOMEPAGE_PIC
+		Where STATUS = 0 and TYPE=1 order by PIC_ORDER
+	</select>
+
+	<select id="getAPPHomepagePic" resultMap="homepagePicResult">
+		select ID, GMT_CREATE,
+		GMT_MODIFY, EXTEND_URL, ATTACHMENT,PIC_ORDER,
+		STATUS,
+		OPERATOR,TYPE
+		from
+		HOMEPAGE_PIC
+		Where STATUS = 0 and TYPE=2 order by PIC_ORDER
+	</select>
+	
+	<select id="getAPPStartHomepagePic" resultMap="homepagePicResult">
+		select ID, GMT_CREATE,
+		GMT_MODIFY, EXTEND_URL, ATTACHMENT,PIC_ORDER,
+		STATUS,
+		OPERATOR,TYPE
+		from
+		HOMEPAGE_PIC
+		Where STATUS = 0 and TYPE=3 order by PIC_ORDER
+	</select>
+
+	<select id="getHomepagePicById" resultMap="homepagePicResult"
+		parameterClass="Long">
+		select ID, GMT_CREATE, GMT_MODIFY, EXTEND_URL,
+		ATTACHMENT,PIC_ORDER,
+		STATUS,
+		OPERATOR,TYPE
+		from HOMEPAGE_PIC
+		where
+		status=0 and id = #id#
+	</select>
+
+	<insert id="addHomepagePic" parameterClass="homepagePic">
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+			select
+			SEQ_HOMEPAGE_PIC.nextval from dual
+		</selectKey>
+		insert into HOMEPAGE_PIC (ID,
+		GMT_CREATE,GMT_MODIFY,EXTEND_URL,ATTACHMENT,PIC_ORDER,
+		STATUS,
+		OPERATOR,TYPE)
+		values (#id#,sysdate,sysdate, #extendUrl:VARCHAR#,
+		#attachment:VARCHAR#,#picOrder#,
+		0, #operator:VARCHAR#,#type#)
+	</insert>
+
+	<delete id="removeHomepagePic" parameterClass="homepagePic">
+		delete from
+		HOMEPAGE_PIC where id=#id#
+	</delete>
+
+	<update id="updateHomepagePic" parameterClass="homepagePic">
+		update HOMEPAGE_PIC
+		set GMT_MODIFY = sysdate
+		<isNotEmpty property="extendUrl" prepend=",">
+			EXTEND_URL =
+			#extendUrl#
+		</isNotEmpty>
+		<isNotEmpty property="picOrder" prepend=",">
+			PIC_ORDER =
+			#picOrder#
+		</isNotEmpty>
+		<isNotEmpty property="attachment" prepend=",">
+			ATTACHMENT =
+			#attachment#
+		</isNotEmpty>
+		<isNotEmpty property="operator" prepend=",">
+			OPERATOR=
+			#operator#
+		</isNotEmpty>
+		<isNotEmpty property="type" prepend=",">
+			TYPE = #type#
+		</isNotEmpty>
+		where ID = #id#
+	</update>
+</sqlMap>

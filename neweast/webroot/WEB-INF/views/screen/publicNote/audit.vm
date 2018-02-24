@@ -1,0 +1,87 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/validate.css" />
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<script src="$!{imageServer}/scripts/listtolist.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/editor.css" />
+<script  charset="utf-8"  src="$!{imageServer}/scripts/kindeditor/kindeditor-all-min.js" type="text/javascript"></script>
+<script src="$!{imageServer}/scripts/kindeditor-zh_CN.js" type="text/javascript"></script>
+<script type="text/javascript">
+var editor;
+KindEditor.ready(function(K) {
+	editor = K.create('textarea[name="content"]', {
+		allowFileManager : false,
+		items : []
+	});
+	editor.readonly(true);
+});
+function rejectNote(){
+	if(jQuery.trim(jQuery("#memo").val())){
+		jQuery("#status").val("2");
+		jQuery("#publicNote").submit();
+	}else{
+		alert("驳回公告必须填备注！");
+	}
+}
+</script>
+<style >
+.formbox .c2 td span {
+	margin-left: 0px;
+}
+</style>
+<div class="basic">
+    <ul class="form-tab">
+        <li class="c">
+            <span>审核公告</span>
+        </li>
+    </ul>
+    <form id="publicNote" action="verify.htm" method="post" >
+		#springBind("publicNote.id")
+		<input id="id" type="hidden" name="id" value="$!{publicNote.id}" />
+        #springBind("publicNote.status")
+		<input id="status" type="hidden" name="status" value="1" />
+		<div class="formbox">
+            <div class="clear"></div>
+            <div class="nr">
+                <div class="nr-t"></div>
+                <div class="nr-c">
+                    <table class="c2">
+                        <tr>
+                            <th>标题：</th>
+                            <td>
+								$!{publicNote.title}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>公告类型：</th>
+                            <td>
+								$!{noteType_map.get($!publicNote.type)}
+                            </td>
+                        </tr>
+						<tr>
+                            <th>公告内容：</th>
+                            <td>
+								<textarea id="context" name="content" class="textarea" style="width:80%;height:400px;" readonly="true">$!{publicNote.content}</textarea>
+                            </td>
+                        </tr>
+						
+						<tr>
+							<th>备注：</th>
+                            <td>#springBind("publicNote.memo")
+								<textarea name="memo" id="memo" style="width:80%;height:50px;" maxlength="85" ></textarea>
+							</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="nr-b"></div>
+            </div>
+        </div>
+        <!-- 表单按钮区 -->
+        <div class="form-but">
+			<input type="submit" id="pass" name="pass" class="but" value="通过" />
+			<input type="button" id="reject" name="reject" class="but" value="驳回"  onclick="rejectNote()"/>
+			<input type="button" class="but" value="返回" onclick="history.back(-1)"/>
+        </div>
+        <!-- 表单按钮区 END -->
+        <div class="clear"></div>
+    </form>
+</div>

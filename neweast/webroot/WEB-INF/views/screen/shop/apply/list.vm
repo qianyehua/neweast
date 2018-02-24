@@ -1,0 +1,99 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+    jQuery( function() {
+        $('.date-pick').datePicker( {clickInput : true, startDate : "2010-01-01"});
+	});
+</script>
+<!-- 搜索框 -->
+<form id="queryForm" name="queryForm" action="list.htm" method="post">
+	<div class="search-box"">
+        <table>
+            <tr>
+				<th>登录账号</th>
+                <td>
+					#springBind("query.loginId")
+                    <input type="text" name="$!{status.expression}" value="$!{status.value}" onKeyUp="this.value=this.value.trim()" class="inp" style="width:140px">
+				</td>
+                <th>申请日期</th>
+                <td colspan="3">
+					#springBind("query.gmtApplyStart")
+					<input type="text" id="gmtApplyStart" name="$!{status.expression}" value="$!{status.value}" readonly="readonly" size="10" class="date-pick" style="width:85px;"/>
+                    -
+					#springBind("query.gmtApplyEnd")
+                    <input type="text" id="gmtApplyEnd" name="$!{status.expression}" value="$!{status.value}" readonly="readonly"  size="10" class="date-pick" style="width:85px;"/>
+                </td>
+			</tr>
+			<tr>
+				<th>类型</th>
+                <td>
+					#springBind("query.type")
+					<select id="type" name="$!{status.expression}">
+						<option value="">请选择</option>
+						#foreach($type in $!typeList)
+                		<option  value="$!{type.value}" #if($!{query.type} == $!{type.value} ) selected #end>$type.desp</option>
+						#end
+					</select>
+				</td>
+				<th>状态</th>
+				<td>
+					#springBind("query.status")
+					<select id="status" name="$!{status.expression}">
+						<option value="">请选择</option>
+						#foreach($status in $!statusList)
+                		<option  value="$!{status.value}" #if($!{query.status} == $!{status.value} ) selected #end>$!status.desp</option>
+						#end
+					</select>
+                </td>
+				<td >
+					<input type="submit" name="search" value="查询" class="but-61" />
+                </td>
+			</tr>
+		</table>
+	</div>
+<!-- 搜索框 END -->
+ <div class="basic">
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="10%">类型</th>
+			<th width="10%">登录账号 </th>
+			<th width="20%">姓名</th>
+			<th width="15%">联系号码</th>
+			<th width="10%">申请时间</th>
+			<th width="10%">审核时间</th>
+			<th width="10%">状态</th>
+			<th width="25%">操作</th>
+        </tr>
+		#if($!{query.getData()} && $!{query.getData().size()} > 0)
+            #foreach($apply in $!query.getData())
+                <tr #if($!{velocityCount}%2 == 0) class="bg" #end align="center">
+						<td >$!{enumUtils.getShopAuthType($!{apply.type})}</td>
+                        <td >$!{apply.loginId}</td>
+						<td >$!{apply.realName}</td>
+						<td >$!{apply.mobile}</td>
+						<td >$!dateTool.format('yyyy-MM-dd', $!{apply.gmtApply})</td>
+						<td >$!dateTool.format('yyyy-MM-dd', $!{apply.gmtAccepted})</td>
+						<td >$!{enumUtils.getShopAuthStatus($apply.status)}</td>
+                        <td class="link-td">
+							<a href="detail.htm?id=$!{apply.id}">查看</a>
+							#if($apply.isAuditing())
+							<a href="audit.htm?id=$!{apply.id}">审核</a>
+							#end
+						</td>
+                </tr>
+            #end
+        #else
+            <tr>
+                <td colspan="6">
+                    <p class="ts">没有结果</p>
+                </td>
+            </tr>
+        #end
+    </table>
+	 #pager($query, "queryForm")
+	
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

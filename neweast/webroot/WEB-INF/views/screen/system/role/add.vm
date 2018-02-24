@@ -1,0 +1,105 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/validate.css" />
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/tree.css" />
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<script src="$!{imageServer}/scripts/tree.js" type="text/javascript"></script>
+<script>
+$(document).ready(function(){    
+/* 设置默认属性 */    
+jQuery.validator.setDefaults({    
+   submitHandler: function(form) { form.submit(); }    
+});    
+ 
+$('#form1').validate({    
+/* 设置验证规则 */    
+   rules: {    
+    name: {    
+     required: true,
+	 maxlength:16
+    },   
+    description: {      
+     maxlength: 83    
+    }
+   },      
+   messages: {    
+    name: {    
+     required: "请填写角色名",
+	 maxlength:"角色名超长(<=16个汉字)"
+    },  
+    description: {    
+     maxlength: "描述超长(<=83个汉字)" 
+    }
+   },    
+
+});  
+  var o = { showcheck: true};
+  o.data = eval('($!data)');
+  $("#tree").treeview(o);
+          
+}); 
+
+function do_post() {
+	var s=$("#tree").getTSVs();
+    if(s !=null)
+		$('#funcs').val(s);
+	$('#form1').submit();
+}
+</script>
+<style>
+.formbox .c2 td span {
+color:black;
+margin-left:10px;
+}
+</style>
+<div class="basic">
+	<ul class="form-tab">
+        <li class="c">
+            <span>添加角色</span>
+        </li>
+    </ul>
+ <form id="form1" name="form1" action="add.htm" method="post">
+	<div class="formbox">
+		<div class="clear"></div>
+        <div class="nr">
+            <div class="nr-t"></div>
+            <div class="nr-c">
+                <table class="c2">
+					<tr>
+	<th><span style="color:red">*</span>角色名称：</th>
+	<td>
+	#springBind("role.name")
+	<input type="text" id="name" name="${status.expression}" value="$!{status.value}" maxlength="16" />
+	<label class="error">${status.errorMessage}</label>
+	</td>
+		</tr>
+	<tr>
+	<th>描述：</th>
+	<td>
+	#springBind("role.description")
+	<textarea type="text" id="description" name="${status.expression}" maxlength="83" >$!{status.value}</textarea>
+	<label class="error">${status.errorMessage}</label>
+   </td></tr>
+   	<tr>
+	<th>权限：</th>
+	<td class="ie">
+		#set($height = $!count * 20)
+	<div style="border-bottom: #c3daf9 1px solid; border-left: #c3daf9 1px solid; width: 250px; height: $!{height}px; overflow: auto; border-top: #c3daf9 1px solid; border-right: #c3daf9 1px solid;">
+        <div id="tree">
+        </div>
+    </div>
+   </td></tr>
+</table>
+	   </div>
+            <div class="nr-b"></div>
+        </div>
+		<input type="hidden" id="funcs" name="funcs" value="" />
+		<!-- 表单按钮区 -->
+	 <div class="form-but">
+			<input type="button" id="save" name="save" class="but" onclick="do_post()" value="保存" />
+			<input type="button" id="back" name="back" class="but" onclick="location.href='list.htm'" value="返回" />
+	 </div>
+        <!-- 表单按钮区 END -->
+	</div>
+        <div class="clear"></div>
+</form>
+</div>
+

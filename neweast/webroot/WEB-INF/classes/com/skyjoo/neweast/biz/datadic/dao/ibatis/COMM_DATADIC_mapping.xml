@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="COMM_DATADIC">
+
+	<typeAlias alias="commDatadic" type="com.skyjoo.neweast.biz.datadic.domain.CommDatadic" />
+	
+	<resultMap id="commDatadicResultMap" class="commDatadic">
+		<result column="ID" property="id"/>
+		<result column="NAME" property="name"/>
+		<result column="CODE" property="code"/>
+		<result column="VALUE" property="value"/>
+		<result column="GROUP_NAME" property="groupName"/>
+		<result column="PARENT_ID" property="parentId"/>
+		<result column="ORDERING" property="ordering"/>
+		<result column="MEMO" property="memo"/>
+		<result column="OPERATOR" property="operator"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		cd.ID,
+		cd.NAME,
+		cd.CODE,
+		cd.VALUE,
+		cd.GROUP_NAME,
+		cd.PARENT_ID,
+		cd.ORDERING,
+		cd.MEMO,
+		cd.OPERATOR,
+		cd.GMT_CREATE,
+		cd.GMT_MODIFY
+	</sql>
+	
+	<select id="getAll" resultMap="commDatadicResultMap">
+		select <include refid="columsSql"/>
+		from COMM_DATADIC cd
+		order by cd.GROUP_NAME, cd.PARENT_ID, cd.ORDERING, cd.GMT_CREATE
+	</select>
+
+</sqlMap>

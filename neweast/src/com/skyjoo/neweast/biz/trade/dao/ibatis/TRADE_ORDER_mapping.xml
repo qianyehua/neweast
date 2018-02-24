@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="TRADE_ORDER">
+	<typeAlias alias="tradeOrder" type="com.skyjoo.neweast.biz.trade.domain.TradeOrder"/>
+	<typeAlias alias="tradeOrderQuery" type="com.skyjoo.neweast.biz.trade.domain.query.TradeOrderQuery"/>
+ 	<typeAlias alias="tradeOrderRecordDTO" type="com.skyjoo.wudadao.neweast.dto.TradeOrderRecordDTO"/>
+	<typeAlias alias="tradeOrderRecordReq" type="com.skyjoo.wudadao.neweast.dto.TradeOrderRecordRequest"/> 
+ 
+	<resultMap id="tradeOrderResultMap" class="tradeOrder">
+		<result column="ID" property="id"/>
+		<result column="TRADE_NO" property="tradeNo"/>
+		<result column="SELLER_ID" property="sellerId"/>
+		<result column="SELLER_LOGIN_ID" property="sellerLoginId"/>
+		<result column="BUYER_ID" property="buyerId"/>
+		<result column="BUYER_LOGIN_ID" property="buyerLoginId"/>
+		<result column="TOTAL_FEE" property="totalFee"/>
+		<result column="TOTAL_GOODS" property="totalGoods"/>
+		<result column="LOGISTIC_FUND" property="logisticFund"/>
+		<result column="SERVICE_FEE_RATIO" property="serviceFeeRatio"/>
+		<result column="SERVICE_FEE" property="serviceFee"/>
+		<result column="GOODS_HOLDER" property="goodsHolder"/>
+		<result column="TRADE_STATUS" property="tradeStatus"/>
+		<result column="REFUND_STATUS" property="refundStatus"/>
+		<result column="PAY_TIME" property="payTime"/>
+		<result column="CONFIRM_GOODS_TIME" property="confirmGoodsTime"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+	</resultMap>
+	
+	<resultMap class="tradeOrder" id="tradeOrderPageResultMap" extends="tradeOrderResultMap">
+		<result column="REFUND_ID" property="refundId"/>
+	</resultMap>
+	
+ 	<resultMap class="tradeOrderRecordDTO" id="tradeOrderRecordDTOResultMap">
+		<result column="TRADE_NO" property="tradeNo"/>
+		<result column="SELLER_LOGIN_ID" property="sellerAccount"/>
+		<result column="BUYER_LOGIN_ID" property="buyerAccount"/>
+		<result column="TOTAL_FEE" property="totalFee"/>
+		<result column="SERVICE_FEE" property="serviceFee"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+	</resultMap> 
+	
+	<sql id="columsSql">
+		t.ID,
+		t.TRADE_NO,
+		t.SELLER_ID,
+		t.SELLER_LOGIN_ID,
+		t.BUYER_ID,
+		t.BUYER_LOGIN_ID,
+		t.TOTAL_FEE,
+		t.TOTAL_GOODS,
+		t.LOGISTIC_FUND,
+		t.SERVICE_FEE_RATIO,
+		t.SERVICE_FEE,
+		t.GOODS_HOLDER,
+		t.TRADE_STATUS,
+		t.REFUND_STATUS,
+		t.PAY_TIME,
+		t.CONFIRM_GOODS_TIME,
+		t.GMT_CREATE,
+		t.GMT_MODIFY
+	</sql>
+
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+	
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum &gt;= #beginIndex#
+	</sql>
+		
+	<sql id="pageCondition">
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="gmtCreateStart">
+				t.GMT_CREATE &gt;= to_date(#gmtCreateStart#, 'yyyy-MM-dd')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="gmtCreateEnd">
+				t.GMT_CREATE &lt;= to_date(#gmtCreateEnd#, 'yyyy-MM-dd') + 1
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="status">
+				t.TRADE_STATUS = #status#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="buyerLoginId">
+				t.BUYER_LOGIN_ID = #buyerLoginId#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="sellerLoginId">
+				t.SELLER_LOGIN_ID = #sellerLoginId#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="orderNo">
+				t.TRADE_NO = #orderNo#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="ids">
+				t.ID in <iterate open="(" close=")" conjunction="," property="ids" >#ids[]#</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+		
+	<select id="pageCount" parameterClass="tradeOrderQuery" resultClass="java.lang.Integer">
+		select count(*)
+		from TRADE_ORDER t
+		<include refid="pageCondition"/>
+	</select>
+	
+	<select id="page" parameterClass="tradeOrderQuery" resultMap="tradeOrderPageResultMap">
+		<include refid="pageBeginSql"/>
+		
+		select <include refid="columsSql"/>, tr.ID as REFUND_ID
+		from TRADE_ORDER t
+		left join (select * from trade_refund main
+				where not exists (select 1 from trade_refund sub 
+								where main.trade_no = sub.trade_no 
+								and main.gmt_modify &lt; sub.gmt_modify)) tr on tr.ORDER_ID = t.ID
+		<include refid="pageCondition"/>
+		order by t.GMT_CREATE desc
+		
+		<include refid="pageEndSql"/>
+	</select>
+	
+	<!-- 查询订单信息 -->
+	<select id="selectByOrderId" parameterClass="long" resultMap="tradeOrderResultMap">
+		select <include refid="columsSql"/>
+		from  TRADE_ORDER t
+		where t.ID = #orderId#
+	</select>
+
+	<select id="selectLimitCountForCancel" resultClass="int">
+		select 	count(*) 
+		from 	TRADE_ORDER t 
+		where 	t.TRADE_STATUS not in ('closed', 'appriased', 'complete','waitSellerSetLogistic','waitBuyerPay','buyerApprased','sellerApprased') 
+				and (t.SELLER_ID = #userId# or t.BUYER_ID = #userId#)
+	</select>
+	
+ 	<select id="queryTradeOrderRecord" parameterClass="tradeOrderRecordReq" resultMap="tradeOrderRecordDTOResultMap">
+ 		<include refid="pageBeginSql" />
+			SELECT 
+			t.TRADE_NO,t.SELLER_LOGIN_ID,t.BUYER_LOGIN_ID,t.TOTAL_FEE,
+			t.SERVICE_FEE,t.GMT_CREATE 
+			FROM TRADE_ORDER t 
+			where
+				(t.TRADE_STATUS =  'success' or t.TRADE_STATUS = 'appriased' or t.TRADE_STATUS = 'sellerApprased' or t.TRADE_STATUS ='buyerApprased')	
+				<isNotEmpty prepend="and" property="sellerAccount">
+					t.SELLER_LOGIN_ID = #sellerAccount#
+				</isNotEmpty>
+				<isNotEmpty prepend="and" property="buyerAccount">
+					t.BUYER_LOGIN_ID = #buyerAccount#
+				</isNotEmpty>
+				<isNotEmpty prepend="and" property="startDate">
+					t.GMT_CREATE &gt;= TO_DATE(#startDate#, 'yyyy-MM-DD')
+				</isNotEmpty>
+				<isNotEmpty prepend="and" property="endDate">
+					t.GMT_CREATE &lt;= TO_DATE(#endDate#, 'yyyy-MM-DD')+1
+				</isNotEmpty>	
+			order by t.GMT_CREATE DESC
+		<include refid="pageEndSql" />				
+	</select>  
+	
+	<select id="tradeOrderRecordPageCount" resultClass="int" parameterClass="tradeOrderRecordReq">
+		select count(*)
+		 	from (			
+		 	SELECT 1 
+			FROM TRADE_ORDER t 
+			where
+				(t.TRADE_STATUS =  'success' or t.TRADE_STATUS = 'appriased' or t.TRADE_STATUS = 'sellerApprased' or t.TRADE_STATUS ='buyerApprased')	
+				<isNotEmpty prepend="and" property="sellerAccount">
+					t.SELLER_LOGIN_ID = #sellerAccount#
+				</isNotEmpty>
+				<isNotEmpty prepend="and" property="buyerAccount">
+					t.BUYER_LOGIN_ID = #buyerAccount#
+				</isNotEmpty>
+				<isNotEmpty prepend="and" property="startDate">
+					t.GMT_CREATE &gt;= TO_DATE(#startDate#, 'yyyy-MM-DD')
+				</isNotEmpty>
+				<isNotEmpty prepend="and" property="endDate">
+					t.GMT_CREATE &lt; TO_DATE(#endDate#, 'yyyy-MM-DD')+1
+				</isNotEmpty>	
+			)t
+	</select>	
+</sqlMap>

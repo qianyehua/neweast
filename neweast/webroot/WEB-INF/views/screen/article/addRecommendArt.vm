@@ -1,0 +1,135 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+function searchArt(){
+		
+		var artId=$("#id").attr("value");
+		var artName=$("#queryName").attr("value");
+		var artise=$("#artise").attr("value");
+		var categoryId =$('#categoryId option:selected').val();
+		if(categoryId =="" && artId == "" && artName == "" && artise == "" ){
+			alert("请输入查询条件");
+		}else {
+			$("#artForm").submit();
+		}		
+	}
+ function selectAll(){
+			if ($("#idListAll").is(":checked")) {
+				$(".arts").attr("checked", "checked");
+				} else {
+				$(".arts").removeAttr("checked");
+				}			
+	}
+	
+function addRecommed(){
+		obj = document.getElementsByName("id");
+		articleId =document.getElementById("articleId").value;
+    	ids = [];
+   		for(i in obj){
+        if(obj[i].checked)
+            ids.push(obj[i].value);
+    	}
+		
+		if(ids.length == 0){
+			alert("请选择要推广的艺术品！");
+			return;
+		}else {
+          	window.location = "batchAddRecommendArt.htm?ids="+ids+"&articleId="+articleId; 
+
+        }
+	}	
+</script>
+<!-- 搜索框 -->
+<form id="artForm" name="artForm" action="addRecommendArt.htm" method="get">
+	<div class="search-box">
+        <input type="hidden" name="rececjId" id="rececjId" value=""/>
+		<input type="hidden" name="articleId" id="articleId" value="$!{articleId}"/>
+		<table>
+            <tr>
+				<th>艺术家</th>
+                <td>
+                	#springBind("artCheckQuery.artise")
+					<input type="text" name="artise" id="artise" class="inp required" value="$!{page.artise}"/>	
+                </td>
+                 <th>艺术品名称</th>
+				<td>
+					#springBind("artCheckQuery.queryName")
+					<input type="text" name="queryName" id="queryName" class="inp required" value="$!{page.queryName}"/>	
+                </td>
+           </tr>    
+           <tr>
+                <th>艺术品ID</th>
+                <td>
+					#springBind("artCheckQuery.id")
+                	<input type="text" name="id" id="id" value="$!{page.id}" />
+                </td>
+                <th>艺术品类目</th>
+                <td>
+					#springBind("artCheckQuery.categoryId")
+					<select  id="categoryId" name="categoryId" class="inp" style="width:150px">
+					<option value="">请选择</option>
+					#foreach(${menu} in $!{list_menus})
+						<option value="${menu.id}" title="$!{menu.name}" #if($!{page.categoryId}==$!{menu.id}) selected="selected" #end>
+        				#foreach($str in $!stringUtils.split($!{menu.name},";") )
+        					#if($str=="&nbsp")
+        						&nbsp;&nbsp;
+        					#else
+        						$str
+        					#end
+						#end			
+                    </option>
+					#end
+					</select>  						
+				</td>
+   				<th></th>
+				<td>	
+					<input type="button" name="search" value="查询" class="but-61" onclick="searchArt();" />
+					<input type="reset" value="重置" onclick="window.location ='addRecommendArtIni.htm?articleId=$!{articleId}'" class="but-62"/>
+				</td>
+           </tr>
+</table>
+	<div class="tool">
+		<span>
+			<a onclick="addRecommed();" href="#" class="bt_add" hidefocus="true" >添加到推广</a>
+		</span>
+	</div>
+</div>	
+
+<!-- 搜索框 END -->
+ <div class="basic">
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="10%"><input type="checkbox" class=".all-checkbox" name="idListAll" id="idListAll" onclick="selectAll();"value="">全选</th>
+			<th width="15%">艺术品名称</th>
+			<th width="10%">艺术家</th>
+			<th width="15%">价格 </th>
+			<th width="15%">所属类目</th>
+        </tr>
+		#if($!{page} && ${page.totalCount} > 0)
+			#foreach($art in $page.getData())
+				<tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+					<td><input type="checkbox" name="id" class="arts" value="$art.id"></td>
+					<td><p title="$!{art.name}">$!stringUtils.abbreviate($!{art.name},10)</p></td>
+					<td>$!{art.artise}</td>
+					<td>#if($!{art.artType} == 0)  #else ￥$!moneyUtils.getMoneyDesc($!{art.price})#end</td>
+					<td>$!{art.categoryContent}</td>
+			</tr>	
+			#end
+		   
+        #else
+            <tr>
+                <td colspan="7">
+                    <p class="ts">没有结果</p>
+                </td>
+            </tr>
+        #end
+    </table>
+	 #pager($page, "artForm")
+ </div>
+	<!-- 表单按钮区-->
+        <div class="form-but">
+        <input type="button" onclick="location.href='$!{appServer}/article/recommend.htm?id=$!{articleId}'" class="but" value="返回" />
+ </div>
+ <div class="clear"></div>
+</form>

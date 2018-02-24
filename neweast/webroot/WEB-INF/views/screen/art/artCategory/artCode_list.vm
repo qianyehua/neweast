@@ -1,0 +1,29 @@
+   <div class="main-right" >        	
+  <div class="basic"> 
+  <ul class="form-tab">
+        <li class="c">
+            <span>艺术品前缀</span>
+        </li>
+    </ul>           
+<!--     <div class="tool"> -->
+<!--         <span><a href="$!{appServer}/art/artCategoryProperty/addIni.htm?categoryId=$!{categoryId}" class="bt_add" hidefocus="true">新增</a></span>  -->
+<!--     </div> -->
+  	<div class="listbox" >
+   	<table class="list-table">
+		<tr>
+			<td width="80%">该类目的前缀为：$!{category.artCode}</td>
+			<td width="20%" class="link-td">
+			    <a onclick="#if(${category.canEditArtCode}) return true
+<!-- 			    				location='$!{appServer}/art/artCategory/artCode_editIni.htm?categoryId=${category.id}&artCode=$!{category.artCode}'  -->
+								#else alert('该类目被艺术品引用，无法修改前缀!');return false; #end"href="$!{appServer}/art/artCategory/artCode_editIni.htm?categoryId=${category.id}&artCode=$!{category.artCode}">修改</a>
+				</td>
+		</tr>
+    </table>
+    </div>
+	<div class="form-but"><!-- 表单按钮区 -->
+    	<input type="button" onclick="history.go(-1)" class="but" value="返回" />
+    </div><!-- 表单按钮区 END -->
+
+  </div>
+</div>
+		

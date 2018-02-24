@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="COMM_INTERNAL_MESSEGE">
+	<typeAlias alias="internalMessage" type="com.skyjoo.neweast.biz.internalMessage.domain.CommInternalMessage"/>
+	<resultMap id="internalMessageResultmap" class="internalMessage" >
+		<result column="ID" property="id"/>
+		<result column="ADDRESSEE_TYPE" property="addressType"/>
+		<result column="ADDRESSEE" property="addressee"/>
+		<result column="THEME" property="theme"/>
+		<result column="CONTENT" property="content"/>
+		<result column="MESSAGE_ID" property="messageId"/>
+		<result column="REPLY_ID" property="replyId"/>
+		<result column="SEND_DATE" property="sendDate"/>
+		<result column="REPLY_DATE" property="replyDate"/>
+		<result column="READ_STATUS" property="readStatus"/>
+		<result column="STATUS" property="replyStatus"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+		<result column="USER_ID" property="userId"/>
+		<result column="messageSender" property="messageSender"/>
+		<result column="LOGIN_NAME" property="adminLoginName" />
+	</resultMap>
+		
+	<sql id="sqlColumn">
+		Select t1.*,Rownum num From(
+			Select 
+				t2.*,t3.STOCK_ACCOUNT messageSender ,t4.LOGIN_NAME
+			From 
+				comm_internal_message t2 
+				left join user_account t3 on t2.USER_ID = t3.id 
+				left join system_user t4 on t2.USER_ID = t4.id
+				ORDER BY SEND_DATE desc
+				)t1 
+     		<dynamic prepend="where">
+     			<isNotEmpty property="sendStart" prepend="and">
+     				t1.SEND_DATE &gt;= #sendStart# 
+     			</isNotEmpty>
+     			<isNotEmpty property="sendEnd" prepend="and">   			
+     				t1.SEND_DATE &lt;= (#sendEnd#+1)
+     			</isNotEmpty>
+     			<isNotEmpty property="replyStart" prepend="and">
+     				t1.REPLY_DATE &gt;= #replyStart#
+     			</isNotEmpty>
+     			<isNotEmpty property="replyEnd" prepend="and">
+     				t1.REPLY_DATE &lt;= (#replyEnd#+1)
+     			</isNotEmpty>
+     			<isEqual property="replyStatus" compareValue="0" prepend="and">
+     				t1.STATUS=0 and t1.ADDRESSEE_TYPE &lt; 2
+     			</isEqual>
+     			<isEqual property="replyStatus" compareValue="1" prepend="and">
+     				t1.STATUS=1
+     			</isEqual>
+     			<isNotEmpty property="messageSender" prepend="and">
+     				t1.messageSender=#messageSender# OR T1.LOGIN_NAME=#messageSender#
+     			</isNotEmpty>
+     			<isNotEmpty property="addressee" prepend="and">
+     				t1.ADDRESSEE=#addressee#
+     			</isNotEmpty>
+     			<isNotEmpty property="addressType" prepend="and">
+     				t1.ADDRESSEE_TYPE=#addressType#
+     			</isNotEmpty>
+     		</dynamic>
+	</sql>
+	
+	
+	<!-- 获取站内信列表 分页 -->
+	<select id="getInternalMessagePage" resultMap="internalMessageResultmap" parameterClass="internalMessage">
+		Select t0.* From(
+     		<include refid="sqlColumn"/>
+     	) t0
+		Where 
+			t0.num &gt;=#beginIndex# and t0.num &lt;= #endIndex# 
+	</select>
+	
+	<!-- 获取符合条件的数据的总数 -->
+	<select id="getTotalCount" parameterClass="internalMessage" resultClass="java.lang.Integer">
+		Select count(1) From(
+     		<include refid="sqlColumn"/>
+     	) 
+	</select>
+	
+	
+	<!-- 根据id查询信件信息 -->
+	<select id="getInternalMesaageById" parameterClass="java.lang.Long" resultMap="internalMessageResultmap">
+		Select 
+			t2.*,t3.STOCK_ACCOUNT messageSender,t4.LOGIN_NAME 
+		From 
+			comm_internal_message t2 left join user_account t3 on t2.USER_ID = t3.id left join system_user t4 on t4.id=t2.USER_ID
+		where
+			t2.ID=#id#
+	</select>
+	
+	<!-- 更改站内信的阅读状态为已读 -->
+	<update id="setHaveRead" parameterClass="java.lang.Long">
+		update COMM_INTERNAL_MESSAGE set READ_STATUS = 2 where ID=#id#
+	</update>
+	
+	<!-- 更改站内信的回复状态为已回复,并设置回复信件的id -->
+	<update id="setHaveReplied" parameterClass="java.util.Map">
+		update COMM_INTERNAL_MESSAGE set STATUS = 1,REPLY_ID = #replyId#,REPLY_DATE = sysdate where ID=#id#
+	</update>
+	
+	<!-- 添加站内信  用于回复站内信 -->
+	<insert id="addInternalMessage" parameterClass="internalMessage">
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+			select SEQ_COMM_INTERNAL_MESSAGE.NEXTVAL from dual
+		</selectKey>
+		insert into 
+			comm_internal_message(ID,ADDRESSEE_TYPE,ADDRESSEE,THEME,CONTENT,MESSAGE_ID,SEND_DATE,READ_STATUS,STATUS,GMT_CREATE,GMT_MODIFY,USER_ID)
+		values
+			(#id#,2,#addressee#,#theme#,#content#,#messageId#,sysdate,1,0,sysdate,sysdate,#userId#)
+	</insert>
+
+
+	
+</sqlMap>

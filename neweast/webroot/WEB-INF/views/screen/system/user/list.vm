@@ -1,0 +1,61 @@
+<!-- 搜索框 -->
+<div class="search-box"">
+    <form id="systemUser" name="systemUser" action="list.htm" method="get">
+        <table>
+            <tr>
+                <th>用户名</th>
+                <td>
+                    <input type="text" name="loginName" onKeyUp="this.value=this.value.trim()" id="serchUserName" maxlength="16" class="inp"></td>
+                    <td>
+                        <input type="submit" name="search" value="查询" class="but-61" />
+                    </td>
+</tr>
+</table>
+</form>
+</div>
+<!-- 搜索框 END -->
+<div class="basic">
+    <div class="tool">
+        <span>
+            <a href="add-init.htm" class="bt_add"  hidefocus="true" >新增</a>
+        </span>
+    </div>
+    <div class="listbox" >
+        <table class="list-table" >
+            <tr>
+                <th>用户名</th>
+                <th>E-mail</th>
+                <th>电话</th>
+                <th>手机</th>
+                <th>创建时间</th>
+                <th>操作</th>
+            </tr>
+            #if($!{page} && ${page.totalCount} > 0)
+                #foreach($user in $page.getData())
+                    <tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+                            <td>$!{user.loginName}</td>
+                            <td>$!{user.email}</td>
+                            <td>$!{user.tel}</td>
+                            <td>$!{user.mobile}</td>
+                            <td>$dateTool.format('yyyy-MM-dd HH:mm:ss',$!{user.gmtCreate})</td>
+                            <td class="link-td">
+                                <a href="edit-init.htm?id=$!{user.id}">修改</a>
+                                &nbsp;
+                                <a href="remove.htm?id=$!{user.id}" onClick="return confirm('确定删除该用户吗？');" name="delete">删除</a>
+                                &nbsp;
+								
+                            </td>
+                    </tr>
+                #end
+                #else
+                    <tr>
+                        <td>
+                            <p class="ts">没有结果</p>
+                        </td>
+                    </tr>
+            #end
+        </table>
+        #pager($page, "systemUser")
+    </div>
+    <div class="clear"></div>
+</div>

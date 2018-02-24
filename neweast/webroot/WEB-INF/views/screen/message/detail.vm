@@ -1,0 +1,42 @@
+   <div class="main-right" >        	
+  <div class="basic">  
+   <ul class="form-tab">
+        <li class="c">
+            <span>评论详情</span>
+        </li>
+    </ul>
+  	<div class="listbox" >
+   	<table class="list-table">
+		<tr>
+			<td width="20%" align="right">艺术品名称：</td><td width="80%">$!{message.artName}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">评论人：</td><td width="80%">$!{message.fromName}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">被评论人：</td><td width="80%">$!{message.toName}</td>
+		</tr>		
+		<tr>
+			<td width="20%" align="right">阅读状态：</td><td width="80%">						
+				#if($!{message.readStatus}==1)
+                    <span style="color:red;">未阅读</span>
+				#else
+					<span style="color:blue;">已阅读</span>
+				#end
+			</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">评论时间：</td><td width="80%">$!{dateTool.format($!{message.gmtCreate})}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">评论内容：</td><td width="80%">$!{message.content}</td>
+		</tr>
+    </table>
+    </div>
+	<div class="form-but">
+		<input type="button" onclick="location='$!{appServer}/message/delete.htm?id=${message.id}'" class="but" value="删除" /> 		
+		<input type="button" id="back" name="back" class="but" value="返回" />
+    </div><!-- 表单按钮区 END -->
+  </div>
+</div>
+		

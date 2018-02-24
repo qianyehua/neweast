@@ -1,0 +1,46 @@
+   <div class="main-right" >        	
+  <div class="basic">            
+    <div class="tool">
+        <span><a href="add-init.htm?parentId=$!{pid}" class="bt_add" hidefocus="true">新增</a></span> 
+    </div>
+  	<div class="listbox" >
+       	<table class="list-table">
+          <tr>
+    		<th width="20%">功能名</th>
+    		<th width="45%">路径</th>
+    		<th width="5%">是否菜单</th>
+            <th width="5%">排序号</th>
+    		<th width="25%">操作 </th>
+          </tr>
+    	  #if($!{list_fun})
+    		#foreach($fun in $!list_fun)
+              <tr #if($velocityCount%2==0) class="bg"   #end>
+                <td>$!{fun.name}</td>
+                <td>$!{fun.url}</td>
+                <td>#if($!{fun.isMenu}==1) 是  #else 否 #end</td>
+                <td>$!{fun.ordering}</td>
+                <td class="link-td"><a href="edit-init.htm?id=$!{fun.id}">修改</a>		
+                <a name="delete" 
+        			onclick="#if($fun.canDeleted) return confirm('确定删除该菜单吗？');#else alert('该功能当前被角色引用，无法删除!');return false; #end" 
+        			href="remove.htm?id=$!{fun.id}&pid=$!{pid}">删除</a>
+        		<a href="list.htm?pid=$!{fun.id}">子功能</a>
+        		</td>
+              </tr>
+    		#end
+    	#else
+        	<tr>    
+            	<td colspan="5">
+                	<p class="ts">没有结果</p>
+                </td>
+            </tr>
+    	#end
+       </table>
+    </div>
+	#if($!pid!=0)
+	<div class="form-but"><!-- 表单按钮区 -->
+    	<a href="list.htm?pid=$!{ppid}"><input type="button" class="but" value="返回" /></a>
+    </div><!-- 表单按钮区 END -->
+	#end
+  </div>
+</div>
+		

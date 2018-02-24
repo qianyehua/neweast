@@ -1,0 +1,140 @@
+<div class="basic">
+	<div class="listbox">
+		<table width="100%">
+			<tr>
+				<th>会员账号:</th>
+				<td>$!{account.stockAccount}</td>
+				<th>会员名称:</th>
+				<td>$!{account.realName}</td>
+				<th>开户时间:</th>
+				<td>$!dateTool.format('yyyy-MM-dd HH:mm:ss', $!{account.gmtCreate})</td>
+			</tr>
+        </table>
+		<p >【评价统计：买家】信用累积：$!{buyerCredit.creditScore}</p>
+		<table class="list-table" border="1" bordercolor="#a0c6e5" style="border-collapse:collapse;">
+        <tr >
+            <th></th>
+        	<th>最近一周</th>
+        	<th>最近一个月</th>
+        	<th>最近6个月</th>
+        	<th>6个月前</th>
+        	<th>总计</th>
+        </tr>
+		<tr align="center">
+        	<td>好评</td>
+        	<td>${appraise[0][1][1]}</td>
+        	<td>${appraise[0][1][2]}</td>
+        	<td>${appraise[0][1][3]}</td>
+        	<td>${appraise[0][1][4]}</td>
+        	<td>${appraise[0][1][0]}</td>
+        </tr>
+        <tr align="center">
+        	<td>中评</td>
+        	<td>${appraise[0][2][1]}</td>
+        	<td>${appraise[0][2][2]}</td>
+        	<td>${appraise[0][2][3]}</td>
+        	<td>${appraise[0][2][4]}</td>
+        	<td>${appraise[0][2][0]}</td>
+        </tr>
+        <tr align="center">
+        	<td>差评</td>
+        	<td>${appraise[0][3][1]}</td>
+        	<td>${appraise[0][3][2]}</td>
+        	<td>${appraise[0][3][3]}</td>
+        	<td>${appraise[0][3][4]}</td>
+        	<td>${appraise[0][3][0]}</td>
+        </tr>
+        <tr align="center">
+        	<td>总计</td>
+        	<td>${appraise[0][0][1]}</td>
+        	<td>${appraise[0][0][2]}</td>
+        	<td>${appraise[0][0][3]}</td>
+        	<td>${appraise[0][0][4]}</td>
+        	<td>${appraise[0][0][0]}</td>
+        </tr>
+        </table>
+		#if($!{sellerCredit})
+    	<p >【评价统计：卖家】信用累积：$!{sellerCredit.creditScore}</p>
+        <table class="list-table" border="1" bordercolor="#a0c6e5" style="border-collapse:collapse;">
+        <tr >
+            <th></th>
+        	<th>最近一周</th>
+        	<th>最近一个月</th>
+        	<th>最近6个月</th>
+        	<th>6个月前</th>
+        	<th>总计</th>
+        </tr>
+        <tr align="center">
+        	<td>好评</td>
+        	<td>${appraise[1][1][1]}</td>
+        	<td>${appraise[1][1][2]}</td>
+        	<td>${appraise[1][1][3]}</td>
+        	<td>${appraise[1][1][4]}</td>
+        	<td>${appraise[1][1][0]}</td>
+        </tr>
+        <tr align="center">
+        	<td>中评</td>
+        	<td>${appraise[1][2][1]}</td>
+        	<td>${appraise[1][2][2]}</td>
+        	<td>${appraise[1][2][3]}</td>
+        	<td>${appraise[1][2][4]}</td>
+        	<td>${appraise[1][2][0]}</td>
+        </tr>
+        <tr align="center">
+        	<td>差评</td>
+        	<td>${appraise[1][3][1]}</td>
+        	<td>${appraise[1][3][2]}</td>
+        	<td>${appraise[1][3][3]}</td>
+        	<td>${appraise[1][3][4]}</td>
+        	<td>${appraise[1][3][0]}</td>
+        </tr>
+        <tr align="center">
+        	<td>总计</td>
+        	<td>${appraise[1][0][1]}</td>
+        	<td>${appraise[1][0][2]}</td>
+        	<td>${appraise[1][0][3]}</td>
+        	<td>${appraise[1][0][4]}</td>
+        	<td>${appraise[1][0][0]}</td>
+        </tr>
+        </table>
+		#end
+		#*<br />
+        <p>【具体评价列表】</p>
+        <form id="appraiseForm" name="appraiseForm" action="credit_appraise.htm" method="post">
+        	<table class="list-table">
+            <tr>
+        		<th width="45%">评价</th>
+        		<th width="18%">评价时间</th>
+        		<th width="17%">评价人</th>
+                <th width="30%">艺术品信息</th>
+        	</tr>
+			#if($!{query} && ${query.totalCount} > 0)
+            	#foreach($record in $query.getData())
+                <tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+                	<td >$!{record.appraiseContant} </td>
+            		<td >[${dateTool.format($!{record.gmtCreate})}]</td>
+                	<td >$!{record.email} </td>
+                	<td >$!{record.name} </td>
+            		
+                </tr>
+    			#end
+			#else
+                    <tr>
+                        <td colspan="4">
+                            <p class="ts">没有结果</p>
+                        </td>
+                    </tr>
+            #end
+        	</table>
+        	#pager($query, "appraiseForm")
+        </form>*#
+    </div>
+</div>
+
+<!-- 表单按钮区 -->
+<div class="form-but">
+    <input type="button" class="but" value="返回" onclick="self.location=document.referrer;" />
+</div>
+<!-- 表单按钮区 END -->
+<div class="clear"></div>
+

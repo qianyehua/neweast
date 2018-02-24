@@ -1,0 +1,119 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+    jQuery( function() {
+        $('.date-pick').datePicker( {clickInput : true, startDate : "2010-01-01"});
+	});
+</script>
+<!-- 搜索框 -->
+<form id="accountForm" name="accountForm" action="list.htm" method="post">
+	<div class="search-box"">
+        <table>
+			<tr>
+				<th>状态</th>
+				<td>
+					#springBind("query.status")
+					<select id="status" name="$!{status.expression}">
+						<option value="">请选择</option>
+						#foreach($status in $!statusList)
+                		<option  value="$!{status.value}" #if($!{query.status} == $!{status.value} ) selected #end>$!status.desp</option>
+						#end
+					</select>
+                </td>
+                <th>开户日期</th>
+                <td colspan="3">
+					#springBind("query.gmtOpenStart")
+					<input type="text" id="gmtOpenStart" name="$!{status.expression}" value="$!{status.value}" readonly="readonly" size="10" class="date-pick" style="width:85px;"/>
+                    -
+					#springBind("query.gmtOpenEnd")
+                    <input type="text" id="gmtOpenEnd" name="$!{status.expression}" value="$!{status.value}" readonly="readonly"  size="10" class="date-pick" style="width:85px;"/>
+                </td>
+				
+			</tr>
+            <tr>
+				<th>电邮地址</th>
+                <td>
+					#springBind("query.email")
+                    <input type="text" name="$!{status.expression}" value="$!{status.value}" onKeyUp="this.value=this.value.trim()" class="inp" style="width:140px">
+				</td>
+				<th>手机号码</th>
+				<td>
+					#springBind("query.mobile")
+					<input tpye="text" name="$!{status.expression}" value="$!{status.value}" onKeyUp="this.value=this.value.trim()" class="inp" />
+                </td>
+				<!-- <th>国家/地区</th>
+                <td>
+					#springBind("query.country")
+					<select id="country" name="$!{status.expression}">
+						<option value="">请选择</option>
+						#foreach($country in $!countryList)
+                		<option  value="$!{country.value}" #if($!{query.country} == $!{country.value} ) selected #end>$country.desp</option>
+						#end
+					</select>
+				</td>  -->
+			</tr>
+			
+			<tr>
+				<th>姓名</th>
+				<td>
+					#springBind("query.realName")
+					<input tpye="text" name="$!{status.expression}" value="$!{status.value}" onKeyUp="this.value=this.value.trim()" class="inp" />
+                </td>
+				<th>交易账号</th>
+				<td>
+					#springBind("query.stockAccount")
+					<input tpye="text" name="$!{status.expression}" value="$!{status.value}" onKeyUp="this.value=this.value.trim()" class="inp" />
+               </td>
+			   <td >
+					<input type="submit" name="search" value="查询" class="but-61" />
+                </td>
+				<td>
+					<input type="reset" value="重置" onclick="window.location = 'list.htm'" class="but-62"/>
+                 </td>
+			</tr>
+		</table>
+	</div>
+<!-- 搜索框 END -->
+ <div class="basic">
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<!-- <th width="10%">地区 </th> -->
+			<th width="10%">姓名 </th>
+			<th width="10%">交易账号 </th>
+			<th width="20%">电邮地址</th>
+			<th width="10%">手机号码</th>
+			<th width="10%">开户时间</th>
+			<th width="10%">状态</th>
+			<th width="20%">操作</th>
+        </tr>
+		#if($!{query.getData()} && $!{query.getData().size()} > 0)
+            #foreach($account in $!query.getData())
+            <tr #if($!{velocityCount}%2 == 0) class="bg" #end align="center">
+                <!-- <td >$enumUtils.getCountry($!{account.country})</td> -->
+				<td >$!{account.realName}</td>
+				<td >$!{account.stockAccount}</td>
+				<td >$!{account.email}</td>
+				<td >$!{account.mobile}</td>
+				<td >$!dateTool.format('yyyy-MM-dd', $!{account.gmtCreate})</td>
+				<td >$!{enumUtils.getUserAccountStatus($account.status)}</td>
+                <td class="link-td">
+					<a href="detail.htm?id=$!{account.id}">查看</a>
+					<a href="appraise.htm?id=$!{account.id}">评价统计</a>
+				</td>
+            </tr>
+            #end
+        #else
+            <tr>
+                <td colspan="6">
+                    <p class="ts">没有结果</p>
+                </td>
+            </tr>
+        #end
+    </table>
+	 #pager($query, "accountForm")
+	
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

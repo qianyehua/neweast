@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="AUTH_CERT">
+
+	<typeAlias alias="authCert"      type="com.skyjoo.neweast.biz.auth.domain.AuthCert" />
+	<typeAlias alias="authCertQurty" type="com.skyjoo.neweast.biz.auth.domain.query.AuthCertQurty" />
+	
+	<resultMap id="authCertResultMap" class="authCert">
+		<result column="ID" property="id"/>
+		<result column="INST_ID" property="instID"/>
+		<result column="CERT_NO" property="certNo"/>
+		<result column="CERT_PIC" property="certPic"/>
+		<result column="GMT_ENTRY" property="gmtEntry"/>
+		<result column="OPERATOR" property="operator"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+	</resultMap>
+	
+	<resultMap id="authCertQurtyResultMap" class="authCertQurty">
+		<result column="CERT_ID" property="certID"/>
+		<result column="INST_NAME" property="instName"/>
+		<result column="INST_ID" property="instID"/>
+		<result column="CERT_NO" property="certNo"/>
+		<result column="GMT_ENTRY" property="gmtEntry"/>
+		<result column="CERT_PIC" property="certPic"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		ac.ID,
+		ac.INST_ID,
+		ac.CERT_NO,
+		ac.CERT_PIC,
+		ac.GMT_ENTRY,
+		ac.OPERATOR,
+		ac.GMT_CREATE,
+		ac.GMT_MODIFY
+	</sql>
+	<sql id="queryColumsSql">
+		ac.ID as CERT_ID,
+		ai.NAME as INST_NAME,
+		ac.INST_ID as INST_ID,
+		ac.CERT_NO as CERT_NO, 
+		ac.GMT_ENTRY as GMT_ENTRY,
+		ac.CERT_PIC as CERT_PIC
+	</sql>
+	
+	<!-- 1.获取申请数 -->
+	<select id="getAuthCertQueryCount" parameterClass="authCertQurty" resultClass="int">
+		select count(*) 
+		from AUTH_CERT ac , AUTH_INST ai
+		where ac.INST_ID = ai.ID
+		<isNotEqual prepend="and" property="instID" compareValue="0">
+			ai.ID = #instID#
+		</isNotEqual>
+		<isNotEmpty property="instName" prepend="and">
+				ai.NAME like #instName#||'%'
+		</isNotEmpty>
+		<isNotEmpty property="certNo" prepend="and">
+				ac.CERT_NO = #certNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="startDate">
+            <![CDATA[ ac.GMT_CREATE >= to_date(#startDate#,'yyyy-MM-dd') ]]>
+        </isNotEmpty>
+        <isNotEmpty prepend="and" property="endDate">
+            <![CDATA[ ac.GMT_CREATE <= to_date(#endDate#,'yyyy-MM-dd')+1 ]]>
+        </isNotEmpty>
+	</select>
+	<!-- 2.条件查询 -->
+	<select id="getPaginatedAuthCertQuery" parameterClass="authCertQurty"  resultMap="authCertQurtyResultMap">
+		select *
+		from (
+		select t1.* , rownum linenum
+		from (
+			select <include refid="queryColumsSql"/> 
+			from AUTH_CERT ac , AUTH_INST ai
+			where ac.INST_ID = ai.ID 
+			<isNotEqual prepend="and" property="instID" compareValue="0">
+				ai.ID = #instID#
+			</isNotEqual>
+			<isNotEmpty property="instName" prepend="and">
+					ai.NAME like #instName#||'%'
+			</isNotEmpty>
+			<isNotEmpty property="certNo" prepend="and">
+					ac.CERT_NO = #certNo#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="startDate">
+	            <![CDATA[ ac.GMT_ENTRY >= to_date(#startDate#,'yyyy-MM-dd') ]]>
+	        </isNotEmpty>
+	        <isNotEmpty prepend="and" property="endDate">
+	            <![CDATA[ ac.GMT_ENTRY <= to_date(#endDate#,'yyyy-MM-dd')+1 ]]>
+	        </isNotEmpty>
+			order by
+				   ac.GMT_ENTRY desc
+		) t1
+			where rownum &lt;= #endIndex#) t2
+		where t2.linenum &gt;= #beginIndex#
+	</select>
+	
+	<select id="getAuthCertQueryById" parameterClass="Long" resultMap="authCertQurtyResultMap">
+		select <include refid="queryColumsSql"/>
+		from AUTH_CERT ac , AUTH_INST ai 
+		where ac.INST_ID = ai.ID  
+		and ac.ID = #id#
+	</select>
+	
+		
+	<delete id="deleteAuthCertByID" >
+		delete 
+		from AUTH_CERT ac 
+		where
+		ac.ID = #id#
+    </delete>
+</sqlMap>

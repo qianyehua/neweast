@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ART_SCENE">
+
+	<typeAlias alias="artScene" type="com.skyjoo.neweast.biz.art.domain.ArtScene" />
+
+	<resultMap id="artSceneResultMap" class="artScene">
+		<result column="ID" property="id"/>
+		<result column="NAME" property="name"/>
+		<result column="DESCRIPTION" property="description"/>
+		<result column="ORDERING" property="ordering"/>
+		<result column="ISDISABLE" property="isdisable"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+	</resultMap>
+	
+	<sql id="columnSql">
+		ars.ID,
+		ars.NAME,
+		ars.DESCRIPTION,
+		ars.ORDERING,
+		ars.ISDISABLE,
+		ars.GMT_CREATE,
+		ars.GMT_MODIFY
+	</sql>
+	
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+	
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum &gt;= #beginIndex#
+	</sql>	
+	
+	<sql id="pageCondition">
+		<dynamic prepend="where">
+			<isNotEmpty property="id" prepend="and">
+				ars.ID = #id#
+			</isNotEmpty>
+			<isNotEmpty property="name" prepend="and">
+				ars.NAME = #name#
+			</isNotEmpty>
+			<isEqual compareValue="0" prepend="and" property="isdisable">
+				ars.ISDISABLE = 0
+			</isEqual>
+			<isEqual compareValue="1" prepend="and" property="isdisable">
+				ars.ISDISABLE = 1
+			</isEqual>			
+		</dynamic>
+	</sql>	
+
+	
+	<!-- 分页显示艺术品相关信息 -->
+	<select id="getPaginatedArtSceneQuery" resultClass="artScene" parameterClass="artScene">
+		<include refid="pageBeginSql"/>
+		Select 
+			<include refid="columnSql"/>
+		From 
+			ART_SCENE ars
+		ORDER BY ISDISABLE DESC, GMT_MODIFY DESC
+		<include refid="pageCondition"/>
+		<include refid="pageEndSql"/>
+		ORDER BY t2.ISDISABLE DESC, t2.GMT_MODIFY DESC
+	</select>
+	
+	<!-- 得到未审核的艺术品的数量 -->
+	<select id="getArtSceneCount" parameterClass="artScene" resultClass="java.lang.Integer">
+		Select 
+			count(1) 
+		From 
+			ART_SCENE ars
+		<include refid="pageCondition"/>
+	</select>
+	
+	<select id="getAllArtScene" parameterClass="artScene" resultClass="artScene">
+		Select
+			<include refid="columnSql"/>
+		From
+			ART_SCENE ars
+		<include refid="pageCondition"/>
+	</select>
+	
+	<insert id="insertArtScene" parameterClass="artScene">
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+    		select SEQ_ART_SCENE.nextval from dual
+    	</selectKey>
+    	insert into
+    		ART_SCENE(ID,NAME,DESCRIPTION,ORDERING,ISDISABLE,GMT_CREATE,GMT_MODIFY)
+    	values
+    		(#id#,#name#,#description#,$ordering$,1,sysdate,sysdate)
+	</insert>
+	
+	<update id="updateArtScene" parameterClass="artScene">
+		update 
+			ART_SCENE
+		<dynamic prepend="set">
+			<isNotEmpty property="name" prepend=",">
+				NAME = #name#
+			</isNotEmpty>
+			<isNotEmpty property="description" prepend=",">
+				DESCRIPTION = #description#
+			</isNotEmpty>
+			<isNotEmpty property="ordering" prepend=",">
+				ORDERING = #ordering#
+			</isNotEmpty>
+			<isEqual compareValue="0" prepend="," property="isdisable">
+				ISDISABLE = 0
+			</isEqual>
+			<isEqual compareValue="1" prepend="," property="isdisable">
+				ISDISABLE = 1
+			</isEqual>	
+			<isEmpty property="gmtModify" prepend=",">
+				GMT_MODIFY = sysdate
+			</isEmpty>
+		</dynamic>
+		where
+		   ID = #id#
+	</update>
+	
+	<select id="getArtSceneById" parameterClass="java.lang.Long" resultClass="artScene">
+		select 
+			<include refid="columnSql"/>
+		From
+			ART_SCENE ars
+		where
+		    ID = #id#
+	</select>
+	
+	<select id="getArtAllSceneList" parameterClass="artScene" resultMap="artSceneResultMap">
+		SELECT <include refid="columnSql" />
+		FROM ART_SCENE ars
+		order by ID asc
+	</select>		
+</sqlMap>

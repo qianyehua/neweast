@@ -1,0 +1,57 @@
+<div class="basic">
+    <ul class="form-tab">
+        <li class="c">
+            <span>店铺开关</span>
+        </li>
+    </ul>
+	<form id="form1" action="switch.htm" method="post">
+        <div class="formbox">
+            <div class="clear"></div>
+            <div class="nr">
+                <div class="nr-t"></div>
+                <div class="nr-c">
+                    <table class="c2">
+                        <tr >
+                            <th>店铺名称：</th>
+                            <td>
+    							#springBind("shop.id")
+    							<input type="hidden" name="$!{status.expression}" value="$!{status.value}"/>
+    							$!{shop.name}
+    						</td>
+                        </tr>
+    					<tr>
+    						<th>艺术品发布审核开关：</th>
+    						<td>
+    							#springBind("shop.atrAuditOn")
+    							<select name="$!{status.expression}" value="$!{status.value}">
+    								#foreach($switch in $!switchList)
+    								<option value="$!switch.value" #if(${switch.value} == ${shop.atrAuditOn}) selected #end>$switch.desp</option>
+    								#end
+                                </select>
+    						</td>
+                        </tr>
+    					<tr>
+    						<th>图片发布审核开关：</th>
+    						<td>
+    							#springBind("shop.imgAuditOn")
+    							<select name="$!{status.expression}" value="$!{status.value}">
+    								#foreach($switch in $!switchList)
+    								<option value="$!switch.value" #if(${switch.value} == ${shop.imgAuditOn}) selected #end>$switch.desp</option>
+    								#end
+                                </select>
+    						</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="nr-b"></div>
+            </div>
+        </div>
+        <!-- 表单按钮区-->
+        <div class="form-but">
+    		<input type="submit" class="but" value="提交" />
+            <input type="button" onclick="location.href='list.htm'" class="but" value="返回" />
+        </div>
+        <!-- 表单按钮区 END -->
+        <div class="clear"></div>
+    </form>
+</div>

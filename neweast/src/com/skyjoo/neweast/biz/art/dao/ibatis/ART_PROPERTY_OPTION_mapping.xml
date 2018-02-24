@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ART_PROPERTY_OPTION">
+
+	<typeAlias alias="artPropertyOption"
+		type="com.skyjoo.neweast.biz.art.domain.ArtPropertyOption" />
+	<typeAlias alias="categoryOptionDTO"
+		type="com.skyjoo.neweast.biz.art.domain.CategoryOptionDTO" />
+
+	<resultMap id="artPropertyOptionResultMap" class="artPropertyOption">
+		<result column="ID" property="id" />
+		<result column="NAME" property="content" />
+		<result column="PROPERTY_ID" property="propertyId" />
+		<result column="ORDERING" property="ordering" />
+		<result column="OPERATOR" property="operator" />
+		<result column="GMT_CREATE" property="gmtCreate" />
+		<result column="GMT_MODIFY" property="gmtModify" />
+	</resultMap>
+
+	<sql id="columnSql">
+		ID,
+		NAME,
+		PROPERTY_ID,
+		ORDERING,
+		OPERATOR,
+		GMT_CREATE,
+		GMT_MODIFY
+	</sql>
+
+	<!-- 通过id获取选项 -->
+	<select id="getArtPropertyOptionById" parameterClass="java.lang.Long"
+		resultMap="artPropertyOptionResultMap">
+		select
+		<include refid="columnSql" />
+		from
+		ART_PROPERTY_OPTION
+		where
+		ID=#optionId#
+		order by
+		ORDERING
+	</select>
+
+	<!-- 通过属性id获取未删除的选项 -->
+	<select id="getArtPropertyOptionByProId" parameterClass="map"
+		resultMap="artPropertyOptionResultMap">
+		select
+		apo.ID,
+		apo.NAME,
+		apo.PROPERTY_ID,
+		apo.ORDERING,
+		apo.OPERATOR,
+		apo.GMT_CREATE,
+		apo.GMT_MODIFY
+		from
+		ART_PROPERTY_OPTION apo
+		left join
+		CATEGORY_X_OPTION cxo on apo.ID = cxo.OPTION_ID
+		where
+		apo.PROPERTY_ID =
+		#proId#
+		<isNotEqual compareValue="-1" prepend="and" property="categoryId">
+			cxo.CATEGORY_ID=#categoryId#
+		</isNotEqual>
+		order by
+		ORDERING,GMT_CREATE desc
+	</select>
+
+	<!-- 通过属性id获取选项,包括已删除的选项 -->
+	<select id="getAllArtPropertyOptionByProId" parameterClass="java.lang.Long"
+		resultMap="artPropertyOptionResultMap">
+		select
+		<include refid="columnSql" />
+		from
+		ART_PROPERTY_OPTION
+		where
+		PROPERTY_ID = #propertyId#
+		order by
+		ORDERING,GMT_CREATE desc
+	</select>
+
+	<!-- 修改属性选项 -->
+	<update id="editPropertyOption" parameterClass="artPropertyOption">
+		update
+		ART_PROPERTY_OPTION
+		set
+		NAME=#content#,ORDERING=#ordering#,OPERATOR=#operator#,GMT_MODIFY=sysdate
+		where
+		ID=#id#
+	</update>
+
+	<!-- 添加选项 -->
+	<insert id="addPropertyOption" parameterClass="artPropertyOption">
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+			select
+			SEQ_ART_PROPERTY_OPTION.nextval from dual
+		</selectKey>
+		insert into
+		ART_PROPERTY_OPTION(ID,NAME,PROPERTY_ID,ORDERING,
+		OPERATOR,GMT_CREATE,GMT_MODIFY)
+		values
+		(#id#,#content#,#propertyId#,#ordering#,
+		#operator#,sysdate,sysdate)
+	</insert>
+
+	<!-- 删除选项 -->
+	<delete id="removePropertyOptionById" parameterClass="java.lang.Long">
+		delete from
+		ART_PROPERTY_OPTION where ID = #optionId#
+	</delete>
+
+	<delete id="removePropertyOptionByPropertyId" parameterClass="java.lang.Long">
+		delete from ART_PROPERTY_OPTION where PROPERTY_ID = #propertyId#
+	</delete>
+
+
+	<!-- 插入Category_X_Option数据 -->
+	<insert id="insertCategory_X_Option" parameterClass="categoryOptionDTO">
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+			select
+			SEQ_CATEGORY_X_OPTION.nextval from dual
+		</selectKey>
+		insert into
+		CATEGORY_X_OPTION(ID,CATEGORY_ID,OPTION_ID,GMT_CREATE,GMT_MODIFY)
+		values
+		(#id#,#categoryId#,#optionId#,sysdate,sysdate)
+	</insert>
+
+
+	<!-- 通过选项ID删除Category_X_Option数据 -->
+	<delete id="deleteCategory_X_OptionByOptionId" parameterClass="Long">
+		delete from CATEGORY_X_OPTION cxo where cxo.OPTION_ID=#optionID#
+	</delete>
+
+	<!-- 统计其他类目使用该选项的数目 -->
+	<select id="countCategory_X_OptionByOptionId" parameterClass="map"
+		resultClass="int">
+		SELECT COUNT(1) FROM CATEGORY_X_OPTION cxo
+		where
+		cxo.OPTION_ID=#opid# and cxo.CATEGORY_ID!=#cid#
+	</select>
+	
+	<select id="countCategory_X_OptionByOption" parameterClass="Long"
+		resultClass="int">
+		select count(1) from CATEGORY_X_OPTION cxo where
+		cxo.OPTION_ID=#opid#
+	</select>
+	<!-- 根据选项ID和类目ID删除 -->
+	<delete id="deleteCategory_X_OptionWithOptionIdAndCategoryId"
+		parameterClass="map">
+		delete from CATEGORY_X_OPTION cxo where
+		cxo.OPTION_ID=#optionID# and
+		cxo.CATEGORY_ID=#categoryId#
+	</delete>
+
+	<!-- 根据属性ID和选项名获取 -->
+	<select id="getArtPropertyOptionByPropertyIDAndName"
+		parameterClass="map" resultMap="artPropertyOptionResultMap">
+		select
+		<include refid="columnSql" />
+		from
+		ART_PROPERTY_OPTION
+		where
+		PROPERTY_ID=#propertyId# and NAME=#name#
+	</select>
+</sqlMap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

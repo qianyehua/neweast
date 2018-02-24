@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ART_PROPERTY_VALUE">
+
+	<typeAlias alias="artPropertyValue"
+		type="com.skyjoo.neweast.biz.art.domain.ArtPropertyValue" />
+
+	<resultMap id="artPropertyValueMap" class="artPropertyValue">
+		<result column="ID" property="id" />
+		<result column="ART_ID" property="artId" />
+		<result column="PROPERTY_ID" property="propertyId" />
+		<result column="ART_OPTION" property="artOption" />
+		<result column="GMT_CREATE" property="gmtCreate" />
+		<result column="GMT_MODIFY" property="gmtModify" />
+	</resultMap>
+
+	<!-- 通过艺术品id获取属性值 -->
+	<select id="getArtPropertyValuesByArtId" parameterClass="java.lang.Long"
+		resultMap="artPropertyValueMap">
+		select
+			apv.ID,
+			apv.ART_ID,
+			apv.PROPERTY_ID,
+			apv.ART_OPTION,
+			apv.GMT_CREATE,
+			apv.GMT_MODIFY
+		from
+		ART_PROPERTY_VALUE apv
+		where
+		ART_ID=#id#
+	</select>
+
+	<!-- 通过类目属性id获取属性值 -->
+	<select id="getArtPropertyValuesByProId" parameterClass="java.lang.Long"
+		resultMap="artPropertyValueMap">
+		select
+		ID,
+		ART_ID,
+		PROPERTY_ID,
+		ART_OPTION,
+		GMT_CREATE,
+		GMT_MODIFY
+		from
+		ART_PROPERTY_VALUE
+		where
+		PROPERTY_ID=#propertyId#
+	</select>
+
+	<select id="checkArtPropertyValue" parameterClass="map"
+		resultClass="java.lang.Integer">
+		select count(*) from ART_PROPERTY_VALUE apv left join ART
+		t on t.id =
+		apv.art_id
+		left join ART_CATEGORY_PROPERTY acp on
+		apv.property_id =
+		acp.id
+		where t.status not in (2,4,7) and
+		apv.art_option like '%$optionId$%' and
+		acp.property_type in (1,2)
+	</select>
+	<!-- and apv.PROPERTY_ID=#propertyID# <isNotEqual compareValue="-1" property="categoryID" 
+		prepend="and"> t.CATEGORY_ID=#categoryID# </isNotEqual> -->
+	<delete id="removeArtPropertyValue" parameterClass="java.lang.Long">
+		delete from
+		ART_PROPERTY_VALUE where PROPERTY_ID=#propertyId#
+	</delete>
+
+	<!-- 删除单选属性值 -->
+	<delete id="removeArtPropertyValueByDeleteOption"
+		parameterClass="map">
+		delete from ART_PROPERTY_VALUE apv where apv.ID in (
+		select apv.ID from ART_PROPERTY_VALUE apv
+		left join
+		ART_CATEGORY_PROPERTY acp on
+		apv.property_id = acp.id
+		left join ART ar
+		on apv.ART_ID=ar.ID
+		where
+		acp.property_type = 1
+		and
+		apv.ART_OPTION=#optionId#
+		)
+	</delete>
+
+	<!-- and apv.PROPERTY_ID=#propertyID# <isNotEqual compareValue="-1" property="categoryID" 
+		prepend="and"> ar.CATEGORY_ID=#categoryID# </isNotEqual> -->
+
+	<!-- 属性选项删除后修改艺术品value值 -->
+	<update id="updateArtPropertyValue" parameterClass="map">
+		update
+		ART_PROPERTY_VALUE apv set apv.GMT_MODIFY=sysdate,
+		apv.ART_OPTION=replace(apv.ART_OPTION,#optionId#,',') where apv.ID in
+		(
+		select apv.ID from ART_PROPERTY_VALUE apv
+		left join
+		ART_CATEGORY_PROPERTY acp on
+		apv.property_id = acp.id
+		left join ART ar
+		on apv.ART_ID=ar.ID
+		where
+		acp.property_type = 2
+		and apv.art_option like
+		'%$optionId$%'
+		)
+	</update>
+	<!-- and apv.PROPERTY_ID=#propertyID# <isNotEqual compareValue="-1" property="categoryID" 
+		prepend="and"> ar.CATEGORY_ID=#categoryID# </isNotEqual> -->
+
+	<delete id="deleteArtPropertyValueByNull" parameterClass="long">
+		delete
+		from ART_PROPERTY_VALUE apv where replace(apv.ART_OPTION,',','') is
+		NULL and
+		apv.PROPERTY_ID=#propertyId#
+	</delete>
+
+	<insert id="insert" parameterClass="artPropertyValue">
+		<selectKey keyProperty="id" resultClass="long">
+			select
+			SEQ_ART_PROPERTY_VALUE.NEXTVAL from DUAL
+		</selectKey>
+		INSERT INTO ART_PROPERTY_VALUE
+		VALUES
+		(
+		#id#,
+		#artId#,
+		#propertyId#,
+		#artOption#,
+		SYSDATE,
+		SYSDATE)
+	</insert>
+
+	<update id="delete" parameterClass="long">
+		DELETE FROM ART_PROPERTY_VALUE WHERE ART_ID=#id#
+	</update>
+</sqlMap>

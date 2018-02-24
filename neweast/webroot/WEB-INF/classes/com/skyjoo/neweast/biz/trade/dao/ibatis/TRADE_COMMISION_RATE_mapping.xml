@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="TRADE_COMMISION_RATE">
+	<typeAlias alias="tradeCommisionRate" type="com.skyjoo.neweast.biz.trade.domain.TradeCommisionRate"/>
+	
+	<resultMap class="tradeCommisionRate" id="tradeCommisionRateMap">
+		<result column="ID" property="id"/>
+		<result column="COMM_RATE" property="commRate"  />
+		<result column="MIN_COMMISION" property="minCommision"/>
+		<result column="VERSION" property="version"  />
+		<result column="GMT_VALID" property="gmtValid"  />
+		<result column="OPERATOR" property="operator"  />
+		<result column="GMT_CREATE" property="gmtCreate"  />
+		<result column="GMT_MODIFY" property="gmtModify"  />
+	</resultMap>
+	
+	<select id="getTCR" resultMap="tradeCommisionRateMap">
+		select *
+      from TRADE_COMMISION_RATE tcr
+     where tcr.version in (select max(version)
+        from TRADE_COMMISION_RATE tc
+        where tc.gmt_valid &lt;= trunc(sysdate))
+        and tcr.gmt_valid &lt;= trunc(sysdate)
+	</select>
+	
+	<select id="getNewTCR" resultMap="tradeCommisionRateMap">
+		select *
+  			from TRADE_COMMISION_RATE tcr
+ 			where tcr.version in (select max(version)
+                        from TRADE_COMMISION_RATE tc
+                       where tc.gmt_valid &gt; trunc(sysdate))
+            and tcr.gmt_valid &gt; trunc(sysdate)
+	</select>
+	
+	<select id="getNewestTCR" resultMap="tradeCommisionRateMap">
+		select *
+  			from TRADE_COMMISION_RATE tcr
+ 			where tcr.version in (select max(version)
+                        from TRADE_COMMISION_RATE tc)
+	</select>
+	
+	<select id="getVersion" resultClass="int">
+		select max(version)
+        from TRADE_COMMISION_RATE tcr
+	</select>
+	
+	<select id="getNewTCRCount" resultClass="int">
+		select count(1) from TRADE_COMMISION_RATE tcr
+	</select>
+	
+	<insert id="insert" parameterClass="tradeCommisionRate">
+		<selectKey keyProperty="id" resultClass="long">
+			select seq_trade_commision_rate.nextval from dual
+		</selectKey>
+		insert into TRADE_COMMISION_RATE tcr values
+		(#id#,#commRate#,#minCommision#,
+		#version#,trunc(sysdate)+1,#operator#,sysdate,sysdate)
+	</insert>
+</sqlMap>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SystemUserRole">
+
+	<typeAlias alias="SystemUserRole"
+		type="com.skyjoo.neweast.biz.system.domain.SystemUserRole" />
+
+	<resultMap id="systemUserRoleResultMap" class="SystemUserRole">
+		<result column="ID" property="id" />
+		<result column="ROLE_ID" property="roleId" />
+		<result column="USER_ID" property="userId" />
+		<result column="GMT_CREATE" property="gmtCreate" />
+		<result column="GMT_MODIFY" property="gmtModify" />
+		<result column="OPERATOR" property="operator" />
+	</resultMap>
+
+	<select id="getUserRoleByUserId" resultMap="systemUserRoleResultMap">
+		select * from
+		SYSTEM_USER_ROLE t
+		where t.USER_ID = #userId# 
+	</select>
+
+	<insert id="addUserRole">
+		<selectKey keyProperty="id" resultClass="long" type="pre">
+			select
+			SEQ_SYSTEM_USER_ROLE.nextval as id from dual 
+		</selectKey>
+		insert into SYSTEM_USER_ROLE (ID, ROLE_ID, USER_ID,
+		GMT_CREATE, GMT_MODIFY, OPERATOR)
+		values (#id#, #roleId#, #userId#,
+		sysdate, sysdate, #operator#)
+	</insert>
+
+	<delete id="removeUserRoleByUserId">
+		delete from SYSTEM_USER_ROLE where USER_ID =
+		#userId#
+	</delete>
+	
+	<select id="getUserRoleByRoleId" resultClass="int">
+		select count(*) from
+		SYSTEM_USER_ROLE t
+		where t.ROLE_ID = #roleId# 
+	</select>
+</sqlMap>

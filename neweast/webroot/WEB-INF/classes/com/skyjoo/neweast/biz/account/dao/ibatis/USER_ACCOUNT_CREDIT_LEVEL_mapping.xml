@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="USER_ACCOUNT_CREDIT_LEVEL">
+	<typeAlias alias="userAccountCreditLevel" type="com.skyjoo.neweast.biz.account.domain.UserAccountCreditLevel"/>
+	
+	<resultMap class="userAccountCreditLevel" id="userAccountCreditLevelMap">
+		<result column="ID" property="id"/>
+		<result column="LEVEL_NO" property="levelNo"  />
+		<result column="LEVEL_NAME" property="levelName"  />
+		<result column="LOW_LIMIT" property="lowLimit"  />
+		<result column="VERSION" property="version"  />
+		<result column="GMT_VALID" property="gmtValid"  />
+		<result column="OPERATOR" property="operator"  />
+		<result column="GMT_CREATE" property="gmtCreate"  />
+		<result column="GMT_MODIFY" property="gmtModify"  />
+	</resultMap>
+	
+	<select id="getUACL" resultMap="userAccountCreditLevelMap">
+		select *
+      from USER_ACCOUNT_CREDIT_LEVEL uacl
+     where uacl.version in (select max(version)
+        from USER_ACCOUNT_CREDIT_LEVEL uc
+        where uc.gmt_valid &lt;= trunc(sysdate))
+        and uacl.gmt_valid &lt;= trunc(sysdate)
+        order by uacl.low_limit asc
+	</select>
+	<!-- where uc.gmt_valid &gt; trunc(sysdate) -->
+	<select id="getNewUACL" resultMap="userAccountCreditLevelMap">
+		select *
+  			from USER_ACCOUNT_CREDIT_LEVEL uacl
+ 			where uacl.version in (select max(version)
+                        from USER_ACCOUNT_CREDIT_LEVEL uc
+                       )
+            and uacl.gmt_valid &gt; trunc(sysdate)
+            order by uacl.low_limit asc
+	</select>
+	
+	<select id="getNewestUACL" resultMap="userAccountCreditLevelMap">
+		select *
+  			from USER_ACCOUNT_CREDIT_LEVEL uacl
+ 			where uacl.version in (select max(version)
+                        from USER_ACCOUNT_CREDIT_LEVEL uc)
+            order by uacl.low_limit asc
+	</select>
+	
+	<select id="getVersion" resultClass="int">
+		select max(version)
+        from USER_ACCOUNT_CREDIT_LEVEL uacl
+	</select>
+	
+	<select id="getValidVersion" resultClass="int">
+		select max(version)
+        from USER_ACCOUNT_CREDIT_LEVEL uacl
+        where uacl.gmt_valid &lt;= trunc(sysdate)
+	</select>
+	
+	<select id="getInvalidUACL" resultMap="userAccountCreditLevelMap">
+		select *
+  			from USER_ACCOUNT_CREDIT_LEVEL uacl
+ 			where uacl.gmt_valid &gt;trunc(sysdate)
+            order by uacl.low_limit asc
+	</select>
+	
+	<select id="getNewLevelCount" resultClass="int">
+		select count(1) from USER_ACCOUNT_CREDIT_LEVEL uacl
+	</select>
+	
+	<insert id="insert" parameterClass="userAccountCreditLevel">
+		<selectKey keyProperty="id" resultClass="long">
+			select seq_user_account_credit_level.nextval from dual
+		</selectKey>
+		insert into user_account_credit_level uacl values
+		(#id#,#levelNo#,#levelName#,#lowLimit#,
+		#version#,trunc(sysdate)+1,#operator#,sysdate,sysdate)
+	</insert>
+	
+	<update id="update" parameterClass="userAccountCreditLevel">
+		update user_account_credit_level uacl set uacl.version = #version#
+		where uacl.id = #id#
+	</update>
+	
+	<select id="isHasValidVersion" resultClass="int">
+		SELECT count(1)
+		FROM USER_ACCOUNT_CREDIT_LEVEL WHERE
+		GMT_VALID=TO_DATE(SYSDATE)
+	</select>
+	
+</sqlMap>

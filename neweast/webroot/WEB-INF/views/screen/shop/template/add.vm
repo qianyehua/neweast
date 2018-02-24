@@ -1,0 +1,147 @@
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/validate.css" />
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/editor.css" />
+
+<script charset="utf-8" src="$!{imageServer}/scripts/kindeditor/kindeditor-all-min.js"></script>
+<script charset="utf-8" src="$!{imageServer}/scripts/kindeditor/kindeditor-zh_CN.js"></script>
+
+<script  type="text/javascript">
+    $(document).ready(function(){
+    	$('#addForm').validate({
+			rules: { 
+                title: {
+					required:true
+				},
+                templateName: {
+					required:true
+				},
+				file: {
+					required:true,
+					accept : 'jpg|jpeg|png|gif|JPG|JEPG|PNG|GIF'
+				},
+				previewUrl: {
+					required:true
+				}
+            }, 
+    		messages: {
+        		title: {
+					required:"请填写模版标题"
+				},
+        		templateName: {required:"请填写模版名称"},
+        		file: {
+					required:"请选择预览图",
+					accept:"文件格式错误"
+				},
+        		previewUrl: {required:"请填写首页预览URL"}
+       		}
+    	});
+    });
+</script>
+<script  type="text/javascript">
+    KindEditor.ready(function(K) {
+			var options = {
+                filterMode : true,
+				height : '500px',
+				items : [
+							'source', '|', 'undo', 'redo', '|', 'cut', 'copy', 'paste','plainpaste', '|',
+							'justifyleft', 'justifycenter', 'justifyright',
+                            'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                            'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 
+                            'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                            'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|',
+                            'table', 'hr', 'emoticons', 'link'
+                        ]
+            };
+            window.editor = K.create('#description',options);
+    });
+</script>
+
+<div class="main-right">
+    <div class="basic">
+        <ul class="form-tab">
+            <li class="c">
+                <span>模版提交</span>
+            </li>
+        </ul>
+        <div class="formbox">
+            <form id="addForm" name="addForm" action="add.htm" method="post"  enctype="multipart/form-data">
+                <div class="clear"></div>
+                <div class="nr">
+                    <div class="nr-t"></div>
+                    <div class="nr-c">
+                        <table class="c2">
+                            <tr>
+                                <th>
+                                    <span style="color:red">*</span> 模版标题：</th>
+                                    <td>
+                                        #springBind("template.title")
+                                        <input type="text" id="title" name="${status.expression}" onkeyup="this.value=this.value.trim();" value="$!{status.value}" maxlength="80" class="inp"/>
+                                        <label class="error">
+                                        		 #if($!{hasRegister})模版标题已经存在 #end   
+                                        		 #if($!{title})请输入模版标题 #end  
+                                        </label>
+                                    </td>
+                            </tr>
+							<tr>
+                                <th><span style="color:red">*</span> 模版名称：</th>
+                                    <td>
+                                        #springBind("template.templateName")
+                                        <input type="text" id="templateName" name="${status.expression}" onkeyup="this.value=this.value.trim();" value="$!{status.value}" maxlength="16" class="inp"/>
+                                        <label class="error">
+                                        		 #if($!{templateName})请输入模版名称 #end   
+                                        </label>
+                                    </td>
+                            </tr>
+							<tr>
+    							<th><span style="color:red">*</span>预览图（图片）：</th>
+    							<td style="padding:10px;">
+    								<input  id="file" name="file"  type="file" maxlength="64"/>
+									<label class="error">
+                                    		 #if($!{file})请选择预览图#end   
+                                    </label>
+    							</td>
+							</tr>
+							<tr >
+								<th><span style="color:red">*</span> 首页预览URL：</th>
+								<td >
+									 #springBind("template.previewUrl")
+									<input type="text" id="previewUrl" name="${status.expression}" onkeyup="this.value=this.value.trim();" value="$!{status.value}" maxlength="80" class="inp"/>
+                                </td>
+								<label class="error">
+                                		 #if($!{previewUrl})请输入首页预览URL#end 
+                                </label>
+                            </tr>
+							<tr >
+								<th>简要说明：</th>
+								<td >
+									 #springBind("template.desp")
+									<textarea rows="5" cols="60" maxlength="140" id="desp" name="${status.expression}" >$!{status.value}</textarea>
+									<br/>简要说明请尽量控制在30字内，否则前台显示不全。
+								</td>
+                            </tr>
+							<tr >
+								<th>详细说明：</th>
+								<td > </td>
+                            </tr>
+							<tr >
+								<td colspan="2">
+									 #springBind("template.description")
+									 <textarea id="description" name="${status.expression}" >$!{status.value} </textarea>
+								</td>
+                            </tr>
+							
+						</table>
+</div>
+<div class="nr-b"></div>
+</div>
+<!-- 表单按钮区 -->
+<div class="form-but">
+    <input type="submit" id="save" name="save" class="but" value="保存" />
+    <input type="button" class="but" onclick="window.location.href='$!{appServer}/shop/template/list.htm'" value="返回" />
+</div>
+<!-- 表单按钮区 END -->
+<div class="clear"></div>
+</form>
+                </div>
+</div>
+        </div>

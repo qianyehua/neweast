@@ -1,0 +1,78 @@
+#set($layout = 'layout/blank.vm')
+<script>
+function reWrite(id,pid) {
+	jQuery.ajax( {
+		type :"POST",
+		url :appServer + "/getMenus.htm",
+		data:{id:id,pid:pid}, 
+		dataType :"json",
+		success : function(data) {
+			var str = "<li class='crumbs'><span>当前位置：</span></li>";
+			for(var i = 0 ; i < data.length ; i ++ ) {
+				var target = '';
+				if(data[i].url == null) {
+					data[i].url = '#';
+					target = '';
+				} else {
+					data[i].url = appServer+data[i].url;
+					target = 'main';
+				}
+				if( i == data.length-1) {
+					str += "<li class='c'><a href='"+data[i].url+"' target='"+target+"'>"+data[i].name+"</a>"; 
+				} else {
+					str += "<li><a href='"+data[i].url+"' target='"+target+"'>"+data[i].name+"</a>"; 
+				}
+			}
+			$('#menus').html(str);
+		}
+	});
+}
+function hide() {
+	var num = $!{menus.size()};
+	for(var i = 1 ; i <= num ; i++ ) {
+		if($('#menu'+i).html().indexOf('<li>') == -1 && $('#menu'+i).html().indexOf('<LI>') == -1) {
+			$('#h'+i).addClass("hide");
+		}
+	}
+}
+</script>
+<style>
+.hide {
+display : none;
+}
+</style>
+<div class="menu">
+
+#foreach($menu in $menus)
+	<h4 id="h$velocityCount" #if($velocityCount>1) class="menu-closed" #end>$!{menu.name}</h4>
+	#if($!{menu.subfunctions.size()} > 0)
+		<ul id="menu$velocityCount" #if($velocityCount>1)style="display:none"#end>
+		#foreach($subMenu in $menu.subfunctions)
+			#if($accessTool.haveFunction($subMenu.id))
+    		<li>
+    			<a href="$!{appServer}$!{subMenu.url}" onclick="reWrite($subMenu.id,$menu.id)" target="main">$!{subMenu.name}</a>
+    		</li>
+			#end
+		#end
+		 
+		</ul>
+	#end
+#end
+<h4 class="menu-closed">测试</h4>
+ <ul style="display:none">
+   <li>
+      <a href="/neweast/test/test_list.htm" target="main">测试1</a>
+   </li>
+ </ul>
+</div>
+<script>
+hide();
+</script>
+<div style="display:none" class="menu">
+    <h4>个人信息管理</h4>
+	<ul>
+		<li>
+			<a href="$!{appServer}/system/ownInfo/list.htm" target="main">个人信息管理</a>
+		</li>
+    </ul>
+</div>

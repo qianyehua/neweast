@@ -1,0 +1,127 @@
+<link href="$!{imageServer}/styles/validate.css" rel="stylesheet" type="text/css" />
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+//输入校验
+jQuery(function(){
+	$("#editForm").validate(
+	{
+		/*自定义验证规则*/
+		rules:{
+			content:{required:true,maxlength:20},
+		//	propertyType:{required:true},
+			ordering:{required:true,number:true,min:1,max:100,digits:true}
+		},
+		/*错误提示位置*/
+		errorPlacement:function(error,element){
+			error.appendTo(element.siblings("span"));
+		}
+	});
+})
+function JudgePropertyName()
+{	
+	var textval = $("#content").attr("value").replace(/\s+/g, "");
+	$("#content").val(textval);
+	jQuery.ajax({
+    type:"post",
+    url:"$!{appServer}/checkIsProperty.htm",
+    dataType:"html",
+    data:"content="+jQuery("#content").val().replace(/\s+/g, "")+"&categoryId=$!{categoryId}&propertyId=$!{property.id}&propertyNameId=$!{property.propertyNameId}&propertyType=$!{property.propertyType}",
+    beforeSend:function(XMLHttpRequest)
+        {
+           // jQuery("#showResult").text("正在查询");
+        },
+    success:function(msg)
+        {   
+    		jQuery("#showResult").html("");    		
+            if(msg == "该属性已经存在" || msg == "该属性名不可用"){
+            	jQuery("#showResult").html(msg);
+            	jQuery("#sub").attr("disabled", true); 
+            }
+            if(msg == "该属性可以使用"){
+            	jQuery("#sub").attr("disabled", false);
+            }
+            jQuery("#showResult").css("color","red");
+        },
+   complete:function(XMLHttpRequest,textStatus)
+        {
+            
+        },
+  error:function()
+       {
+           
+       }
+    });
+}
+</script>
+<div class="main-right" >
+            <div class="basic">
+            <ul class="form-tab">
+        <li class="c">
+            <span>属性修改</span>
+        </li>
+    </ul>
+<div class="formbox">
+	<div class="clear"></div>
+	<form id="editForm" name="editForm" action="$!{appServer}/art/artCategoryProperty/edit.htm?propertyId=$!{property.id}&categoryId=$!{categoryId}&parentId=$!{parentId}" method="post">
+	 <input  name="propertyNameId" type="hidden" value="$!{property.propertyNameId}"/>
+	 <input  name="id" type="hidden" value="$!{property.id}"/>
+	 <div class="nr">
+    <div class="nr-t"></div>
+                        
+                        <div class="nr-c">
+
+<table class="c2">
+<tr>
+	<th><font color="red">*</font>属性内容：</th>
+	<td>#springBind("property.content")
+		<textarea  class="textarea"  id="content" name="content" maxLength="20" onkeyup="JudgePropertyName()"#if($!{artCount}!=0) readonly="readonly"#end>$!{property.content}</textarea>
+		<span id="showResult"></span>		
+	</td>
+</tr>
+
+<tr>
+	<th>属性类型：</th>
+	<td>
+		#if($!{property.propertyType}==1) 单选 #end
+		#if($!{property.propertyType}==2) 多选 #end
+		#if($!{property.propertyType}==3) 输入框 #end
+		#if($!{property.propertyType}==4) 文本框 #end
+		<input id="propertyType" name="propertyType" type="hidden" value="$!{property.propertyType}"/>	
+	</td>
+</tr>
+
+<tr>
+	<th><font color="red">*</font>排序号：</th>	
+	<td>#springBind("property.ordering")
+	<input id="ordering" name="ordering" class="inp required" value="$!{property.ordering}"/>
+		<span></span>
+	
+	</td>
+</tr>
+
+
+</table>
+ </div>
+                        
+                        <div class="nr-b"></div>
+                    </div>
+					<div class="form-but"><!-- 表单按钮区 -->
+                    
+                    	<input id="sub" name="sub" type="submit" class="but" value="保存" />
+						#if($!{categoryId}!='')
+                    	<input type="button" onclick="location='$!{appServer}/art/artCategoryProperty/list.htm?categoryId=$!{categoryId}&parentId=$!{parentId}'" class="but" value="返回" />
+                        #else
+							<input type="button" onclick="history.back(-1)" class="but" value="返回" />
+							#end
+                    </div><!-- 表单按钮区 END -->
+                                        
+                    <div class="clear"></div>
+                    	
+	</form>
+	</div>
+ 
+    <div class="clear"></div>
+                
+            </div>
+</div>

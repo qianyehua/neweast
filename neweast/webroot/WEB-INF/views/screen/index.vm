@@ -1,0 +1,2 @@
+#set($layout = 'layout/index.vm')
+<iframe id="main" name="main" border="0" frameSpacing="0" marginHeight="0" src="${appServer}/main.htm" frameBorder=0 noResize width="100%" scrolling="no" onload="this.height=this.contentWindow.document.documentElement.scrollHeight" vspale="0"></iframe>

@@ -1,0 +1,115 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+     var num = 0;
+     function verify(flag, id) {
+             num ++;
+             if(num <= 1){
+        	    var url = "verify.htm?id=" + id + "&flag=" + flag;
+       		    document.location = url;
+        		}
+         }
+         jQuery( function() {
+         //设置日期
+         $('.date-pick').datePicker( {
+         clickInput : true,
+         startDate : "2010-01-01"
+         });
+         });
+         
+</script>
+<!-- 搜索框 -->
+<form id="orderForm" name="orderForm" action="list.htm" method="get">
+	<div class="search-box">
+        <table>
+            <tr>
+				<th>交易创建时间</th>
+                <td>
+                	#springBind("query.gmtCreateStart")
+					<input type="text" id="gmtCreateStart" name="$!{status.expression}" value="$!{status.value}"  readonly="readonly" size="10" class="date-pick" />
+					-
+					#springBind("query.gmtCreateEnd")
+                    <input type="text" id="gmtCreateEnd" name="$!{status.expression}"  value="$!{status.value}" readonly="readonly"  size="10" class="date-pick" />
+                 </td>
+                 <th>交易状态</th>
+				<td>
+                    #springBind("query.status")
+                    <select name="$!{status.expression}" id="status" >
+                    	<option value="">请选择</option>
+                    	#foreach($statusType in $tradeStatusMap.keySet())
+                    		<option value="$statusType" #if($statusType == ${query.status}) selected  #end>$tradeStatusMap.get($statusType)</option>
+                    	#end
+                    </select>
+                </td>                
+           </tr>
+			<tr>
+				
+				<th>买家账号</th>
+				<td>#springBind("query.buyerLoginId")
+					<input type="text" id="buyerLoginId" name="$!{status.expression}" value="$!{status.value}"/>
+				</td>				
+				<th>卖家账号</th>
+				<td>#springBind("query.sellerLoginId")
+					<input type="text" id="sellerLoginId" name="$!{status.expression}" value="$!{status.value}"/>
+				</td>
+		</tr>
+		<tr>
+				
+				<th>订单编号</th>
+				<td>#springBind("query.orderNo")
+					<input id="orderNo" name="$!{status.expression}" type="text" value="$!{status.value}"/>
+				</td>
+				<th>艺术品编号</th>
+				<td>#springBind("query.artNo")
+					<input id="artNo" name="$!{status.expression}" type="text" value="$!{status.value}"/>
+				</td>
+				<td>	 
+					<input type="submit" name="search" value="查询" class="but-61" />
+					<input type="reset" value="重置" class="but-62" onclick="window.location.href='list.htm'"/>
+				</td>
+		</tr>
+		</table>
+	</div>
+</form>
+<!-- 搜索框 END -->
+ <div class="basic">
+	<div class="listbox">
+	<table  class="list-table">
+		<tr>
+			<th width="5%">订单编号</th>
+			<th width="10%">买家账号</th>
+			<th width="10%">卖家账号</th>
+			<th width="10%">交易状态</th>
+			<th width="10%">交易创建时间</th>
+			<th width="5%">退款编号</th>
+        </tr>
+		#if($!{query} && ${query.totalCount} > 0)
+			#foreach($order in $query.getData())
+				<tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+					<td><a href="$!{appServer}/order/detail.htm?orderId=${order.id}">$!{order.tradeNo}</a></td>
+					<td>$!{order.buyerLoginId}</td>
+					<td>$!{order.sellerLoginId}</td>
+					<td>
+						<a href="$!{appServer}/trade/log/detail.htm?orderId=${order.id}&buyer=$!{order.buyerLoginId}&seller=$!{order.sellerLoginId}">
+							#foreach($statusType in $tradeStatusMap.keySet())
+								#if($!{order.tradeStatus}==$statusType)$tradeStatusMap.get($statusType)#end
+							#end
+						</a> 
+					</td>
+					<td>$!{dateTool.format("yyyy-MM-dd HH:mm:ss",$!{order.gmtCreate})}</td>
+					<td><a href="$!{appServer}/refund/detail.htm?refundId=$!{order.refundId}&orderId=${order.id}&come=1">$!{order.refundId}</a></td>
+				</tr>	
+			#end
+		#end    
+        #if(${query.totalCount} == 0)
+                    <tr>
+                        <td colspan="7">
+                            <p class="ts">没有结果</p>
+                        </td>
+                    </tr>
+        #end
+    </table>
+	 #pager($query, "orderForm")
+ </div>
+ </div>
+ <div class="clear"></div>

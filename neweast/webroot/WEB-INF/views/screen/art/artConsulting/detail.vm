@@ -1,0 +1,42 @@
+   <div class="main-right" >        	
+  <div class="basic">  
+   <ul class="form-tab">
+        <li class="c">
+            <span>咨询详情</span>
+        </li>
+    </ul>
+  	<div class="listbox" >
+   	<table class="list-table">
+		<tr>
+			<td width="20%" align="right">艺术品名称：</td><td width="80%">$!{artConsulting.artName}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">买家：</td><td width="80%">$!{artConsulting.buyerName}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">回复状态：</td><td width="80%">						
+				#if($!{artConsulting.status}==0)
+					<span style="color:red;">未回复</span>
+				#else
+					<span style="color:blue;">已回复</span>
+				#end
+			</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">留言时间：</td><td width="80%">$!{dateTool.format($!{artConsulting.gmtCreate})}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">留言内容：</td><td width="80%">$!{artConsulting.content}</td>
+		</tr>
+		<tr >
+			<td width="20%" align="right">回复内容：</td><td width="80%">$!{artConsulting.replyContent}</td>
+        </tr>
+    </table>
+    </div>
+	<div class="form-but">
+		<input type="button" onclick="location='$!{appServer}/artConsulting/delete.htm?id=${artConsulting.id}'" class="but" value="删除" /> 		
+		<input type="button" id="back" name="back" class="but" value="返回" />
+    </div><!-- 表单按钮区 END -->
+  </div>
+</div>
+		

@@ -1,0 +1,160 @@
+2018-02-06 17:13:17,593 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[340] in http://localhost:8080/neweast/ 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[105->105]=0 0%
+Task:render screen:screen/index.vm running time(millis)[186->188]=2 0%
+Task:merge template:layout/index.vm running time(millis)[196->339]=143 42%
+--Task:execute contain :/contain/header.htm running time(millis)[200->226]=26 7%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[214->214]=0 0%
+----Task:render contain:screen/contain/header.vm running time(millis)[220->225]=5 1%
+--Task:execute contain :/contain/menu.htm running time(millis)[226->327]=101 29%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[227->227]=0 0%
+----Trace:prepareStatement: SELECT    sf.ID,   sf.PARENT_ID,   sf.NAME,   sf.URL,   sf.DESCRIPTION,   sf.ORDERING,   sf.IS_MENU,   sf.IS_DELETED,   sf.OPERATOR,   sf.GMT_CREATE,   sf.GMT_MODIFY      FROM SYSTEM_FUNCTION sf where IS_DELETED <> 1 order by   ORDERING
+----Task:render contain:screen/contain/menu.vm running time(millis)[315->327]=12 3%
+------Task:UserFuncsCacheService:getOffset running time(millis)[322->322]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[322->322]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[322->322]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[322->322]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[322->322]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[323->323]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[323->323]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[323->323]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[323->323]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[323->323]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[323->323]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[323->323]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[323->323]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[323->323]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[324->324]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[324->324]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[324->324]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[325->325]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[325->325]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[325->325]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[325->325]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[325->325]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[325->325]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[325->325]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[325->325]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[325->325]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[325->325]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[326->326]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[326->326]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[326->326]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[326->326]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[326->326]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[326->326]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[326->326]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[326->326]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[326->326]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[327->327]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[327->327]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[327->327]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[327->327]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[327->327]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[327->327]=0 0%
+--Task:execute contain :/contain/footer.htm running time(millis)[328->339]=11 3%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[333->333]=0 0%
+----Task:render contain:screen/contain/footer.vm running time(millis)[339->339]=0 0%
+Task:write output to servlet outputstream with size:13KB. running time(millis)[339->340]=1 0%
+2018-02-06 17:13:21,226 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[114] in http://localhost:8080/neweast/test/test_list.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select count(*)   from TEST_QYH t
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (     select    t.ID,   t.NAME,   t.PASSWORD     from TEST_QYH t                              order by t.id desc      ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/test/list.vm running time(millis)[88->114]=26 22%
+--Task:execute contain :/contain/pager.htm running time(millis)[91->114]=23 20%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[97->97]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[107->114]=7 6%
+Task:merge template:layout/default.vm running time(millis)[114->114]=0 0%
+Task:write output to servlet outputstream with size:11KB. running time(millis)[114->114]=0 0%
+2018-02-06 17:47:02,446 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[300] in http://localhost:8080/neweast/ 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[101->101]=0 0%
+Task:render screen:screen/index.vm running time(millis)[165->167]=2 0%
+Task:merge template:layout/index.vm running time(millis)[168->300]=132 44%
+--Task:execute contain :/contain/header.htm running time(millis)[174->196]=22 7%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[186->186]=0 0%
+----Task:render contain:screen/contain/header.vm running time(millis)[189->195]=6 2%
+--Task:execute contain :/contain/menu.htm running time(millis)[196->293]=97 32%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[197->197]=0 0%
+----Trace:prepareStatement: SELECT    sf.ID,   sf.PARENT_ID,   sf.NAME,   sf.URL,   sf.DESCRIPTION,   sf.ORDERING,   sf.IS_MENU,   sf.IS_DELETED,   sf.OPERATOR,   sf.GMT_CREATE,   sf.GMT_MODIFY      FROM SYSTEM_FUNCTION sf where IS_DELETED <> 1 order by   ORDERING
+----Task:render contain:screen/contain/menu.vm running time(millis)[281->293]=12 4%
+------Task:UserFuncsCacheService:getOffset running time(millis)[286->286]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[286->286]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[286->286]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[286->286]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[286->286]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[287->287]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[287->287]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[287->287]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[287->287]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[287->287]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[287->287]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[287->287]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[287->287]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[288->288]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[288->288]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[288->288]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[289->289]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[289->289]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[289->289]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[289->289]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[290->290]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[290->290]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[290->290]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[290->290]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[290->290]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[291->291]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[291->291]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[291->291]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[291->291]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[291->291]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[291->291]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[292->292]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[292->292]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[292->292]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[292->292]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[292->292]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[292->292]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[292->292]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[292->292]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[293->293]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[293->293]=0 0%
+------Task:UserFuncsCacheService:getOffset running time(millis)[293->293]=0 0%
+--Task:execute contain :/contain/footer.htm running time(millis)[293->300]=7 2%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[298->298]=0 0%
+----Task:render contain:screen/contain/footer.vm running time(millis)[300->300]=0 0%
+Task:write output to servlet outputstream with size:13KB. running time(millis)[300->300]=0 0%
+2018-02-06 17:47:02,649 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[121] in http://localhost:8080/neweast/test/test_list.htm 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select count(*)   from TEST_QYH t
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (     select    t.ID,   t.NAME,   t.PASSWORD     from TEST_QYH t                              order by t.id desc      ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/test/list.vm running time(millis)[97->119]=22 18%
+--Task:execute contain :/contain/pager.htm running time(millis)[101->119]=18 14%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[106->106]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[112->119]=7 5%
+Task:merge template:layout/default.vm running time(millis)[121->121]=0 0%
+Task:write output to servlet outputstream with size:11KB. running time(millis)[121->121]=0 0%
+2018-02-06 17:47:13,370 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[109] in http://localhost:8080/neweast/test/test_list.htm [id=] [pageNo=2] 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[0->0]=0 0%
+Trace:prepareStatement: select count(*)   from TEST_QYH t
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (     select    t.ID,   t.NAME,   t.PASSWORD     from TEST_QYH t                              order by t.id desc      ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/test/list.vm running time(millis)[104->109]=5 4%
+--Task:execute contain :/contain/pager.htm running time(millis)[105->109]=4 3%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[108->108]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[108->109]=1 0%
+Task:merge template:layout/default.vm running time(millis)[109->109]=0 0%
+Task:write output to servlet outputstream with size:4KB. running time(millis)[109->109]=0 0%
+2018-02-06 17:47:31,490 DEBUG [com.eyeieye.melos.profiler.TimeProfiler] - TimeProfiler output:
+Entire running time(millis)=[451] in http://localhost:8080/neweast/test/test_list.htm [id=4] [search=æ¥è¯¢] 
+Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[1->1]=0 0%
+Trace:prepareStatement: select count(*)   from TEST_QYH t      where                 t.ID= ?
+Trace:prepareStatement: select * from ( select t1.* , rownum linenum from (     select    t.ID,   t.NAME,   t.PASSWORD     from TEST_QYH t      where                 t.ID= ?                order by t.id desc      ) t1 where rownum <= ?) t2 where t2.linenum >= ?
+Task:render screen:screen/test/list.vm running time(millis)[438->450]=12 2%
+--Task:execute contain :/contain/pager.htm running time(millis)[439->450]=11 2%
+----Task:UserFuncsCacheService:getFunctionOffsetId running time(millis)[448->448]=0 0%
+----Task:render contain:screen/contain/pager.vm running time(millis)[449->450]=1 0%
+Task:merge template:layout/default.vm running time(millis)[450->451]=1 0%
+Task:write output to servlet outputstream with size:3KB. running time(millis)[451->451]=0 0%

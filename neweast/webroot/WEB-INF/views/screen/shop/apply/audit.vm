@@ -1,0 +1,193 @@
+<script >
+jQuery(function() {
+	$('img').click(function(){
+		window.location.href = $(this).attr('src');
+	});
+});
+</script>
+<script >
+$('document').ready(function(){
+	$('#form1').validate({
+		rules:{
+    		memo:{
+    			required: function(element){return $('#result').val() != 'true';}
+    		}
+    	},
+    	messages:{
+    		memo:{
+    			required: "请填写驳回原因"
+    		}
+    	}
+	});
+
+});
+
+function audit(success) {
+	$('#result').val(success);
+	$('#form1').submit();
+}
+</script>
+<style >
+	img{width:200px;cursor:pointer;}
+</style>
+<div class="basic">
+    <ul class="form-tab">
+        <li class="c">
+            <span>开店认证审核</span>
+        </li>
+    </ul>
+    <div class="formbox">
+        <div class="clear"></div>
+        <div class="nr">
+            <div class="nr-t"></div>
+            <div class="nr-c">
+                <table class="c2">
+                    <tr >
+                        <th>类型：</th>
+                        <td>$!{enumUtils.getShopAuthType($!{apply.type})}</td>
+                    </tr>
+					<tr >
+						<th>申请时间： </th>
+						<td>$!dateTool.format('yyyy-MM-dd HH:mm:ss', $!{apply.gmtApply})</td>
+                    </tr>
+					#if($apply.isPersonal())
+					<tr >
+						<th>姓名：</th>
+						<td>$!{apply.realName}</td>
+                    </tr>
+					<tr >
+						<th>英文名：</th>
+						<td>$!{apply.enName}</td>
+                    </tr>
+					<tr >
+						<th>证件类型：</th>
+						<td>
+							#foreach($type in $licenseTypeList)
+								#if($!apply.licenseType==$!type.value)$!{type.name}#end
+                    		#end
+						</td>
+                    </tr>
+					<tr >
+						<th>证件号码：</th>
+						<td>$!{apply.license}</td>
+                    </tr>
+					<tr >
+						<th>性别：</th>
+						<td>
+							#if($!apply.gender==0)
+								男
+							#elseif($!apply.gender==1)
+								女
+							#end
+						</td>
+                    </tr>
+					<tr >
+						<th>手持证件照：</th>
+						<td><img src="$uploadServer/$!{apply.getAttachmentList().get(0)}" /></td>
+                    </tr>
+					<tr >
+						<th>证件正面：</th>
+						<td><img src="$uploadServer/$!{apply.getAttachmentList().get(1)}" /></td>
+                    </tr>
+					<tr >
+						<th>证件反面：</th>
+						<td><img src="$uploadServer/$!{apply.getAttachmentList().get(2)}" /></td>
+                    </tr>
+					
+					<tr >
+						<th>所属行业：</th>
+						<td>
+							#foreach($major in $majorTypeList)
+								#if($!apply.major==$!major.value)$!{major.name}#end
+							#end
+						</td>
+                    </tr>
+					#end
+					
+					#if($apply.isCompany())
+					<tr >
+						<th>企业名称：</th>
+						<td>$!{apply.realName}</td>
+                    </tr>
+					<tr >
+						<th>营业执照注册号：</th>
+						<td>$!{apply.license}</td>
+                    </tr>
+					<tr >
+						<th>营业执照扫描件：</th>
+						<td><img src="$uploadServer/$!{apply.getAttachmentList().get(0)}" /></td>
+                    </tr>
+					<tr >
+						<th>组织机构代码证：</th>
+						<td><img src="$uploadServer/$!{apply.getAttachmentList().get(1)}" /></td>
+                    </tr>
+					<tr >
+						<th>企业授权委托书：</th>
+						<td><img src="$uploadServer/$!{apply.getAttachmentList().get(2)}" /></td>
+                    </tr>
+					
+					<tr >
+						<th>经办人姓名：</th>
+						<td>$!{apply.getApplyOrg().realName}</td>
+                    </tr>
+					<tr >
+						<th>经办人身份证号：</th>
+						<td>$!{apply.getApplyOrg().license}</td>
+                    </tr>
+					<tr >
+						<th>经办人手持身份证照：</th>
+						<td><img src="$uploadServer/$!{apply.getApplyOrg().getAttachmentList().get(0)}" /></td>
+                    </tr>
+					<tr >
+						<th>经办人身份证正面：</th>
+						<td><img src="$uploadServer/$!{apply.getApplyOrg().getAttachmentList().get(1)}" /></td>
+                    </tr>
+					<tr >
+						<th>经办人身份证反面：</th>
+						<td><img src="$uploadServer/$!{apply.getApplyOrg().getAttachmentList().get(2)}" /></td>
+                    </tr>
+					<tr >
+						<th>其他证件：</th>
+						<td>
+						#if($!{apply.getAttachmentList().size()} > 3)
+						<img src="$uploadServer/$!{apply.getAttachmentList().get(3)}" />
+						#end
+						</td>
+                    </tr>
+					#end
+					
+					<tr >
+						<th>联系地址：</th>
+						<td>
+							$!enumUtils.getProvinceCityName($!{apply.province}, $!{apply.city}, '省', '市')&nbsp;$!{apply.address}</td>
+                    </tr>
+					<tr >
+						<th>联系手机：</th>
+						<td>$!{apply.mobile}</td>
+                    </tr>
+					<tr>
+						<th>驳回原因：</th>
+						<td>
+							<form id="form1" action="audit.htm" method="post">
+								<input type="hidden" id="result" name="success" value="false"/>
+								#springBind("apply.id")
+								<input type="hidden" name="$!{status.expression}" value="$!{status.value}"/>
+								#springBind("apply.memo")
+								<textarea name="$!{status.expression}" class="maxlength_80" style="width:270px;height:70px">$!{status.value}</textarea>
+                            </form>
+						</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="nr-b"></div>
+        </div>
+    </div>
+    <!-- 表单按钮区-->
+    <div class="form-but">
+        <input type="button" onclick="location.href='list.htm'" class="but" value="返回" />
+		<input type="button" onclick="audit(true);" class="but" value="通过" />
+		<input type="button" onclick="audit(false);" class="but" value="驳回" />
+    </div>
+    <!-- 表单按钮区 END -->
+    <div class="clear"></div>
+</div>

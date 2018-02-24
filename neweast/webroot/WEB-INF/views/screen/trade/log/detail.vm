@@ -1,0 +1,56 @@
+   <div class="main-right" >        	
+  <div class="basic">  
+  	<div class="listbox" >
+   	<table class="list-table">
+		<tr>
+			<th width="15%">订单号</th>
+			<th width="30%">操作后交易状态</th>
+			<th width="10%">买家账号</th>
+			<th width="10%">卖家账号</th>
+			<th width="12%">操作者</th>
+			<th width="15%">操作时间</th>
+<!-- 			<th width="30%">操作备注</th> -->
+		</tr>
+		#if($!{list_log} && $!{list_log.size()}>0) 
+			#foreach(${log} in $!{list_log})
+				<tr>
+					<td>$!{log.tradeNo}</td>
+					<td>
+						
+						#foreach($tradeStatusType in $tradeStatusMap.keySet())
+							#if(${log.postTradeStatus} == $tradeStatusType) $tradeStatusMap.get($tradeStatusType) #end
+						#end(订单)
+						
+						#if($!{log.postRefundStatus})
+						,
+						#foreach($refundStatus in $refundStatusList)
+							#if(${log.postRefundStatus} == $refundStatus) $refundStatus.desc #end
+						#end(退款)
+						#end
+					</td>
+					<td>$!{buyer}</td>
+					<td>$!{seller}</td>
+					<td>$!{log.operator}
+						#if($!{log.operator} == $!{buyer})<label style="color:blue">(买家)</label>#end
+						#if($!{log.operator} == $!{seller})<label style="color:red">(卖家)</label>#end
+					</td>
+					<td>$!{dateTool.format($!{log.gmtCreate})}</td>
+<!-- 					<td>$!{log.preTradeStatus}#if($!{log.postTradeStatus}) ->$!{log.postTradeStatus} #end</td> -->
+				</tr>
+			#end
+		#else
+			<tr>
+                    <td colspan="7">
+                            <p class="ts">没有结果</p>
+                    </td>
+            </tr>
+		#end
+    </table>
+    </div>
+	<div class="form-but"><!-- 表单按钮区 -->
+<!--     	<input type="button" onclick="location='$!{appServer}/order/list.htm'" class="but" value="返回" /> -->
+		<input type="button" id="back" name="back" class="but" value="返回" />
+    </div><!-- 表单按钮区 END -->
+  </div>
+</div>
+		

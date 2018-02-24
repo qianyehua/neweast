@@ -1,0 +1,196 @@
+<script type="text/javascript">
+$('document').ready(function(){
+ 
+jQuery.validator.addMethod("lengthOver", function(value, element) { 
+   return jQuery.trim($('#eventDesc').val()).length<84;
+}, "积分说明长度过长，不要超过83个字");
+
+jQuery.validator.addMethod("isBPoint",function(value,element){
+		if($("#basePointType ").val()==1){
+		 $(element).data('error-msg','请输入正整数,最大长度为六位');
+            return this.optional(element) || (/^[0-9]{1,6}?$/.test(value) && value>0);
+		}
+		 $(element).data('error-msg','大于零，整数最多6位，小数精确6位');
+        return this.optional(element) || (/^[0-9]{1,6}([.]{1}[0-9]{1,6})?$/.test(value) && value>0);
+    	},function(params, element){
+		  return $(element).data('error-msg');} 
+		);
+		
+ 
+jQuery.validator.addMethod("isFPoint",function(value,element){
+
+		if($("#firstPointType ").val()==1){
+		 $(element).data('error-msg','请输入正整数,最大长度为六位');
+            return this.optional(element) || (/^[0-9]{1,6}?$/.test(value) && value>0);
+		}
+		 $(element).data('error-msg','大于零，整数最多6位，小数精确6位');
+        return this.optional(element) || (/^[0-9]{1,6}([.]{1}[0-9]{1,6})?$/.test(value) && value>0);
+    	}, function(params, element){
+		    return $(element).data('error-msg');
+		});
+		
+	
+		
+jQuery.validator.addMethod("isTime",function(value,element){
+    		 return this.optional(element) || (/^[0-9]{1,10}?$/.test(value) && value>0);
+    	},'请输入正整数且最多10位数字');	
+		
+jQuery.validator.addMethod("isNotZW", function(value, element) {  
+	  return (/^[-.0-9]{0,}$/.test(jQuery.trim(value)));    
+}, "不要输入非数字字符");
+
+jQuery.validator.addMethod("loginPeriod",function(value,element){
+		if(value==""||value==undefined || value==null) return true;
+		else
+    		 return (/^[0-9]{1,5}?$/.test(value)&&value>0);
+    	},'连续登录加成应为正整数');
+
+	jQuery("#pointForm").validate({
+		  rules: {
+   			eventDesc:{
+				lengthOver:true
+   			},
+			basePoint: {
+				isNotZW:true,
+				isBPoint:true,
+				required:true
+			},
+			firstPoint:{
+				isNotZW:true,
+				isFPoint:true
+			},
+			dailyTimes:{
+				isTime:true
+			},
+			totalTimes:{
+				isTime:true
+			},
+			loginPeriod:{
+				 loginPeriod:true
+			}
+		  },
+		  messages: { 
+          } 
+  	});
+});
+</script>
+ 
+<div class="main-right" >
+<div class="basic">
+<ul class="form-tab">
+<li #if($!index==1)class="c"#else class="" #end><span><a href="config.htm?type=$!type&chann=online_pc">Online pc</a></span></li>
+<li #if($!index==2)class="c"#else class=""  #end><span><a href="config.htm?type=$!type&chann=online_app">Online app</a></span></li>
+<li #if($!index==3)class="c"#else class=""  #end><span><a href="config.htm?type=$!type&chann=unit">Unit</a></span></li>
+</ul>
+ 
+ <form id="pointForm" name="pointForm" action="config.htm" method="post">
+	 <div class="basic">
+	<div class="listbox">
+        <table>
+			<input type="hidden"  name="flag" value="$!flag"/>
+			<input type="hidden"  name="index" value="$!index"/>
+			<input type="hidden"  name="eventType" value="$!type"/>
+			<input type="hidden"  name="occurChannel" value="$!chann"/>
+			<tr>
+				<th>积分点：</th>
+				<td> 
+					#foreach($gr in $!eventType)
+						#if($gr.value==$!type)
+							$gr.desc
+						#end
+					#end
+                </td> 
+			</tr>
+			<tr>
+				<th>说明：</th>
+				<td>
+					 #springBind("gainRule.eventDesc")
+					 <textarea id="eventDesc" placeholder="积分说明（长度小于83）" style="width:200px;height:100px;max-width:200px;max-height:100px" name="${status.expression}" value="$!{status.value}"class="inp"  >$!gainRule.eventDesc</textarea>
+                </td> 
+				<td> 
+					 <label for="${status.expression}" generated="true" class="error">$!{status.errorMessage}</label>
+				</td> 
+			</tr>
+			<tr>
+				<th>渠道：</th>
+				<td>
+					#foreach($oc in $!occChal)
+						#if($oc.value==$!chann)
+							$oc.desc
+						#end
+					#end
+                </td> 
+			</tr>
+			<tr>
+				<th><span class="required">*</span>单次参数：</th>
+				<td>
+					 #springBind("gainRule.basePoint")
+					<input maxlength="20"  id="basePoint" name="${status.expression}" value="$!gainRule.showBasePoint()"/> 
+					 <label for="${status.expression}" generated="true" class="error">$!{status.errorMessage}</label>
+                </td>
+				<td>
+					#springBind("gainRule.basePointType")
+					<select id="basePointType" name="basePointType">
+						<option   value="1">数量</option>
+						<option #if($!gainRule.basePointType==2) selected #end value="2">倍数 </option>
+                    </select>
+                </td> 
+			</tr>
+			<tr>
+				<th>首次参数：</th>
+				<td>
+					 #springBind("gainRule.firstPoint")
+					<input maxlength="20" id="firstPoint" name="${status.expression}" value="$!gainRule.showFirstPoint()"/> 
+					<label for="${status.expression}" generated="true" class="error">$!{status.errorMessage}</label> </td> 
+				<td>
+					#springBind("gainRule.firstPointType")
+					<select id="firstPointType" name="firstPointType">
+						<option  value="1">数量</option>
+						<option #if($!gainRule.firstPointType==2) selected #end value="2">倍数 </option>
+                    </select>
+                </td> 
+			</tr>
+			<tr>
+				<th>总有效次数：</th>
+				<td>
+					 #springBind("gainRule.totalTimes")
+					<input maxlength="10"  id="totalTimes" name="${status.expression}" value="$!{status.value}"/>
+               <label for="${status.expression}" generated="true" class="error">$!{status.errorMessage}</label> </td> 
+			</tr>
+			<tr>
+				<th>每日有效次数：</th>
+				<td>
+					 #springBind("gainRule.dailyTimes")
+					<input maxlength="10"  id="dailyTimes" name="${status.expression}" value="$!{status.value}"/>
+					<label for="${status.expression}" generated="true" class="error">$!{status.errorMessage}</label>
+                </td> 
+			</tr>
+			#if($!type=="login")
+			<tr>
+				<th>其他参数：</th>
+				<td>
+					登录加成N
+                </td> 
+				<td>
+					 #springBind("gainRule.loginPeriod")
+					<input maxlength="5" id="loginPeriod" name="${status.expression}" value="$!{status.value}"/>
+					<label for="${status.expression}" generated="true" class="error">$!{status.errorMessage}</label>
+                </td> 
+			</tr>
+			#end
+			<tr >
+			<td colspan="2">	
+				<div class="form-but">
+					<input type="submit" name="search" value="保存" class="but" />
+					<input type="reset" value="重置" onclick="window.location = 'config.htm?type=$!type&chann=$!chann'" class="but"/>
+                </div>
+			</td>
+            </tr>
+<div class="clear"></div>
+ </table>
+ </div>
+ </div>
+ </form>
+ </div>
+</div>
+</div>

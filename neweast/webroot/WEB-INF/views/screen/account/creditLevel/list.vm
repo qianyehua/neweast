@@ -1,0 +1,36 @@
+<div class="main-right" >
+<div class="basic">
+<div class="tool">
+   <span><a hidefocus="true" class="bt_edit" href="edit-init.htm">修改</a></span>
+</div>
+<ul class="form-tab">
+<li #if($!hasNew)class=""#else class="c" #end><span><a href="list.htm">当前生效等级列表</a></span></li>
+<li #if($!hasNew)class="c"#end><span><a href="list.htm?hasNew=true">下一个交易日生效</a></span></li>
+</ul>
+<div class="listbox">
+<table class="list-table">
+      <tr>
+      	<th style="width: 100px;">等级号</th>
+        <th style="width: 100px;">等级名称</th>
+        <th style="width: 100px;">信用值要求</th>
+      </tr>
+#if($!hasNew)
+#foreach($level in $newLevels)
+      <tr style="text-align:center" #if($!{velocityCount} % 2 == 0) class="bg" #end>
+        <td>$!{level.levelNo}</td>
+        <td>$!{level.levelName}</td>
+        <td>$!{level.lowLimit}</td>
+      </tr>
+#end
+#else
+#foreach($level in $levels)
+      <tr style="text-align:center" #if($!{velocityCount} % 2 == 0) class="bg" #end>
+        <td>$!{level.levelNo}</td>
+        <td>$!{level.levelName}</td>
+        <td>$!{level.lowLimit}</td>
+      </tr>
+#end
+#end
+</table>
+<div class="clear"></div></div></div>
+</div>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="HOMEPAGE_RECOMMEND_ARTISE">
+
+	<typeAlias alias="homepagerecommendartise" type="com.skyjoo.neweast.biz.homepage.domain.HomepageRecommendArtise" />
+	
+	<resultMap id="homepagerecommendartiseResultMap" class="homepagerecommendartise">
+		<result column="ID" property="id"/>
+		<result column="ARTISE_ID" property="artiseId"/>
+		<result column="STATUS" property="status"/>
+		<result column="OPERATOR" property="operator"/>
+	    <result column="GMT_CREATE" property="gmt_Create"/>
+		<result column="GMT_MODIFY" property="gmt_Modify"/>
+	</resultMap>
+
+	<sql id="columsSql">
+		f.ID,
+	    f.ARTISE_ID,
+	    f.STATUS,
+	    f.OPERATOR,
+	    f.GMT_CREATE,
+	    f.GMT_MODIFY
+		
+	</sql>
+	
+	<!--1.添加首页推荐艺术家  -->
+	<insert id="insertHomepageRecommendArtise" parameterClass="homepagerecommendartise">
+	<selectKey keyProperty="id" resultClass="java.lang.Long">
+			select
+			SEQ_HOMEPAGE_RECOMMEND_ARTISE.nextval as id from DUAL
+	</selectKey>
+		INSERT INTO HOMEPAGE_RECOMMEND_ARTISE ( ID,ARTISE_ID,STATUS,OPERATOR,GMT_CREATE,GMT_MODIFY)
+		VALUES (#id#,#artiseId#,#status#,#operator#,sysdate,sysdate)
+	</insert>
+	<!--2.根据ID获取推荐艺术家状态  -->
+	<select id="selectHomepageRecommendArtiseStatusById" resultClass="long" parameterClass="long">
+	   select f.STATUS
+	    from HOMEPAGE_RECOMMEND_ARTISE f 
+	    where f.ARTISE_ID = #artiseId#        
+    </select>
+		 <!--3.更新推荐艺术家信息  -->
+	<update id="updateHomepageRecommendArtiseById" parameterClass="homepagerecommendartise">
+		update 	HOMEPAGE_RECOMMEND_ARTISE f
+		set		f.STATUS = #status#, f.OPERATOR=#operator#,f.GMT_MODIFY=sysdate
+		where	f.ARTISE_ID = #artiseId#
+	</update>
+	
+</sqlMap>

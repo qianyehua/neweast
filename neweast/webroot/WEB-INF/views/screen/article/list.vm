@@ -1,0 +1,166 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+     var num = 0;
+     function verify(flag, id) {
+             num ++;
+             if(num <= 1){
+        	    var url = "verify.htm?id=" + id + "&flag=" + flag;
+       		    document.location = url;
+        		}
+         }
+	jQuery( function() {
+		//设置日期
+		$('.date-pick').datePicker( {
+ 		clickInput : true,
+		startDate : "2010-01-01"
+		});
+	});
+		 
+	function batchRemove(){
+		obj = document.getElementsByName("articleId");
+    	ids = [];
+   		for(i in obj){
+        if(obj[i].checked)
+            ids.push(obj[i].value);
+    	}
+		if(ids.length == 0){
+			alert("请选择要删除的文章！");
+			return;
+		}
+		
+		if(confirm("确定要删除这些文章吗？"))
+        {
+          	window.location = "batchRemove.htm?ids="+ids; 
+        }		
+	}
+    function selectAll(){
+    	if ($("#idListAll").is(":checked")) {
+    		$(".articleIds").attr("checked", "checked");
+    	} else {
+    		$(".articleIds").removeAttr("checked");
+    	}			
+    }
+</script>
+<!-- 搜索框 -->
+<form id="articleCheckForm" name="articleCheckForm" action="list.htm" method="get">
+	<div class="search-box">
+        <input type="hidden" name="rececjId" id="rececjId" value=""/>
+        <table>
+			<tr>
+				<th>发布时间</th>
+                <td>
+                	#springBind("articleCheckQuery.startDate")
+					<input type="text" id="startDate" name="startDate"  value="$!{dateTool.format('yyyy-MM-dd',$!page.startDate)}"  readonly="readonly" size="10" class="date-pick" />
+					-
+					#springBind("articleCheckQuery.endDate")
+                    <input type="text" id="endDate" name="endDate" value="$!{dateTool.format('yyyy-MM-dd',$!page.endDate)}" readonly="readonly"  size="10" class="date-pick" />
+                 </td>	
+				 <th>媒体</th>
+				 <td>#springBind("articleCheckQuery.mediaId")
+					<select id="mediaId" name="mediaId">
+                		<option value="">请选择</option>
+                		#foreach($media in $mediaList)
+                			<option value="$media.id" #if($articleCheckQuery.mediaId == "$media.id") selected="selected" #end>
+                				$media.mediaName
+                			</option>
+                		#end
+                	</select>
+				</td> 
+			</tr>
+            <tr>
+				<th>文章标题</th>
+				<td>
+					#springBind("articleCheckQuery.articleTitle")
+    				<input type="text" name="articleTitle" id="articleTitle" class="inp required" value="$!{page.articleTitle}"/>	
+				</td>	
+     			<th>专题</th>
+				<td>	
+					#springBind("articleCheckQuery.subjectId")
+                	<select id="subjectId" name="subjectId">
+                		<option value="">请选择</option>
+                		#foreach($subject in $subjectList)
+                			<option value="$subject.id" #if($page.subjectId == "$subject.id") selected="selected" #end>
+                				$subject.subjectName
+                			</option>
+                		#end
+                	</select>
+				</td> 
+			</tr>
+			<tr>
+				<th>状态</th>
+				<td>	
+					#springBind("articleCheckQuery.status")
+                	<select id="status" name="status">
+                		<option value="">请选择</option>
+						<option value="0" #if($page.status == 0) selected="selected" #end>待审核</option>
+						<option value="-1" #if($page.status == -1) selected="selected" #end>审核驳回</option>
+						<option value="1" #if($page.status == 1) selected="selected" #end>正常</option>
+                	</select>
+				</td> 
+				<td>
+					<input type="submit" name="search" value="查询" class="but-61" />
+					<input type="reset" value="重置" onclick="window.location = 'list.htm'" class="but-62"/>
+					<input type="button" value="批量删除"   class="but-63" onclick="batchRemove();"/>
+				</td>  
+			</tr>
+      
+</table>
+</div>
+<!-- 搜索框 END -->
+ <div class="basic">
+	<div class="tool">
+		<span>
+            <a onclick="window.location='add-init.htm'" href="#" class="bt_add" hidefocus="true" >新增</a>
+        </span>
+	</div>
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="7%"><input type="checkbox" class=".all-checkbox" name="idListAll" id="idListAll" onclick="selectAll();"value="">全选</th>
+			<th width="23%">文章标题</th>
+			<th width="10%">媒体</th>
+			<th width="10%">专题</th>
+			<th width="8%">状态 </th>
+			<th width="10%">创建时间</th>
+			<th width="35%">操作</th>
+        </tr>
+		#if($!{page} && ${page.totalCount} > 0)
+			#foreach($article in $page.getData())
+				<tr #if($!{velocityCount}%2 == 0) class="bg" #end>					
+					<td align="center"><input type="checkbox"  name="articleId" class="articleIds" value="$article.id"></td>
+					<td>$!{article.articleTitle}</td>
+					<td align="center">$!{article.mediaName}</td>
+					<td align="center">$!{article.subjectName}</td>
+					<td align="center">#if($!{article.status} == 0)待审核#elseif($!{article.status} == -1)审核驳回#else 正常#end</td>
+					<td align="center">$!{dateTool.format($!{article.gmtCreate})}</td>
+					<td  align="center" class="link-td">
+						#if($!{article.status} == 0)
+							<a href="check_edit.htm?id=$!{article.id}">审核</a>
+						#else
+							<a href="edit-init.htm?id=$!{article.id}">编辑</a>
+						#end
+						<a href="$!{appServer}/article/detail.htm?id=$!{article.id}">详情</a>
+						#if($!{article.visitType}==2)
+						<a href="$!{appServer}/article/articleEdit_init.htm?id=$!{article.id}">自定义修改</a>#end
+						<a target="_blank" href="$!{blueflyServer}/article/detail.htm?id=$!{article.id}">预览</a>
+						<a href="remove.htm?id=$!{article.id}"onClick="return confirm('确定要删除该文章吗？');">删除</a>
+						<a href="comment.htm?articleId=$!{article.id}">评论列表</a>
+						<a href="$!{appServer}/article/recommend.htm?id=$!{article.id}">推广</a>
+					</td>
+				</tr>	
+			#end
+        #else
+                    <tr>
+                        <td colspan="7">
+                            <p class="ts">没有结果</p>
+                        </td>
+                    </tr>
+        #end
+    </table>
+	 #pager($page, "articleCheckForm")
+	
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

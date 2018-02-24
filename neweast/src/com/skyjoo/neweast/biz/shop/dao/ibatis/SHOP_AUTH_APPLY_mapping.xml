@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SHOP_AUTH_APPLY">
+
+	<typeAlias alias="shopAuthApply" type="com.skyjoo.neweast.biz.shop.domain.ShopAuthApply" />
+	<typeAlias alias="shopAuthApplyQuery" type="com.skyjoo.neweast.biz.shop.domain.query.ShopAuthApplyQuery" />
+	
+	<resultMap id="shopAuthApplyResultMap" class="shopAuthApply">
+		<result column="ID" 				property="id"/>
+		<result column="ACCOUNT_ID" 		property="accountId"/>
+		<result column="LOGIN_ID" 			property="loginId"/>
+		<result column="TYPE" 				property="type"/>
+		<result column="REGION" 			property="region"/>
+		<result column="REAL_NAME" 			property="realName"/>
+		<result column="EN_NAME" 			property="enName"/>
+		<result column="LICENSE_TYPE" 		property="licenseType"/>
+		<result column="LICENSE" 			property="license"/>
+		<result column="GMT_LICENSE_EXPIRY" property="gmtLicenseExpiry"/>
+		<result column="GENDER" 			property="gender"/>
+		<result column="MAJOR" 				property="major"/>
+		<result column="PROVINCE" 			property="province"/>
+		<result column="CITY" 				property="city"/>
+		<result column="ADDRESS" 			property="address"/>
+		<result column="MOBILE" 			property="mobile"/>
+		<result column="ATTACHMENT" 		property="attachment"/>
+		<result column="GMT_APPLY" 			property="gmtApply"/>
+		<result column="STATUS" 			property="status"/>
+		<result column="MEMO" 				property="memo"/>
+		<result column="OPERATOR" 			property="operator"/>
+		<result column="GMT_CREATE" 		property="gmtCreate"/>
+		<result column="GMT_MODIFY" 		property="gmtModify"/>
+		<result column="GMT_ACCEPTED"		property="gmtAccepted"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		saa.ID,
+		saa.ACCOUNT_ID,
+		saa.LOGIN_ID,
+		saa.TYPE,
+		saa.REGION,
+		saa.REAL_NAME,
+		saa.EN_NAME,
+		saa.LICENSE_TYPE,
+		saa.LICENSE,
+		saa.GMT_LICENSE_EXPIRY,
+		saa.GENDER,
+		saa.MAJOR,
+		saa.PROVINCE,
+		saa.CITY,
+		saa.ADDRESS,
+		saa.MOBILE,
+		saa.ATTACHMENT,
+		saa.GMT_APPLY,
+		saa.STATUS,
+		saa.MEMO,
+		saa.OPERATOR,
+		saa.GMT_CREATE,
+		saa.GMT_MODIFY,
+		saa.GMT_ACCEPTED
+	</sql>
+	
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+	
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum &gt;= #beginIndex#
+	</sql>
+		
+	<sql id="pageCondition">
+		<dynamic prepend="where">
+			<isNotEmpty property="loginId" prepend="and">
+				saa.LOGIN_ID = #loginId#
+			</isNotEmpty>
+			<isNotEmpty property="type" prepend="and">
+				saa.TYPE = #type#
+			</isNotEmpty>
+			<isNotEmpty property="gmtApplyStart" prepend="and">
+				saa.GMT_APPLY &gt;= to_date(#gmtApplyStart#, 'yyyy-MM-dd')
+			</isNotEmpty>
+			<isNotEmpty property="gmtApplyEnd" prepend="and">
+				saa.GMT_APPLY &lt; to_date(#gmtApplyEnd#, 'yyyy-MM-dd') + 1
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+				saa.STATUS = #status#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+		
+	<select id="pageCount" parameterClass="shopAuthApplyQuery" resultClass="java.lang.Integer">
+		select count(*)
+		from SHOP_AUTH_APPLY saa
+		<include refid="pageCondition"/>
+	</select>
+	
+	<select id="page" parameterClass="shopAuthApplyQuery" resultMap="shopAuthApplyResultMap">
+		<include refid="pageBeginSql"/>
+		
+		select <include refid="columsSql"/>
+		from SHOP_AUTH_APPLY saa
+		<include refid="pageCondition"/>
+		order by saa.GMT_APPLY desc, saa.GMT_CREATE asc
+		
+		<include refid="pageEndSql"/>
+	</select>
+	
+	<select id="selectById" parameterClass="long" resultMap="shopAuthApplyResultMap">
+		select <include refid="columsSql"/>
+		from SHOP_AUTH_APPLY saa
+		where saa.id = #id#
+	</select>
+	
+	<update id="update" parameterClass="shopAuthApply">
+		update 	SHOP_AUTH_APPLY saa
+		set 	saa.GMT_MODIFY = sysdate,
+				saa.GMT_ACCEPTED = sysdate,
+				saa.MEMO = #memo#
+			<isNotEmpty property="status" prepend=",">
+				saa.STATUS = #status#
+			</isNotEmpty>
+			<isNotEmpty property="operator" prepend=",">
+				saa.OPERATOR = #operator#
+			</isNotEmpty>
+		where 	saa.ID = #id#
+	</update>
+	
+	<select id="selectByLoginId" parameterClass="string" resultMap="shopAuthApplyResultMap">
+		select <include refid="columsSql"/>
+		from SHOP_AUTH_APPLY saa
+		where saa.LOGIN_ID = #loginId#
+	</select>
+	
+	<insert id="insert" parameterClass="shopAuthApply">
+		<selectKey keyProperty="id" resultClass="long">
+			select SEQ_SHOP_AUTH_APPLY.NEXTVAL from DUAL
+		</selectKey>
+		insert into SHOP_AUTH_APPLY saa (<include refid="columsSql"/>)
+		values (#id#, #accountId#, #loginId#, #type#, #region#, #realName#, #enName#, #licenseType#, #license#, 
+				#gmtLicenseExpiry#, #gender#, #major#, #province#, #city#, #address#, #mobile#, #attachment#, 
+				#gmtApply#, #status#, #memo#, #operator#, sysdate, sysdate,#gmtAccepted#)
+	</insert>	
+</sqlMap>

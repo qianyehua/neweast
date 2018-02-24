@@ -1,0 +1,34 @@
+<div class="main-right" >
+<div class="basic">
+<div class="tool">
+   <span><a hidefocus="true" class="bt_add" href="add-init.htm">添加</a></span>
+</div>
+<div class="listbox">
+<form action="list.htm" name="form1" id="form1"> 
+<table class="list-table">
+      <tr>
+      	<th style="width: 100px;">ID</th>
+        <th style="width: 100px;">角色名</th>
+        <th style="width: 100px;">描述</th>
+		<th style="width: 100px;">创建时间</th>
+		<th style="width: 100px;">修改时间</th>
+		<th style="width: 100px;">操作</th>
+      </tr>
+#if($!{list.data} && !${list.data.empty})
+#foreach($role in $list.data)
+  <tr style="text-align:center" #if($!{velocityCount} % 2 == 0) class="bg" #end>
+    <td>$!{role.id}</td>
+    <td><p title="$!{role.name}">$!stringUtils.abbreviate($!{role.name},10)</p></td>
+	<td><p title="$!{role.description}">$!stringUtils.abbreviate($!{role.description},10)</p></td>
+    <td>$!dateTool.format("yyyy-MM-dd HH:mm:ss",$!{role.gmtCreate})</td>
+	<td>$!dateTool.format("yyyy-MM-dd HH:mm:ss",$!{role.gmtModify})</td>
+	<td class="link-td"><a href="edit-init.htm?id=$!{role.id}">修改</a><a href="#" onclick="if(confirm('您确认要删除这个角色吗？'))location.href='del.htm?id=$!{role.id}';">删除</a></td>
+  </tr>
+#end
+#end
+</table>
+#pager($list, "form1")	
+</form>
+</div>
+<div class="clear"></div></div>
+</div>

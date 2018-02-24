@@ -1,0 +1,12 @@
+<div class="basic">
+    <div class="clear" style="height:20px;"></div>
+    <div class="welcome">
+        <div class="wel-bg">
+        </div>
+        <div class="wel-nr" style="left:150px;padding:10px;top:70px">
+        <h2>欢迎登录系统管理后台</h2>
+            <p>当前系统时间：$!{dateTool.format("yyyy-MM-dd HH：mm：ss", $!{dateTool.date})}</p>
+            <p>上次登录时间：$!{dateTool.format("yyyy-MM-dd HH：mm：ss", $!{user.gmtLastLogin})}</p>
+        </div>
+    </div>
+</div>

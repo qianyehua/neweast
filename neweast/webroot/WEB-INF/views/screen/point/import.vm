@@ -1,0 +1,71 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+    jQuery( function() {
+        $('.date-pick').datePicker( {clickInput : true, startDate : "2010-01-01"});
+	});
+</script>
+<!-- 搜索框 -->
+<form id="pointForm" name="pointForm" enctype="multipart/form-data"  action="import.htm" method="post">
+	<div class="search-box"">
+        <table>
+			<tr>
+				<th>文件</th>
+				<td>
+					<input type="file" name="infoExcel" accept=".xls,.xlsx"/>
+					 <label class="error">$!infoError</label>
+                </td> 
+				<td >
+					<input type="submit" name="search" value="提交" class="but-61" />
+                </td>
+			</tr>
+			
+		</table>
+	</div>
+<!-- 搜索框 END -->
+ <div class="basic">
+	<div class="listbox">
+	<table  class="list-table">
+		#if($!badData)
+			#if($!badData.size()==0)
+                    
+		<div class="formbox">
+            <div class="clear"></div>
+            <!-- 成功提示 -->
+            <div class="nr success-box">
+                <div class="nr-t"></div>
+                <div class="nr-c" style="height:100px;">
+                    <div class="text">
+                        <h4>数据导入成功 </h4>
+                    </div>
+                </div>
+                <div class="nr-b"></div>
+        </div>
+        <!-- 成功提示 END -->
+        <div class="clear"></div>
+    </div>
+			#else
+				<label class="error">成功插入$!suc 条,下列$!fail 条数据插入失败!</label>
+		<tr >
+			<th  width="20%">交易账户</th>
+			<th  width="20%">数量</th>
+			<th  width="40%">赠送原因</th>
+			<th width="20">失败原因</th>
+        </tr>
+            #foreach($data in $!badData)
+		<tr #if($data.index %2 == 0) class="bg" #end>
+				<td style="text-align:center">$!data.tradeAccount</td>
+                <td style="text-align:center">$!data.badAmount</td>
+				<td style="text-align:center">$!data.reason </td>
+				<td style="text-align:center">$!data.badReason </td>
+				
+        </tr>
+			#end
+			#end
+			
+		 #end
+    </table>
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

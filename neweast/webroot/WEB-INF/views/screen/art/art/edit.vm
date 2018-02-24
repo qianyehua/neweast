@@ -1,0 +1,231 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/validate.css" />
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(function() {
+	var categoryIdList = new Array();
+ 	var categoryId = '$!{art.categoryId}';
+	
+	#foreach($cat in $!{artCategories})
+    	#set($index = $!{velocityCount})
+     	var cats_$index = new Array();
+	 	var catNames_$index = new Array();
+	 	categoryIdList[$index] = new Array();
+		
+		#if($!{cat.catLevel}==1)
+		#set($num = 0)
+		#foreach($catsec in $!{artCategories})
+			
+			#if($!{catsec.parentId}==$!{cat.id}&&$!{catsec.catLevel}==2)
+			cats_$index [$num] = '$catsec.id';
+    		catNames_$index [$num] = '$catsec.name';
+			#set($num = $num + 1)
+		    #end
+         #end
+         categoryIdList[$index][0] = '$!{cat.id}';
+    	 categoryIdList[$index][1] = cats_$index;
+    	 categoryIdList[$index][2] = catNames_$index;
+      #end
+  	#end
+
+	$("#firstCategory").change(function(){
+		$('select[id=cateId]').empty();
+		var categoryIds = getCategoryId($("#firstCategory").val());
+		var categoryNames = getCategoryName($("#firstCategory").val());
+		if (categoryIds){
+    		for (var i = 0; i<categoryIds.length; i++){
+			  var option = "";
+			  if (categoryId == categoryIds[i]){
+			  	option = '<option selected value="'+categoryIds[i]+'">'+categoryNames[i]+'</option>';
+			  }else{
+			  	option = '<option value="'+categoryIds[i]+'">'+categoryNames[i]+'</option>'
+			  }
+    		  $('select[id=cateId]').append(option);
+    		}
+		}
+		$('select[id=cateId]').change();
+		setMainHeight();
+	});
+	
+	function getCategoryId(firstCategory){
+		for(var i=1; i<categoryIdList.length; i++){
+			if(firstCategory == categoryIdList[i][0]){
+				return categoryIdList[i][1];
+			 }
+		}
+		return null;
+	}
+		
+	function getCategoryName(firstCategory){
+		for(var i=1; i<categoryIdList.length; i++){
+			if(firstCategory == categoryIdList[i][0]){
+				return categoryIdList[i][2];
+	    	 }
+	    }
+	    return null;
+	}
+	
+	$("#cateId").change(function(){
+         val = $(this).val();	 
+		 var htmlstr = $('div[property="'+val+'"]').html();
+		 $('#artAttribute').empty().html(htmlstr);
+		 setMainHeight();
+     }).change();
+	 
+	 jQuery("#editForm").validate({
+		rules:{
+			name : {
+				required : true,
+				rangelength : [1,20]
+			}, 
+			firstCategory:  {
+				required : true
+			},
+			categoryId: {
+				required : true
+			}
+		},
+		messages:{
+			name : {
+				required : '作品名称不得为空',
+				minlength : jQuery.format('作品名称不得小于{0}位！'),
+			},
+            firstCategory: {
+				required : "请选择一级分类"
+			},
+			categoryId: {
+				required : "请选择二级分类"
+			}
+		}
+	});
+	
+	//防止双击重复提交
+	$("#but").click(function () {
+    	if($("#editForm").valid()){
+    		$("#but").attr("disabled","true"); //设置变灰按钮  
+			$("#editForm").submit();//提交表单  
+    	}
+    })
+});
+
+</script>
+<style>
+table{
+border: 1px solid #D0D0D0;
+min-width:100px;
+min-height:50px;
+}
+</style>
+<div class="main-right">
+    <div class="basic">
+        <ul class="form-tab">
+            <li class="c">
+                <span>类目迁移</span>
+            </li>
+        </ul>
+		<div class="formbox">
+			<div class="clear"></div>
+			<form id="editForm" name="editForm" action="editCat.htm" method="post">
+			<div class="nr">
+				<div class="nr-t"></div>
+				<div class="nr-c">
+					<table class="c2">
+						<tr>
+							#springBind("art.id")
+							<input type="hidden"  id="id" name="${status.expression}" value="$!{art.id}" />
+							<th><span style="color:red">*</span>艺术品名称：</th>
+							<td>#springBind("art.name")
+								<input name="${status.expression}" id="name" class="inp" maxlength="20" value="$!{status.value}" readonly/>
+							</td>
+						</tr>
+						<tr>
+							<th>艺术品分类：</th>
+							<td>
+								$!{cateInfo}
+							</td>
+						</tr>
+						<tr>
+							<th>艺术品属性：</th>
+							<td>
+								<div class="property-div">
+									#foreach($option in ${artOption})
+										<p>$option</p>
+									#end
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th><span style="color:red">*</span>艺术品分类：</th>
+							<td>#springBind("art.firstCategory")
+								<select id="firstCategory" name="${status.expression}" value="$!{status.value}" class="type-select" #if($flag==1)disabled="disabled"#end>
+										#foreach($cat in $!{artCategories})
+											#if($!{cat.catLevel}==1)
+												<option #if("$!{art.firstCategory}"=="$!{cat.id}")selected #end  value="$!{cat.id}">$!{cat.name}</option>
+											#end
+										#end
+								</select>
+								#springBind("art.categoryId")
+								<select id="cateId" name="${status.expression}" value="$!{status.value}" class="type-select" #if($flag==1)disabled="disabled"#end>
+										#foreach($catsec in $!{artCategories})
+											#if($!{catsec.parentId}==$!{art.firstCategory}&&$!{catsec.catLevel}==2)
+												<option  #if("$!{art.categoryId}"=="$!{catsec.id}") selected #end value="$!{catsec.id}">$!{catsec.name}</option>
+											#end
+										#end
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th><span style="color:red">*</span>艺术品属性：</th>
+							<td>
+								<div class="property-div" id="artAttribute">
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="form-but"><!-- 表单按钮区 -->
+				<input id="but" type="button" class="but" value="保存" />
+				<input type="button" class="but" value="返回" onclick="window.location = 'list.htm'"/>
+			</div><!-- 表单按钮区 END -->
+			</form>
+			<div class="clear"></div>
+		</div>
+	</div>
+</div>
+	
+<div id="pro-tmpl" style="display:none;">
+#foreach($atc in $!{artCategories})
+	#if($!{atc.catLevel}==2)
+		<div class="js-pro" property="$!{atc.id}">
+		<table bgcolor="#f1efef">
+		#foreach($property in $artProperty)
+			#if($!{atc.id}==${property.categoryId} || !${property.categoryId})	
+				<tr>
+					<td align="right" class="left-td">${property.content}：</td>
+					<td align="left">
+					#if(${property.propertyType}==1)
+						#foreach($options in ${property.options})
+							<input type="radio" class="required"  name="${property.id}$!{property.categoryId}" value="${options.id}" #foreach($apv in $artPropertyValues) #if(${apv.propertyId}==${property.id}&&${apv.artOption}==${options.id})  checked #end #end>${options.content}
+						#end
+					#end
+					#if($property.propertyType==2)
+						#foreach($options in $property.options)
+							<input type="checkbox" class="required" name="${property.id}$!{property.categoryId}" value="${options.id}" #foreach($apv in $artPropertyValues) #if(${apv.propertyId}==${property.id}&&!$!{apv.checkOption($!{options.id})}) checked #end #end>${options.content}
+						#end
+					#end
+					#if($property.propertyType==3)
+						<input type="text" class="required text-input2" name="${property.id}$!{property.categoryId}" maxlength="40" #foreach($apv in $artPropertyValues) #if(${apv.propertyId}==${property.id}) value="${apv.artOption}" #end #end />
+					#end
+					#if($property.propertyType==4)
+						<textarea class="required" maxLength="200"  type="text" name="${property.id}$!{property.categoryId}" cols=30 rows=5 >#foreach($apv in $artPropertyValues)#if(${apv.propertyId}==${property.id})${apv.artOption}#end#end</textarea>
+					#end	
+					<label for="${property.id}$!{property.categoryId}" generated="true" class="error">$!{status.errorMessage}</label>
+					</td>
+				</tr>
+			#end
+		#end
+		</table>
+		</div>
+	#end
+#end
+</div>

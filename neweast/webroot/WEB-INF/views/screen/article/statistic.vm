@@ -1,0 +1,39 @@
+<!-- 搜索框 -->
+<form id="statisticForm" name="statisticForm" action="statistics.htm" method="get">
+ <div class="basic">
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="20%">文章标题</th>
+			<th width="10%">所属媒体</th>
+			<th width="25%">所属专题</th>
+			<th width="8%">浏览量</th>
+			<th width="8%">点赞数</th>
+			<th width="8%">评论数</th>
+			<th width="21%">创建时间</th>
+        </tr>
+		#if($!{page} && ${page.totalCount} > 0)
+			#foreach($statistic in $page.getData())
+				<tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+					<td style="text-align:center">$!{statistic.title}</td>
+					<td style="text-align:center">$!{statistic.media}</td>
+					<td style="text-align:center">$!{statistic.subject}</td>
+					<td style="text-align:center">$!{statistic.borwseCount}</td>
+					<td style="text-align:center">$!{statistic.praiseCount}</td>
+					<td style="text-align:center">$!{statistic.commentCount}</td>
+					<td style="text-align:center">$!{dateTool.format($!{statistic.gtmCreate})}</td>
+				</tr>	
+			#end 
+        #else
+            <tr>
+                <td colspan="7">
+                    <p class="ts">没有结果</p>
+                </td>
+            </tr>
+        #end
+    </table>
+	 #pager($page, "statisticForm")
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

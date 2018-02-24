@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SYSTEM_ROLE">
+
+	<typeAlias alias="systemRole" type="com.skyjoo.neweast.biz.system.domain.SystemRole" />
+	
+	<resultMap id="systemRoleResultMap" class="systemRole">
+		<result column="ID" property="id"/>
+		<result column="NAME" property="name"/>
+		<result column="DESCRIPTION" property="description"/>
+		<result column="OPERATOR" property="operator"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		sr.ID,
+		sr.NAME,
+		sr.DESCRIPTION,
+		sr.OPERATOR,
+		sr.GMT_CREATE,
+		sr.GMT_MODIFY
+	</sql>
+	
+	<!--1.根据用户获取角色列表  -->
+	<select id="getRolesByUserID" parameterClass="java.lang.Long" resultMap="systemRoleResultMap">
+		select <include refid="columsSql"/>
+		from SYSTEM_ROLE sr
+		where sr.id in (
+						select sur.role_id 
+						from SYSTEM_USER_ROLE sur 
+						where sur.USER_ID = #userID#
+						)
+	</select>
+	
+	<!--2.添加角色  -->
+	<insert id="addRole">
+		<selectKey keyProperty="id" resultClass="long" type="pre">
+			select SEQ_SYSTEM_ROLE.nextval as id from dual 
+		</selectKey>
+		insert into SYSTEM_ROLE (ID, NAME, DESCRIPTION, GMT_CREATE, GMT_MODIFY, OPERATOR)
+		values (#id#, #name#, #description#, sysdate, sysdate, #operator#)
+	</insert>
+	
+	<!--3.修改角色  -->
+	<update id="editRole">
+		update SYSTEM_ROLE set NAME = #name#, DESCRIPTION = #description#, OPERATOR = #operator#, 
+		GMT_MODIFY = sysdate where ID = #id#
+	</update>
+	
+	<!--4.删除角色  -->
+	<delete id="removeRole">
+		delete from SYSTEM_ROLE where ID = #id#
+	</delete>
+	
+	<!--5.获取总角色数量  -->
+	<select id="getRolesCount" resultClass="int">
+		select
+		COUNT(*)
+		from
+		SYSTEM_ROLE S
+	</select>
+
+	<!--6.获取角色列表  -->
+	<select id="getRoles" resultMap="systemRoleResultMap">
+		select *
+		from (
+		select t1.* , rownum linenum
+		from (
+		select
+		S.ID,
+		S.NAME,
+		S.DESCRIPTION,
+		S.GMT_CREATE,
+		S.GMT_MODIFY,
+		S.OPERATOR
+		from
+		SYSTEM_ROLE S
+		order by S.GMT_MODIFY desc
+		) t1
+		where rownum &lt;= #endIndex#) t2
+		where t2.linenum &gt;= #beginIndex#	
+	</select>
+
+	<!--7.根据id获取角色  -->
+	<select id="getRoleById" resultMap="systemRoleResultMap">
+		select * from SYSTEM_ROLE
+		where ID = #id#
+	</select>
+	
+	<!--8.获取所有角色  -->
+	<select id="getAllRoles" resultMap="systemRoleResultMap">
+		select * from SYSTEM_ROLE 
+	</select>
+
+</sqlMap>

@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ARTISE">
+
+	<typeAlias alias="artise" type="com.skyjoo.neweast.biz.artise.domain.Artise" />
+	<typeAlias alias="artiseQuery" type="com.skyjoo.neweast.biz.artise.domain.query.ArtiseQuery" />
+		<typeAlias alias="userFollow"
+		type="com.skyjoo.neweast.biz.artise.domain.UserFollow" />
+
+	<resultMap id="artiseResultMap" class="artise">
+	    <result column="ID" property="artiseId"/>  
+		<result column="USER_ID" property="userId"/>
+		<result column="PORTRAIT" property="portrait"/>
+	    <result column="ARTISENAME" property="artiseName"/>
+		<result column="PROFILE" property="profile"/>		
+	    <result column="PORTRAIT" property="portrait"/>
+		<result column="ARTWORKS" property="artWorks"/>		
+		<result column="CERTIFICATIONS" property="certifications"/>
+		<result column="STATUS" property="status"/>
+		
+		<result column="MEMO" 			property="memo"/>
+		<result column="TITLE" 			property="title"/>
+		<result column="VISITCOUNT" 	property="visitCount"/>
+		<result column="FOLLOWCOUNT" 	property="followCount"/>
+		<result column="COMMENTCOUNT" 	property="commnetCount"/>
+		<result column="COLLECTCOUNT" 	property="collectCount"/>
+		<result column="OPERATOR" 		property="operator"/>
+		<result column="GMT_IDENTIFY" 	property="gmt_Identify"/>
+		<result column="GMT_CREATE" 	property="gmt_Create"/>
+		<result column="GMT_MODIFY" 	property="gmt_Modify"/>
+		<result column="IFRECOMMEND" 	property="ifrecommend"/>
+		<result column="ACCOUNT_TYPE" 	property="roleType"/>
+		<result column="ARTIST" 		property="artist"/>
+ </resultMap>
+	
+    <resultMap id="artiseQueryResultMap" class="artiseQuery">	  
+        <result column="ID" 			property="artiseId"/>  
+		<result column="USER_ID" 		property="userId"/>
+		<result column="ARTISENAME" 	property="artiseName"/>
+		<result column="PROFILE" 		property="profile"/>		
+		<result column="PORTRAIT" 		property="portrait"/>
+		<result column="ARTWORKS" 		property="artWorks"/>		
+		<result column="CERTIFICATIONS" property="certifications"/>
+		<result column="STATUS" 		property="status"/>
+		
+		<result column="MEMO" 		 	property="memo"/>
+		<result column="TITLE" 		 	property="title"/>
+		<result column="VISITCOUNT"  	property="visitCount"/>
+		<result column="FOLLOWCOUNT" 	property="followCount"/>
+		
+		<result column="COLLECTCOUNT" 	property="collectCount"/>
+		<result column="OPERATOR" 	  	property="operator"/>
+		<result column="GMT_IDENTIFY" 	property="gmt_Identify"/>
+		<result column="GMT_CREATE"   	property="gmt_Create"/>
+		<result column="GMT_MODIFY"   	property="gmt_Modify"/>
+		<result column="IFRECOMMEND"  	property="ifrecommend"/>
+		<result column="ARTS"         	property="arts"/>
+		<result column="ACCOUNT_TYPE" 	property="roleType"/>
+		<result column="ARTIST" 		property="artist"/>
+	</resultMap>
+	
+	<resultMap id="followResultMap" class="userFollow">
+		<result column="ID" 		property="id" />
+		<result column="USER_ID" 	property="userId" />
+		<result column="OBJECT_ID" 	property="objectId" />
+	</resultMap>
+	
+	<sql id="columsSql">
+		lf.ID,
+		lf.USER_ID,
+		lf.PROFILE,
+		lf.ARTWORKS,
+		lf.CERTIFICATIONS,
+		lf.STATUS,
+		lf.MEMO,
+		lf.TITLE,
+		lf.VISITCOUNT,
+		lf.FOLLOWCOUNT,
+	    lf.COMMENTCOUNT,
+		lf.COLLECTCOUNT,
+		lf.OPERATOR,
+		lf.GMT_IDENTIFY,
+		lf.GMT_CREATE,
+		lf.ARTIST,
+		lf.GMT_MODIFY
+	</sql>
+
+	<sql id="sqlColumn">
+		Select
+		t5.*,Rownum As num
+		From(
+		select ar.*,ua.PORTRAIT,ua.REAL_NAME,ua.ACCOUNT_TYPE
+		from
+		ARTISE ar,USER_ACCOUNT ua where ar.user_id = ua.id
+		) t5
+		<dynamic prepend="where">
+			<isNotEmpty property="startDate" prepend="and">
+             	<![CDATA[ GMT_CREATE >= #startDate# ]]>
+        	</isNotEmpty>
+        	<isNotEmpty property="endDate" prepend="and">
+            	<![CDATA[ GMT_CREATE <= #endDate#+1 ]]>
+        	</isNotEmpty>
+			<isNotEmpty property="artiseName" prepend="and">
+				real_name LIKE
+				'$artiseName$%'
+			</isNotEmpty>
+			<isEqual property="status" compareValue="-1" prepend="and">
+				status IN (0,2)
+			</isEqual>
+			<isEqual property="status" compareValue="0" prepend="and">
+				status=0
+			</isEqual>
+			<isEqual property="status" compareValue="1" prepend="and">
+				status=1
+			</isEqual>
+		</dynamic>
+		ORDER GMT_MODIFY DESC
+	</sql>
+	
+		<sql id="sqlColumn2">
+		Select
+		t5.*,Rownum As num
+		From(
+		select ar.*,ua.PORTRAIT,ua.REAL_NAME,ua.ACCOUNT_TYPE
+		from
+		ARTISE ar,USER_ACCOUNT ua where ar.user_id = ua.id
+		ORDER BY ar.STATUS ASC,ar.GMT_MODIFY DESC
+		) t5
+		<dynamic prepend="where">
+			<isNotEmpty property="startDate" prepend="and">
+             	<![CDATA[ GMT_CREATE >= #startDate# ]]>
+        	</isNotEmpty>
+        	<isNotEmpty property="endDate" prepend="and">
+            	<![CDATA[ GMT_CREATE <= #endDate#+1 ]]>
+        	</isNotEmpty>
+			<isNotEmpty property="artiseName" prepend="and">
+				real_name LIKE
+				'$artiseName$%'
+			</isNotEmpty>
+			<isEqual property="status" compareValue="-1" prepend="and">
+				status in (0,2)
+			</isEqual>
+			<isEqual property="status" compareValue="0" prepend="and">
+				status=0
+			</isEqual>
+			<isEqual property="status" compareValue="2" prepend="and">
+				status=2
+			</isEqual>
+			<isEqual property="roleType" compareValue="-1" prepend="and">
+				ACCOUNT_TYPE IN (1,2)
+			</isEqual>
+			<isEqual property="roleType" compareValue="1" prepend="and">
+				ACCOUNT_TYPE=1
+			</isEqual>
+			<isEqual property="roleType" compareValue="2" prepend="and">
+				ACCOUNT_TYPE=2
+			</isEqual>
+		</dynamic>
+	</sql>
+	
+	
+	
+	
+   <sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+	
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum &gt;= #beginIndex#
+	</sql>
+	
+	<sql id="pageCondition">
+		<dynamic prepend="where">
+		<isNotEmpty prepend="and" property="artiseId">
+				lf.USER_ID = #userId#
+			</isNotEmpty>
+	     <isNotEmpty prepend="and" property="artWorks">
+				lf.ARTWORKS= #artWorks#
+			</isNotEmpty>
+		<isNotEmpty property="startDate" prepend="and">
+             		<![CDATA[ lf.GMT_CREATE >= #startDate# ]]>
+             </isNotEmpty>
+             	<isNotEmpty property="endDate" prepend="and">
+             		<![CDATA[ lf.GMT_CREATE <= #endDate#+1 ]]>
+             </isNotEmpty>
+		</dynamic>
+			
+	</sql>
+	<select id="pageCount" parameterClass="ArtiseQuery" resultClass="java.lang.Integer">
+		SELECT
+			COUNT(1)
+		FROM
+			ARTISE a
+		LEFT JOIN USER_ACCOUNT c ON c."ID" = a.USER_ID
+		LEFT JOIN HOMEPAGE_RECOMMEND_ARTISE b ON b.ARTISE_ID = a ."ID" 
+		WHERE a.STATUS = 1		
+		<isNotEmpty property="artiseName" prepend="and">
+			c.REAL_NAME LIKE  '$artiseName$%' 
+		</isNotEmpty>  
+		<isNotEmpty property="startDate" prepend="and">
+             <![CDATA[ a.GMT_CREATE >= #startDate# ]]>
+        </isNotEmpty>
+        <isNotEmpty property="endDate" prepend="and">
+            <![CDATA[ a.GMT_CREATE <= #endDate#+1 ]]>
+        </isNotEmpty>	  	                   
+	</select>
+	
+	<!--1.艺术家列表  -->
+	<select id="page" parameterClass="ArtiseQuery" resultMap="artiseQueryResultMap">
+		<include refid="pageBeginSql"/>
+		SELECT
+			a.*,c.PORTRAIT,c.ACCOUNT_TYPE,c.REAL_NAME as ARTISENAME, (
+				SELECT
+					COUNT (1)
+				FROM
+					ART
+				WHERE
+					USER_ID = A .USER_ID
+				AND (STATUS = 1 OR STATUS = 5 OR STATUS=0)
+			) arts,
+			nvl(b.STATUS ,-1)as IFRECOMMEND
+		FROM
+			ARTISE a
+		LEFT JOIN USER_ACCOUNT c ON c."ID" = a.USER_ID
+		LEFT JOIN HOMEPAGE_RECOMMEND_ARTISE b ON b.ARTISE_ID = a ."ID" 
+		WHERE a.STATUS = 1		
+		<isNotEmpty property="artiseName" prepend="and">
+			c.REAL_NAME LIKE  '$artiseName$%' 
+		</isNotEmpty>  
+		<isNotEmpty property="startDate" prepend="and">
+             <![CDATA[ a.GMT_CREATE >= #startDate# ]]>
+        </isNotEmpty>
+        <isNotEmpty property="endDate" prepend="and">
+            <![CDATA[ a.GMT_CREATE <= #endDate#+1 ]]>
+        </isNotEmpty>	  	                   
+		order by IFRECOMMEND desc,a.GMT_MODIFY desc
+		<include refid="pageEndSql"/>
+	</select>
+	
+	<!--2.凭艺术家ID获取艺术家详情 --> 
+	<select id="selectByartiseId" resultMap="artiseResultMap" parameterClass="long">
+		select c.ID, c.USER_ID,c.ARTISENAME,c.PORTRAIT,c.TITLE,c.PROFILE,c.ARTWORKS,c.CERTIFICATIONS,c.STATUS,c.MEMO,c.GMT_IDENTIFY,c.GMT_CREATE,
+        c.VISITCOUNT,c.FOLLOWCOUNT,c.COMMENTCOUNT,c.COLLECTCOUNT,c.OPERATOR,c.GMT_MODIFY,c.IFRECOMMEND,c.ACCOUNT_TYPE,C.ARTIST
+       from
+	    (	select <include refid="columsSql"/>,a.PORTRAIT,a.REAL_NAME as ARTISENAME,b.STATUS as IFRECOMMEND,a.ACCOUNT_TYPE
+	    from ( ARTISE lf INNER JOIN USER_ACCOUNT a ON a."ID" = LF.USER_ID) left JOIN HOMEPAGE_RECOMMEND_ARTISE b ON b."ARTISE_ID" = LF. ID
+	  ) c
+      where c.ID = #artiseId#   
+	</select>	
+	
+    <!--凭艺术家ID删除艺术家信息  -->
+	<delete id="deleteArtiseById" parameterClass="Long">
+	    delete from ARTISE where ID = #artiseId#
+	</delete>
+	<!-- 分页显示艺术家审核相关信息 -->
+	<select id="checkPage" resultClass="ArtiseQuery"
+		parameterClass="ArtiseQuery">
+		Select
+		ID as artiseId,USER_ID as userId,PORTRAIT as portrait,REAL_NAME as
+		artiseName,STATUS as
+		status,OPERATOR as
+		operator,GMT_IDENTIFY as
+		gmt_Identify,GMT_CREATE as
+		gmt_Create,ACCOUNT_TYPE as roleType
+		From (
+		<include refid="sqlColumn2" />
+		)
+		Where num &gt;= #beginIndex# And num &lt;= #endIndex#
+		
+	</select>
+
+	<!-- 得到未审核的艺术家的数量 -->
+	<select id="checkPageCount" resultClass="java.lang.Integer"
+		parameterClass="ArtiseQuery">
+		Select count(1) From (<include refid="sqlColumn2" />)
+	</select>
+    
+    
+    <update id="updateArtiseById" parameterClass="artise">
+    	update ARTISE set GMT_IDENTIFY = sysdate
+   		<isNotEmpty property="status" prepend=",">
+   			STATUS = #status#
+   		</isNotEmpty>
+   		<isNotEmpty property="operator" prepend=",">
+   			OPERATOR = #operator#
+   		</isNotEmpty>
+   		<isNotEmpty property="title" prepend=",">
+   			TITLE = #title#
+   		</isNotEmpty>
+   		<isNotEmpty property="memo" prepend=",">
+   			MEMO = #memo#
+   		</isNotEmpty>
+   		<isNotEmpty property="artist" prepend=",">
+   			ARTIST = #artist#
+   		</isNotEmpty>
+    	where ID = #artiseId#
+    </update> 
+    
+    <select id="getUserFollowListByUserID" parameterClass="Long" resultMap="followResultMap">
+    	SELECT ID,OBJECT_ID,USER_ID FROM USER_FOLLOW where OBJECT_ID = #userId#
+    </select>
+	 
+</sqlMap>

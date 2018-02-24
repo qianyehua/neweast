@@ -1,0 +1,57 @@
+   <div class="main-right" >        	
+  <div class="basic">   
+  <ul class="form-tab">
+        <li class="c">
+            <span>类目属性</span>
+        </li>
+    </ul>         
+    <div class="tool">
+    	#if($!{list_property.size()} < 5)
+        <span><a href="addIni.htm?categoryId=$!{categoryId}&parentId=$!{parentId}" class="bt_add" hidefocus="true">新增</a></span>
+        #end 
+    </div>
+  	<div class="listbox" >
+   	<table class="list-table">
+      <tr>
+        <th width="40%">属性内容</th>
+        <th width="20">属性类型</th>
+        <th width="20">序列号</th>
+        <th width="20">操作</th>
+      </tr>
+
+#foreach(${property} in $!{list_property})
+      <tr #if($velocityCount%2==0) class="bg"   #end>
+        <td>$!{property.content}</td>
+        <td>
+        	#if($!{property.propertyType} == 1) 单选  #end
+        	#if($!{property.propertyType} == 2) 多选  #end
+        	#if($!{property.propertyType} == 3) 输入框  #end
+        	#if($!{property.propertyType} == 4) 文本框  #end
+        </td>
+        <td>$!{property.ordering}</td>
+        <td class="link-td"><a href="editIni.htm?propertyId=$!{property.id}&categoryId=$!{categoryId}&parentId=$!{parentId}">修改</a>		
+        <a onclick="#if($property.canDeleted) return confirm('确定删除该属性吗？');
+		#else alert('该属性有选项或被艺术品引用，无法删除!');return false; #end" href="remove.htm?propertyId=$!{property.id}&categoryId=$!{categoryId}">删除</a>
+		#if($!{property.propertyType} == 1 || $!{property.propertyType} == 2)
+		<a href="$!{appServer}/art/artPropertyOption/list.htm?propertyId=$!{property.id}&categoryId=$!{categoryId}&parentId=$!{parentId}">选项管理</a>
+		#end
+		</td>
+      </tr>
+#end
+#if($!list_property.size()==0)
+	<tr>    
+    	<td colspan="7">
+        	<p class="ts">没有结果</p>
+        </td>
+    </tr>
+#end
+    </table>
+    </div>
+    
+	<div class="form-but"><!-- 表单按钮区 -->
+    	<input type="button" onclick="location='$!{appServer}/art/artCategory/artCategory2_list.htm?pid=$!{parentId}'" class="but" value="返回" />
+    </div><!-- 表单按钮区 END -->
+
+  </div>
+</div>
+		

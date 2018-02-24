@@ -1,0 +1,243 @@
+ <style >
+.list-table table tr th {text-align:right;background:none;border-right:none}
+.list-table table tr td {text-align:left}
+ </style>
+ <div class="main-right" >      	
+  <div class="basic">  
+  	<div class="listbox" >
+		<table class="list-table">
+			<tr><td>【订单信息】</td></tr>
+    		<tr>
+    			<td>
+    				<table cellpadding="0" cellspacing="0" width="100%">
+    					<tr >
+    						<th >订单编号：</th>
+    						<td>$!{order.tradeNo}</td>
+    						<th >订单状态：</th>
+    						<td>
+    							#foreach($orderStatus in $orderStatusList)
+                    				#if($orderStatus == $!{order.tradeStatus}) $orderStatus.desc #end
+                    			#end
+    						</td>
+							<th >退款状态：</th>
+    						<td>
+    							#foreach($refundStatus in $refundStatusList)
+                					#if($refundStatus == $!{refund.status}) $refundStatus.desc #end
+                				#end
+    						</td>
+    						<th >商品归属：</th>
+    						<td>
+    							#if($!{order.goodsHolder} == 'Seller')卖家#else 买家 #end
+    						</td>
+                        </tr>
+    					<tr >
+    						<th >价格：</th>
+    						<td >￥$!moneyUtils.getMoneyDesc($!{order.totalGoods})</td>
+    						<th >运费：</th>
+    						<td >￥$!moneyUtils.getMoneyDesc($!{order.logisticFund})</td>
+    						<th >订单总价：</th>
+    						<td >￥$!moneyUtils.getMoneyDesc($!{order.totalFee})</td>
+    						<th >佣金：</th>
+    						<td >￥$!moneyUtils.getMoneyDesc($!{order.serviceFee})</td>
+                        </tr>
+    					<tr >
+    						<th >创建时间：</th>
+    						<td >$!{dateTool.format( $!{order.gmtCreate})}</td>
+    						<th >支付时间：</th>
+    						<td >$!{dateTool.format($!{order.payTime})}</td>
+    						<th >发货时间：</th>
+    						<td >$!{dateTool.format($!{logistic.deliverTime})}</td>
+    						<th >订单收货时间：</th>
+    						<td >$!{dateTool.format($!{order.confirmGoodsTime})} </td>
+                        </tr>
+                    </table>
+    			</td>
+    		</tr>
+    		<tr><td>【卖家发货物流信息】</td></tr>
+    		<tr>
+    			<td>
+    				<table cellpadding="0" cellspacing="0" width="100%">
+    					<tr >
+    						<th style="width:60px">物流方式：</th>
+    						<td>$!{logistic.typeDes}</td>
+                        </tr>
+    					#if($!{logistic.type} != 'self')
+    					<tr >
+    						<th >快递公司：</th>
+    						<td>$!{enumUtils.getExpressionType($!{logistic.company})}</td>
+    						<th >运单号：</th>
+    						<td >$!{logistic.logisticNo}</td>
+    						<th >物流地址：</th>
+    						<td >$!{logistic.address}</td>
+                        </tr>
+    					<tr >
+    						<th >物流区域：</th>
+    						<td >
+    							#foreach($country in $countryList)
+                					#if($country.value == $!{logistic.country})
+                						$country.name
+                					#end
+                				#end
+                				&nbsp;
+    							$!enumUtils.getProvinceCityName($!{logistic.province}, $!{logistic.city}, '省', '市')
+    						</td>
+    						<th >邮编：</th>
+    						<td >$!{logistic.postCode}</td>
+    						<th >联系方式：</th>
+    						<td >$!{logistic.name}&nbsp;&nbsp;$!{logistic.mobile}</td>
+                        </tr>
+    					#end
+                    </table>
+    			</td>
+    		</tr>
+    		<tr><td>【买卖家信息】</td></tr>
+			<tr>
+				<td>
+					<table cellpadding="0" cellspacing="0">
+						<tr >
+							<th >买家账号：</th>
+							<td>$!{buyer.stockAccount}</td>
+							<th >买家姓名：</th>
+							<td>$!{buyer.realName}</td>
+							<th >买家电话：</th>
+							<td>$!{buyer.mobile}</td>
+							<th >买家地址：</th>
+							<td>$!{enumUtils.getProvinceCityName($!{logistic.province}, $!{logistic.city}, '省', '市')} $!{logistic.address} </td>
+							<th >卖家账号：</th>
+							<td>$!{seller.stockAccount}</td>
+                        </tr>
+                    </table>
+				</td>
+    		</tr>
+			<tr><td>【超时信息】</td></tr>
+    		<tr>
+    			<td>
+					#if($!{timeoutList} && $!{timeoutList.size()} > 0)
+    				<table cellpadding="0" cellspacing="0" width="100%">
+						#foreach($!{timeout} in $!{timeoutList})
+    					<tr >
+    						<th >超时方：</th>
+    						<td>#if($!{timeout.payType} == 'Seller')卖家#else 买家 #end</td>
+							<th >警告时间：</th>
+    						<td>$!{dateTool.format($!{timeout.warningDate})}</td>
+							<th >超时时间：</th>
+    						<td>$!{dateTool.format($!{timeout.timeoutDate})}</td>
+							<th >超时处理：</th>
+    						<td>$!{timeout.memo}</td>
+                        </tr>
+						#end
+                    </table>
+					#else
+						无超时信息
+					#end
+    			</td>
+    		</tr>
+			#if($refund)
+			<tr><td>【退款信息】</td></tr>
+    		<tr>
+    			<td>
+    				<table cellpadding="0" cellspacing="0" width="100%">
+    					<tr >
+    						<th >退款编号：</th>
+    						<td>$!{refund.id}</td>
+    						<th >状态：</th>
+    						<td>
+    							#foreach($refundStatus in $refundStatusList)
+                					#if($refundStatus == $!{refund.status}) $refundStatus.desc #end
+                				#end
+    						</td>
+    						<th >申请时间：</th>
+    						<td>$!{dateTool.format($!{refund.applyTime})}</td>
+    						<th >响应时间：</th>
+    						<td>$!{dateTool.format($!{refund.respondTime})}</td>
+                        </tr>
+    					<tr >
+    						<th >退款原因：</th>
+    						<td colspan="3">$!{refund.cause}</td>
+    						<th >拒绝退款原因：</th>
+    						<td colspan="3">$!{refund.rejectCause}</td>
+    					</tr>
+    					<tr >
+    						<th >退款说明：</th>
+    						<td colspan="3">$!{refund.note}</td>
+    						<th >拒绝退款说明：</th>
+    						<td colspan="3">$!{refund.rejectNote}</td>
+                        </tr>
+    					<tr >
+    						<th >退款证据：</th>
+    						<td colspan="3">
+    							#if("$!{refund.evidence}" != "")
+                					<a href="$!{uploadServer}/$!{refund.evidence}" title="点击看大图" target="_blank">
+                							<img width="100" height="100" src="$!{uploadServer}/$!{refund.evidence}?x-oss-process=image/resize,m_pad,h_100,w_100"/>
+                               		</a>
+                				#end
+    						</td>
+    						<th >拒绝退款证据：</th>
+    						<td colspan="3">
+    							#if("$!{refund.rejectEvidence}" != "")
+                					<a href="$!{uploadServer}/$!{refund.rejectEvidence}" title="点击看大图" target="_blank">
+                						<img width="100" height="100" src="$!{uploadServer}/$!{refund.rejectEvidence}?x-oss-process=image/resize,m_pad,h_100,w_100"/>
+                               		</a>
+                				#end
+    						</td>
+    					</tr>
+						#if($!{refund.judgeMemo})
+						<tr >
+    						<th >仲裁备注：</th>
+    						<td colspan="7">$!{refund.judgeMemo}</td>
+    					</tr>
+						#end
+                    </table>
+    			</td>
+    		</tr>
+    		<tr><td>【买家退货物流信息】</td></tr>
+    		<tr>
+    			<td>
+    				#if($!{refundlogistic})
+    				<table cellpadding="0" cellspacing="0" width="100%">
+    					<tr >
+    						<th >物流方式：</th>
+    						<td>$!{refundlogistic.typeDes}</td>
+                        </tr>
+    					#if($!{refundlogistic.type} != 'self')
+    					<tr >
+    						<th >快递公司：</th>
+    						<td>$!{enumUtils.getExpressionType($!{refundlogistic.company})}</td>
+    						<th >运单号：</th>
+    						<td >$!{refundlogistic.logisticNo}</td>
+    						<th >物流地址：</th>
+    						<td >$!{refundlogistic.address}</td>
+                        </tr>
+    					<tr >
+    						<th >物流区域：</th>
+    						<td >
+    							#foreach($country in $countryList)
+                					#if($country.value == $!{refundlogistic.country})
+                						$country.name
+                					#end
+                				#end
+                				&nbsp;
+    							$!enumUtils.getProvinceCityName($!{refundlogistic.province}, $!{refundlogistic.city}, '省', '市')
+    						</td>
+    						<th >邮编：</th>
+    						<td >$!{refundlogistic.postCode}</td>
+    						<th >联系方式：</th>
+    						<td >$!{refundlogistic.name}&nbsp;&nbsp;$!{refundlogistic.mobile}</td>
+                        </tr>
+    					#end
+                    </table>
+    				#else
+    					无物流信息
+    				#end
+    			</td>
+    		</tr>
+			#end
+		</table>
+    </div>
+	<div class="form-but"><!-- 表单按钮区 -->
+<!--     	<input type="button" onclick="location='$!{appServer}/order/list.htm'" class="but" value="返回" /> -->
+		<input type="button" id="back" name="back" class="but" value="返回" />
+    </div><!-- 表单按钮区 END -->
+  </div>
+</div>
+		

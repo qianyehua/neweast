@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ACTIVITY">
+    <typeAlias alias="activity" type="com.skyjoo.neweast.biz.activity.domain.Activity"/>
+    
+    <resultMap id="activityResultMap" class="activity" >
+    	<result column="ID" property="id"/>
+    	<result column="NAME" property="name"/>
+    	<result column="INTRODUCTION" property="introduction"/>
+    	<result column="ATTACHMENT" property="attachment"/>
+    	<result column="ORDERING" property="ordering"/>
+    	<result column="GMT_CREATE" property="gmtCreate"/>
+    	<result column="GMT_MODIFY" property="gmtModify"/>
+    </resultMap>
+    
+    <!-- 获取版本列表 -->
+    <select id="getActivityList"  resultMap="activityResultMap">
+    	select 
+    		ID,
+    		NAME,
+    		INTRODUCTION,
+    		ATTACHMENT,
+    		ORDERING,
+    		GMT_CREATE,
+    		GMT_MODIFY
+    	from 
+    		ACTIVITY
+    	<isNotEmpty>
+    		where name like '$actName$%'
+    	</isNotEmpty>
+    	order by GMT_MODIFY desc
+    </select>
+    
+    <select id="getActivityById"  resultMap="activityResultMap">
+    	select 
+    		ID,
+    		NAME,
+    		INTRODUCTION,
+    		ATTACHMENT,
+    		ORDERING,
+    		GMT_CREATE,
+    		GMT_MODIFY
+    	from 
+    		ACTIVITY
+    	where ID = #id#
+    </select>
+    
+    <insert id="addActivity" parameterClass="activity">
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+			select
+			SEQ_ACTIVITY.nextval from dual
+		</selectKey>
+		insert into ACTIVITY(
+			ID,
+			NAME,
+			INTRODUCTION,
+			ATTACHMENT,
+			ORDERING,
+			GMT_CREATE,
+			GMT_MODIFY)
+		values(#id#,#name#,#introduction#,#attachment#,#ordering#,sysdate,sysdate)
+	</insert>
+	
+	<delete id="deleteActivity" >
+		delete	from ACTIVITY  where ID = #id#
+	</delete>
+	
+	<update id="updateActivity" parameterClass="activity">
+		update ACTIVITY
+		set GMT_MODIFY = sysdate,
+			NAME = #name#,
+			INTRODUCTION = #introduction#,
+			ATTACHMENT = #attachment#,
+			ORDERING = #ordering#
+		where ID = #id#
+	</update>
+</sqlMap>

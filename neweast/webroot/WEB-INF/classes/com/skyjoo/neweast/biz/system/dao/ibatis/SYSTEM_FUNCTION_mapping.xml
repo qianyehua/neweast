@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SYSTEM_FUNCTION">
+
+	<typeAlias alias="systemFunction" type="com.skyjoo.neweast.biz.system.domain.SystemFunction" />
+
+	<resultMap id="systemFunctionResultMap" class="systemFunction">
+		<result column="ID" property="id"/>
+		<result column="PARENT_ID" property="parentId"/>
+		<result column="NAME" property="name"/>
+		<result column="URL" property="url"/>
+		<result column="DESCRIPTION" property="description"/>
+		<result column="ORDERING" property="ordering"/>
+		<result column="IS_MENU" property="isMenu"/>
+		<result column="IS_DELETED" property="isDeleted"/>
+		<result column="OPERATOR" property="operator"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+	</resultMap>
+
+	<sql id="columsSql">
+		sf.ID,
+		sf.PARENT_ID,
+		sf.NAME,
+		sf.URL,
+		sf.DESCRIPTION,
+		sf.ORDERING,
+		sf.IS_MENU,
+		sf.IS_DELETED,
+		sf.OPERATOR,
+		sf.GMT_CREATE,
+		sf.GMT_MODIFY
+	</sql>
+	
+	<!--1.根据角色id查询系统功能  -->
+	<select id="getSystemFunctionsByRoleIDs" parameterClass="java.util.ArrayList" resultMap="systemFunctionResultMap">
+		select <include refid="columsSql"/>
+		from SYSTEM_FUNCTION sf 
+		where sf.ID in (
+						select srf.FUNCTION_ID
+						from SYSTEM_ROLE_FUNCTION srf
+						where srf.ROLE_ID in <iterate open="(" close=")" conjunction=",">
+										#roleIDs[]#
+										</iterate>
+						) and sf.IS_DELETED = 0  
+		order by ID asc
+	</select>
+	
+	<!--2.根据id查询系统功能  -->
+	<select id="getSystemFunctionById" parameterClass="java.lang.Long"
+		resultMap="systemFunctionResultMap">
+		select <include refid="columsSql"/>
+		from SYSTEM_FUNCTION sf 
+		where ID=#id# and IS_DELETED != 1
+	</select>
+	
+	<!--3.根据pid查询系统功能  -->
+	<select id="getSystemFunctionByPid" parameterClass="java.lang.Long"
+	 	resultMap="systemFunctionResultMap">
+		select <include refid="columsSql"/> 
+		from SYSTEM_FUNCTION sf where PARENT_ID=#pid# and IS_DELETED &lt;&gt; 1 order by
+		ORDERING
+	</select>
+	
+	<!--4.查询所有系统功能  -->
+	<select id="getAllSystemFunction" resultMap="systemFunctionResultMap">
+		SELECT <include refid="columsSql"/> 
+		FROM SYSTEM_FUNCTION sf where IS_DELETED &lt;&gt; 1 order by
+		ORDERING
+	</select>
+	
+	<!--5.根据pid查询系统功能菜单  -->
+	<select id="getSystemFunctionMenusByPid" parameterClass="java.lang.Long"
+		resultMap="systemFunctionResultMap">
+		SELECT <include refid="columsSql"/> 
+		FROM SYSTEM_FUNCTION sf where IS_MENU=1
+		and PARENT_ID=#pid# and IS_DELETED &lt;&gt; 1 order by ORDERING
+	</select>
+	
+	<!--6.添加系统功能  -->
+	<insert id="insertSystemFunction" parameterClass="systemFunction">
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+			select
+			SEQ_SYSTEM_FUNCTION.nextval from dual
+		</selectKey>
+		INSERT INTO SYSTEM_FUNCTION sf
+		VALUES (#id#,#parentId#,#name#,#url#,#description#,#ordering#,
+		#isMenu#,0,#operator#,sysdate,sysdate)
+	</insert>
+	
+	<!--7.修改系统功能  -->
+	<update id="updateSystemFunction" parameterClass="systemFunction">
+		update
+		SYSTEM_FUNCTION sf set sf.PARENT_ID=#parentId#,
+		sf.NAME=#name#,sf.URL=#url#,sf.DESCRIPTION=#description#,
+		sf.ORDERING=#ordering#,sf.IS_MENU=#isMenu#,
+		sf.GMT_MODIFY=sysdate,sf.OPERATOR=#operator#
+		where sf.ID=#id#
+	</update>
+	
+	<!--8.删除系统功能  -->
+	<update id="deleteSystemFunction" parameterClass="systemFunction">
+		update
+		SYSTEM_FUNCTION set IS_DELETED=1,GMT_MODIFY=sysdate,OPERATOR=#operator#
+		where ID=#id#
+	</update>
+	
+	<!--9.获取功能数  -->
+	<select id="getFunctionCount" resultClass="int">
+		SELECT count(*) FROM SYSTEM_FUNCTION where IS_DELETED = 0
+	</select>
+	
+	<!--10.查询拥有该系统功能的角色数  -->
+	<select id="getFunCountInFunRose" resultClass="int" parameterClass="java.lang.Long">
+		select count(1) from SYSTEM_ROLE_FUNCTION where FUNCTION_ID=#funId#
+	</select>
+	
+	<!-- 10.根据子id获取父id -->
+	<select id="getParentId" parameterClass="long" resultClass="long">
+		select sf.parent_id from system_function sf where sf.id=#pid#
+	</select>
+</sqlMap>

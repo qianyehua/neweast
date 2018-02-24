@@ -1,0 +1,94 @@
+<script charset="utf-8" src="$!{imageServer}/scripts/ueditor/ueditor.config.js"></script>
+<script charset="utf-8" src="$!{imageServer}/scripts/ueditor/ueditor.all.min.js"></script>
+<script charset="utf-8" src="$!{imageServer}/scripts/ueditor/ueditor.parse.min.js"></script>
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/mobile.css" />
+ <script  type="text/javascript">
+     function test(){
+  	html = ue.getContent();
+ 	testwin= open("page", "preview","status=no,menubar=no,toolbar=no,location=no,z-look=yes,scrollbars=yes");
+ 	testwin.document.open();
+  	testwin.document.write(html);
+  	testwin.document.close();
+};
+</script>
+ <script >
+ function appPreview(){
+		html = ue.getContent();
+		setViewContent(html, "view-style");
+	};
+ </script>
+ <script >
+	function setViewContent(t, e) {
+                $("#J-viewCon").html(t),
+				$(".view-container").attr("role", e),
+                $(".view-container").removeClass("hide");
+	  }
+</script>
+<script >
+function closePreview(){
+	 $(".view-container").addClass("hide"),
+     $(".view-container").removeAttr("role")
+}
+</script>
+<div class="main-right">
+    <div class="basic">
+        <ul class="form-tab">
+            <li class="c">
+                <span>文章自定义编辑</span>
+            </li>
+        </ul>
+        <div class="formbox">
+            <form id="addForm" name="addForm" action="articleEdit.htm" method="post" >
+                <div class="clear"></div>
+                <div class="nr">
+                    <div class="nr-t"></div>
+                    <div class="nr-c">
+                        <table class="c2">
+							<tr >
+                                <td>
+									<input type="hidden" id="articleId" name="articleId" value="$!{articleId}"/>
+									<input type="hidden" id="localName" name="localName" value="$!{temple.localName}"/>
+									<label id="res" style="display:none"/>
+								</td>
+                            </tr>
+							<tr >
+								 <textarea id="container" style="height:700px,width:700px"  name="content" >$!{temple.content}</textarea>
+								##<script id="container" name="content" type="text/plain"></script>
+                            </tr>
+						</table>
+</div>
+<div class="nr-b"></div>
+</div>
+<!-- 表单按钮区 -->
+<div class="form-but">
+    <input type="submit" id="save" name="save" class="but" value="保存" />
+    <input type="button" class="but" onclick="window.location.href='list.htm'" value="返回" />
+	<input type="button" class="but" onclick="window.location.href='$!{appServer}/article/articleEdit_init.htm?id=$!{temple.id}'" value="重置" />
+	<input type="button" class="but" onclick="test()" value="PC预览" />
+	<input type="button" class="but" onclick="appPreview()" id="J-mobileView" value="APP预览" >
+
+</div>
+<!-- 表单按钮区 END -->
+<div class="clear"></div>
+</form>
+</div></div></div>
+<div class="view-container hide">
+    <div class="view-layer J-closeBtn"></div>
+    <div class="view-bd">
+        <div class="view-menu">
+            <a href="javascript:void(0);" onclick="closePreview()" class="btn close J-closeBtn">关闭</a>
+        </div>
+        <div class="view-con" id="J-viewCon"></div>
+    </div>
+</div>
+<script type= "text/javascript">
+  var ue = UE.getEditor('container');
+</script>
+ 
+<script >
+uParse('#container', {
+    rootPath: '$!{imageServer}/scripts/ueditor'
+})
+</script>
+##<script charset="utf-8" src="$!{imageServer}/scripts/weixin005.main.js"></script>
+

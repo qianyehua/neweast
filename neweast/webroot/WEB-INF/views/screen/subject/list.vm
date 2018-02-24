@@ -1,0 +1,46 @@
+
+<form id="listForm" method="get">
+<div class="basic">
+	<div class="tool">
+		<input type="hidden" id="num" value="$!{list_subject.size()}" />
+		<span>
+			<a title="最多只能有5张图片"onclick="window.location='add-init.htm'" 
+			href="#" class="bt_add" hidefocus="true" >新增</a>
+		</span>
+	</div>
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="20%">专题名称</th>
+			<th width="40%">图片</th>
+			<th width="20%">排序</th>
+			<th width="20%">操作</th>
+        </tr>
+		#if($!{list_subject} && ${list_subject.size()} > 0)
+                #foreach($sb in $list_subject)
+                    <tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+                            <td><p>$!stringUtils.abbreviate($!{sb.subjectName},6)</p></td>
+                            <td>
+								<a href="$!{uploadServer}/$!{sb.subjectPic}" title="点击看大图" target="_blank">
+									<img width="100" height="100" src="$!{uploadServer.get($!{sb.subjectPic})}?x-oss-process=image/resize,m_pad,h_100,w_100"/>
+                                </a>
+							</td>
+							<td>$!{sb.subjectOrder}</td>
+                            <td class="link-td">
+								<a href="edit.htm?id=$!{sb.id}">编辑</a>
+								<a href="remove.htm?id=$!{sb.id}"onClick="return confirm('确定要删除该专题吗？');">删除</a>
+							</td>
+                    </tr>
+                #end
+                #else
+                    <tr>
+                        <td colspan="7">
+                            <p class="ts">没有结果</p>
+                        </td>
+                    </tr>
+            #end
+    </table>
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

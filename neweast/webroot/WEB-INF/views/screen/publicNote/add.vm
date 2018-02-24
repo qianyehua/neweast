@@ -1,0 +1,115 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/validate.css" />
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/editor.css" />
+<script  charset="utf-8"  src="$!{imageServer}/scripts/kindeditor/kindeditor-all-min.js" type="text/javascript"></script>
+<script src="$!{imageServer}/scripts/kindeditor-zh_CN.js" type="text/javascript"></script>
+<script type="text/javascript">
+var editor;
+KindEditor.ready(function(K) {
+	editor = K.create('textarea[name="content"]', {
+		allowFileManager : false,
+		items : ['source','print',
+				'|','undo','redo','cut','copy','paste','selectall',
+				'|','forecolor','hilitecolor','bold','italic','underline','strikethrough','removeformat',
+				'|','justifyleft','justifycenter','justifyright','justifyfull','insertorderedlist','insertunorderedlist','indent','outdent','subscript','superscript',
+				'|','formatblock','fontname','fontsize','table',
+				'|','hr'
+				],
+		dialogAlignType:''
+	});
+		
+});
+jQuery(function() {
+	jQuery("#publicNote").validate( {
+		rules : {
+			title : {
+				required : true
+			},
+			type : {
+				required : true
+			},
+		},
+		messages:{
+			title : {
+				required: "请输入标题"
+			},
+			type: {
+				required: "请选择类型"
+			},
+		}
+	});
+});
+function check(){
+	if (editor.isEmpty()) {
+        jQuery("#msg").html("请输入内容!");
+		return false;
+	}else{
+		jQuery("#msg").html("");
+		return true;
+	}
+}
+</script>
+<style >
+.formbox .c2 td span {
+	margin-left: 0px;
+}
+</style>
+<div class="mair-right">
+<div class="basic">
+	<ul class="form-tab">
+        <li class="c">
+            <span>增加公告</span>
+        </li>
+    </ul>
+		<div class="formbox">
+<form id="publicNote" action="add.htm" method="post">
+		<div class="clear"></div>
+        <div class="nr">
+            <div class="nr-t"></div>
+            <div class="nr-c">
+                <table class="c2">
+
+    <tr>
+		<th><span style="color:red">*</span>标题：</th>
+		<td>
+	#springBind("publicNote.title")
+	<input type="text" id="title" name="${status.expression}" value="$!{status.value}" maxlength="42" class="inp required"/><font color="red">${status.errorMessage}</font>
+		</td>
+		</tr>
+	<tr>
+		<th><span style="color:red">*</span>公告类型：</th>
+		<td>
+	#springBind("publicNote.type")
+    <select id="type" name="${status.expression}">
+		<option value="">请选择</option>
+		#foreach($type in $noteType_map.entrySet())
+			<option value="$!{type.getKey()}">$!{type.getValue()}</option>
+		#end
+    </select>
+	<font color="red">${status.errorMessage}</font>
+		</td>
+		</tr>
+		   <tr>
+	<th><span style="color:red">*</span>公告内容：</th>
+		<td>
+	#springBind("publicNote.content")
+	<textarea id="content" name="${status.expression}"  class="textarea" style="width:80%;height:400px;">$!{status.value}</textarea><font color="red" id="msg">${status.errorMessage}</font>
+	</td>
+	</tr>
+  </table>
+	   </div>
+            <div class="nr-b"></div>
+        </div>
+		<!-- 表单按钮区 -->
+	 <div class="form-but">
+			<input type="submit" onclick="return check()" id="save" name="save" class="but" value="保存" />
+			<input type="button" class="but" value="返回" onclick="self.location=document.referrer;"/>
+	</div>
+        <!-- 表单按钮区 END -->
+        <div class="clear"></div>
+</form>
+	</div>
+</div>
+</div>
+

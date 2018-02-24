@@ -1,0 +1,45 @@
+   <div class="main-right" >        	
+  <div class="basic">           
+    <div class="tool">
+        <span><a href="$!{appServer}/art/artCategory/artCategory_addIni.htm?pid=$!{pid}" class="bt_add" hidefocus="true">新增</a></span> 
+    </div>
+  	<div class="listbox" >
+   	<table class="list-table">
+      <tr>
+        <th width="15%">类目名称</th>
+		<th width="35%">描述</th>
+		<th width="5%">排序号</th>
+		<th width="15%">创建时间</th>
+		<th width="30%">操作 </th>
+      </tr>
+#if($!{list_category.size()}==0)
+	<tr>    
+    	<td colspan="5">
+        	<p class="ts">没有结果</p>
+        </td>
+    </tr>
+#end
+#foreach($category in $!list_category)
+      <tr #if($velocityCount%2==0) class="bg"   #end>
+        <td>$!{category.name}</td>
+        <td>$!{category.description}</td>
+        <td>$!{category.ordering}</td>
+        <td>$!{dateTool.format($!{category.gmtCreate})}</td>
+        <td class="link-td"><a href="$!{appServer}/art/artCategory/artCategory_editIni.htm?categoryId=$!{category.id}&pid=$!{category.parentId}">修改</a>		
+        <a name="delete" onclick="#if(${category.canDeleted}) return confirm('确定删除该类目吗？');
+		#else alert('该类目有属性或被艺术品引用，无法删除!');return false; #end" href="$!{appServer}/art/artCategory/artCategory_remove.htm?categoryId=$!{category.id}">删除</a>
+		<a href="$!{appServer}/art/artCategoryProperty/list.htm?categoryId=$!{category.id}&parentId=$!{category.parentId}">属性</a>
+		<a href="$!{appServer}/art/artCategory/artCode_list.htm?categoryId=$!{category.id}">前缀设置</a>
+		</td>
+      </tr>
+#end
+    </table>
+    </div>
+
+	<div class="form-but"><!-- 表单按钮区 -->
+    	<input type="button" onclick="location='artCategory_list.htm'" class="but" value="返回" />
+    </div><!-- 表单按钮区 END -->
+
+  </div>
+</div>
+		

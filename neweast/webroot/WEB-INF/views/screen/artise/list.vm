@@ -1,0 +1,118 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+     var num = 0;
+     function verify(flag, id) {
+             num ++;
+             if(num <= 1){
+        	    var url = "verify.htm?id=" + id + "&flag=" + flag;
+       		    document.location = url;
+        		}
+         }
+         jQuery( function() {
+         //设置日期
+         $('.date-pick').datePicker( {
+         clickInput : true,
+         startDate : "2010-01-01"
+         });
+         });
+</script>
+
+
+<!-- 搜索框 -->
+<form id="artiseForm" name="artiseForm" action="list.htm" method="get">
+	<div class="search-box">
+
+        <table>
+            <tr>
+				<th>发布时间</th>
+                <td>
+                	#springBind("artise.startDate")
+					<input type="text" id="startDate" name="startDate"  value="$!{dateTool.format('yyyy-MM-dd',$!page.startDate)}"  readonly="readonly" size="10" class="date-pick" />
+					-
+					#springBind("artise.endDate")
+                    <input type="text" id="endDate" name="endDate"  value="$!{dateTool.format('yyyy-MM-dd',$!page.endDate)}" readonly="readonly"  size="10" class="date-pick" />
+                 </td>
+                 <th>艺术家名称</th>
+				<td>
+                    #springBind("artise.artiseName")
+					<input type="text" name="artiseName" id="artiseName" value="$!{page.artiseName}"/>	
+                 </td>
+                
+                	</select>
+                   </td>
+                
+   				<th></th>
+				<td>	
+					<input type="submit" name="search" value="查询" class="but-61" />
+					<input type="reset" value="重置" onclick="window.location = 'list.htm'" class="but-62"/>
+				</td>
+           </tr>
+</table>
+</div>
+<!-- 搜索框 END -->
+ <div class="basic">
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="10%">姓名</th>
+			<th width="15%">艺术家头像</th>
+			<th width="10%">职称</th>
+			<th width="10%">审核状态 </th>
+			<th width="10%">操作人</th>
+			<th width="10%">创建时间</th>
+			<th width="10%">审核时间</th>
+			<th width="25%">操作</th>
+        </tr>
+		#if($!{query} && ${query.totalCount} > 0)
+			#foreach($artise in $query.getData())
+				<tr #if($!{velocityCount}%2 == 0) class="bg" #end align="center">
+				#if($!{artise.status}==1)		
+					<td>$!{artise.artiseName}</td>
+					<td>
+						<a href="$!{uploadServer}/$!{artise.portrait}" title="点击看大图" target="_blank">
+									<img width="80" height="80" src="$!{uploadServer.get($!{artise.portrait})}?x-oss-process=image/resize,m_pad,h_80,w_80"/>
+                                </a>
+                    </td>
+				
+					<td>$!stringUtils.abbreviate($!{artise.getTitles()},15)</td>
+					<td>
+					    #if($!{artise.status}==0)未审核
+							 #elseif($!{artise.status}==1)正常
+							 #elseif($!{artise.status}==2)审核不通过
+							 #end
+					</td>
+					<td>$!{artise.operator}</td>
+				    <td>$!{dateTool.format($!{artise.gmt_Create})}</td>
+					<td>$!{dateTool.format($!{artise.gmt_Identify})}</td>
+				    <td class="link-td">
+						<a href="$!{appServer}/artise/detail.htm?artiseId=${artise.artiseId}&come=1">详情</a>
+						
+    				  #if($!{artise.ifrecommend}==1&&$!{artise.status}==1)<a href="$!{appServer}/artise/recommend.htm?artiseId=${artise.artiseId}&come=1">取消推荐 </a>
+    					<a name="delete" onclick="#if($!{artise.arts}==0) return confirm('确定删除该艺术家吗？');
+    		           #else alert('抱歉，该艺术家有作品，无法删除!');return false; #end" href="$!{appServer}/artise/delete.htm?artiseId=${artise.artiseId}">删除</a>
+    					 #elseif($!{artise.status}==1)<a href="$!{appServer}/artise/recommend.htm?artiseId=${artise.artiseId}&come=1">推荐 </a>
+    						<a name="delete" onclick="#if($!{artise.arts}==0) return confirm('确定删除该艺术家吗？');
+    		           #else alert('抱歉，该艺术家有作品，无法删除!');return false; #end" href="$!{appServer}/artise/delete.htm?artiseId=${artise.artiseId}">删除</a>
+    					 #else <a name="delete" onclick="#if($!{artise.arts}==0) return confirm('确定删除该艺术家吗？');
+    		           #else alert('抱歉，该艺术家有作品，无法删除!');return false; #end" href="$!{appServer}/artise/delete.htm?artiseId=${artise.artiseId}&come=1">删除</a>
+    					   #end
+                            
+    					 #end	
+					</td>
+				</tr>	
+			#end
+		   
+        #else
+            <tr>
+                <td colspan="7">
+                    <p class="ts">没有结果</p>
+                </td>
+            </tr>
+        #end
+    </table>
+	 #pager($query, "artiseForm")
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

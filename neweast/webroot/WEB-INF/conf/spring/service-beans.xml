@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="GB2312"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+           
+	<context:component-scan base-package="com.skyjoo.neweast.biz" />
+
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>classpath:/messages/message</value>
+				<value>WEB-INF/resources/validate</value>
+			</list>
+		</property>
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="cacheSeconds" value="5"></property>
+	</bean>
+	
+	<bean id="passwordMessageDigest"
+		class="com.eyeieye.melos.util.digest.impl.MD5MessageDigestImpl">
+		<property name="salt" value="${system.password.salt}" />
+	</bean>
+	
+	<bean id="executorService" class="org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean" >
+	</bean>
+	
+	<!-- 远程图片文件处理服务 -->
+	<bean id="imageService"
+	class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+	    <property name="serviceUrl" value="${upload.server.image.hessian}"/>
+	    <property name="serviceInterface" value="com.eyeieye.koto.remote.img.ImageService"/>
+	</bean>
+	
+	<bean id="fileService"
+	class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+	     <property name="serviceUrl" value="${upload.server.file.hessian}"/>
+	     <property name="serviceInterface" value="com.eyeieye.koto.remote.file.FileService"/>
+	</bean>
+	
+	 <bean id="uploadManager" class="com.skyjoo.neweast.biz.common.upload.OSSUploadManagerImpl" init-method="init">
+		<property name="rootPath" 		 value="${aliyun.bucket}"></property>
+		<property name="aliyunEndpoint"  value="${aliyun.endpoint}"></property>
+		<property name="accessKeyId" 	 value="${aliyun.accessKeyId}"></property>
+		<property name="accessKeySecret" value="${aliyun.accessKeySecret}"></property>
+	</bean>  	
+</beans>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="POINT_GAIN_RULE">
+
+	<typeAlias alias="pointGainRule"
+		type="com.skyjoo.neweast.biz.point.domain.PointGainRule" />
+	<typeAlias alias="pointGainRuleQuery"
+		type="com.skyjoo.neweast.biz.point.domain.query.PointGainRuleQuery" />
+
+	<resultMap id="pointGainRuleResultMap" class="pointGainRule">
+		<result column="ID" property="id" />
+		<result column="EVENT_TYPE" property="eventType" />
+		<result column="EVENT_DESC" property="eventDesc" />
+		<result column="OCCUR_CHANNEL" property="occurChannel" />
+		<result column="BASE_POINT_TYPE" property="basePointType" />
+		<result column="BASE_POINT" property="basePoint" />
+		<result column="FIRST_POINT_TYPE" property="firstPointType" />
+		<result column="FIRST_POINT" property="firstPoint" />
+		<result column="LOGIN_PERIOD" property="loginPeriod" />
+		<result column="TOTAL_TIMES" property="totalTimes" />
+		<result column="DAILY_TIMES" property="dailyTimes" />
+		<result column="GMT_CREATE" property="GMTCreate" />
+		<result column="GMT_MODIFY" property="GMTModify" />
+	</resultMap>
+
+
+
+	<!-- <select id="count" parameterClass="pointGainRuleQuery" resultClass="long"> 
+		select count(1) from POINT_GAIN_RULE pgr <dynamic prepend="where"> <isNotEmpty> 
+		pgr.EVENT_TYPE = #eventType# </isNotEmpty> </dynamic> </select> -->
+	<sql id="item">
+		pgr.ID,
+		pgr.EVENT_TYPE,
+		pgr.EVENT_DESC,
+		pgr.OCCUR_CHANNEL,
+		pgr.BASE_POINT_TYPE,
+		pgr.BASE_POINT,
+		pgr.FIRST_POINT_TYPE,
+		pgr.FIRST_POINT,
+		pgr.LOGIN_PERIOD,
+		pgr.TOTAL_TIMES,
+		pgr.DAILY_TIMES,
+		pgr.GMT_CREATE,
+		pgr.GMT_MODIFY
+	</sql>
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum
+		&gt;= #beginIndex#
+	</sql>
+	<select id="query" parameterClass="pointGainRuleQuery"
+		resultMap="pointGainRuleResultMap">
+		select
+		<include refid="item" />
+		from POINT_GAIN_RULE pgr
+		<dynamic prepend="where">
+			<isNotEmpty property="eventType">
+				pgr.EVENT_TYPE = #eventType#
+			</isNotEmpty>
+		</dynamic>
+		order by pgr.GMT_CREATE desc
+	</select>
+
+	<insert id="insert" parameterClass="pointGainRule">
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+			select
+			SEQ_POINT_GAIN_RULE.NEXTVAL from dual
+		</selectKey>
+		INSERT INTO POINT_GAIN_RULE(ID,
+		EVENT_TYPE,
+		EVENT_DESC,
+		OCCUR_CHANNEL,
+		BASE_POINT_TYPE,
+		BASE_POINT,
+		FIRST_POINT_TYPE,
+		FIRST_POINT,
+		LOGIN_PERIOD,
+		TOTAL_TIMES,
+		DAILY_TIMES,
+		GMT_CREATE,
+		GMT_MODIFY)
+		VALUES
+		(#id#,#eventType#,#eventDesc#,#occurChannel#,#basePointType#,
+		#basePoint#,#firstPointType#,#firstPoint#,#loginPeriod#,
+		#totalTimes#,#dailyTimes#,sysdate,sysdate)
+	</insert>
+	<select id="getPointGainRuleByType" parameterClass="java.util.Map"
+		resultMap="pointGainRuleResultMap">
+		SELECT
+		<include refid="item" />
+		FROM POINT_GAIN_RULE pgr
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="type">
+				pgr.EVENT_TYPE=#type#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="chann">
+				pgr.OCCUR_CHANNEL=#chann#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<update id="update" parameterClass="pointGainRule">
+		update POINT_GAIN_RULE pgr set
+		pgr.GMT_MODIFY=sysdate,
+		pgr.EVENT_DESC=#eventDesc#,
+		pgr.BASE_POINT_TYPE=#basePointType#,
+		pgr.BASE_POINT=#basePoint#,
+		pgr.FIRST_POINT_TYPE=#firstPointType#,
+		pgr.FIRST_POINT=#firstPoint#,
+		pgr.TOTAL_TIMES=#totalTimes#,
+		pgr.DAILY_TIMES=#dailyTimes#
+		<isEqual property="eventType" prepend="," compareValue="login">
+			pgr.LOGIN_PERIOD=#loginPeriod#
+		</isEqual>
+		where pgr.EVENT_TYPE=#eventType# and pgr.OCCUR_CHANNEL=#occurChannel#
+	</update>
+	
+</sqlMap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

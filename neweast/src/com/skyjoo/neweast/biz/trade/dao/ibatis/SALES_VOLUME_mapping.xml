@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SALES_VOLUME">
+
+	<typeAlias alias="salesVolume"
+		type="com.skyjoo.neweast.biz.trade.domain.SalesVolume" />
+
+	<resultMap id="salesVolumeResultMap" class="salesVolume">
+		<result column="ID" property="id" />
+		<result column="TRADE_DATE" property="tradeDate" />
+		<result column="SHOP_ID" property="shopId" />
+		<result column="ART_ID" property="artId" />
+		<result column="AMOUNT" property="amount" />
+		<result column="GMT_CREATE" property="gmtCreate" />
+		<result column="GMT_MODIFY" property="gmtModify" />
+	</resultMap>
+
+	<sql id="columsSql">
+		sv.ID,
+		sv.TRADE_DATE,
+		sv.SHOP_ID,
+		sv.ART_ID,
+		sv.AMOUNT,
+		sv.GMT_CREATE,
+		sv.GMT_MODIFY
+	</sql>
+
+
+	<resultMap id="groupResultMap" class="salesVolume">
+		<result column="SHOP_ID" property="shopId" />
+		<result column="CATEGORY_ID" property="categoryId" />
+		<result column="AMOUNT" property="amount" />
+	</resultMap>
+	<select id="groupByShopAndCategory" resultMap="groupResultMap">
+		select sv.SHOP_ID,
+		a.CATEGORY_ID, sum(sv.AMOUNT) as AMOUNT
+		from SALES_VOLUME sv
+		left join ART a on a.ID = sv.ART_ID
+		where sv.TRADE_DATE &gt;= #startDate#
+		and sv.TRADE_DATE &lt;= #endDate#
+		group by sv.SHOP_ID, a.CATEGORY_ID
+		order by sv.SHOP_ID asc, AMOUNT desc
+	</select>
+
+	<insert id="dealMoveToHis" parameterClass="string">
+		insert into
+		SALES_VOLUME_HIS (select * from SALES_VOLUME sv where sv.TRADE_DATE
+		&lt; #beforeStartDate#)
+	</insert>
+	<delete id="deleteAfterMove" parameterClass="string">
+		delete from
+		SALES_VOLUME sv where sv.TRADE_DATE &lt; #beforeStartDate#
+	</delete>
+</sqlMap>

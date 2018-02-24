@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ARTICLE_COMMENT">
+
+	<typeAlias alias="articleComment"
+		type="com.skyjoo.neweast.biz.article.domain.ArticleComment" />
+	<typeAlias alias="articleCommentQuery"
+		type="com.skyjoo.neweast.biz.article.domain.query.ArticleCommentQuery" />
+	
+	<resultMap id="articleCommentResultMap" class="articleComment">
+		<result column="ID" property="id" />
+		<result column="ARTICLE_ID" property="articleId" />
+		<result column="COMMENT_TYPE" property="commentTpye" />
+		<result column="USER_ID" property="userId" />
+		<result column="COMMENT_ID" property="commentId" />
+		<result column="REPLY_ID" property="replyId" />
+		<result column="THEME_COMMENT_ID" property="themeCommentId" />
+		<result column="COMMENT_APPROVE" property="comment_approve" />
+		<result column="CONTENT" property="content" />
+		<result column="GMT_CREATE" property="gmtCreate" />
+		<result column="GMT_MODIFY" property="gmtModify" />
+	</resultMap>
+	
+	<resultMap id="articleCommentQueryResultMap" class="articleCommentQuery">
+		<result column="ID" property="id" />
+		<result column="ARTICLE_ID" property="articleId" />
+		<result column="ARTICLE_TITLE" property="articleName" />
+		<result column="COMMENT_TYPE" property="commentTpye" />
+		<result column="USER_ID" property="userId" />
+		<result column="COMMENT_ID" property="commentId" />
+		<result column="REPLY_ID" property="replyId" />
+		<result column="THEME_COMMENT_ID" property="themeCommentId" />
+		<result column="COMMENT_APPROVE" property="comment_approve" />
+		<result column="CONTENT" property="content" />
+		<result column="GMT_CREATE" property="gmtCreate" />
+		<result column="GMT_MODIFY" property="gmtModify" />
+	</resultMap>
+	
+	
+
+	<sql id="pageCondition">
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="startDate">
+				a.GMT_CREATE &gt;=
+				#startDate#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="endDate">
+				a.GMT_CREATE &lt;=
+				#endDate# + 1
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum
+		&gt;= #beginIndex#
+	</sql>
+
+	<!-- 分页文章评论列表 -->
+	<select id="page" parameterClass="articleCommentQuery" resultMap="articleCommentQueryResultMap" >
+		<include refid="pageBeginSql" />
+		select a.*,b.ARTICLE_TITLE 
+		from ARTICLE_COMMENT a
+		left join ARTICLE b on b.ID =a.ARTICLE_ID
+		where a.ARTICLE_ID=#articleId#
+		<include refid="pageCondition" />
+		order by a.GMT_CREATE desc
+		<include refid="pageEndSql" />
+	</select>
+	<!--获取评论数量  -->
+	<select id="pageCount" resultClass="java.lang.Integer"
+		parameterClass="articleCommentQuery">
+		select count(1) from ARTICLE_COMMENT a
+		where a.ARTICLE_ID=#articleId#
+		<include refid="pageCondition" />
+	</select>
+	
+	<delete id="deleteCommentByIds">
+  	delete from ARTICLE_COMMENT where ID in
+	(SELECT   j.ID
+		FROM
+		ARTICLE_COMMENT j START WITH j."ID" = #id# CONNECT BY PRIOR j."ID" = j.COMMENT_ID
+	)
+ 	</delete>
+  
+
+
+	
+
+</sqlMap>

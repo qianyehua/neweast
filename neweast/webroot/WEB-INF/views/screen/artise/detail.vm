@@ -1,0 +1,121 @@
+</script>
+		
+<div class="basic">
+    <ul class="form-tab">
+        <li class="c">
+            <span>艺术家详情</span>
+        </li>
+    </ul>
+    <form id="form1" action="list.htm" method="post">
+		
+        <div class="formbox">
+            <div class="clear"></div>
+            <div class="nr">
+                <div class="nr-t"></div>
+                <div class="nr-c">
+                    <table class="c2">
+						<tr >
+							<th>艺术家ID：</th>
+							<td>$!{artise.artiseId}</td>
+				      
+                        </tr>
+						<tr >
+							<th>姓名：</th>
+							<td>$!{artise.artiseName}</td>
+                        </tr>
+						#if($!{artise.roleType} ==2)
+							<th>机构简称：</th>
+							<td>$!{artise.artist}</td>
+						#end
+						<tr >
+							<th>用户类型：</th>
+							<td>#if($!{artise.roleType} ==2) 机构 #else 个人 #end </td>
+                        </tr>
+						<tr >
+							<th>头像：</th>
+							<td>
+								<a href="$!{uploadServer}/$!{artise.portrait}" title="点击看大图" target="_blank">
+									<img width="100" height="100" src="$!{uploadServer.get($!{artise.portrait})}?x-oss-process=image/resize,m_pad,h_100,w_100"/>
+                                </a>
+							</td>
+                        </tr>
+                        <tr>
+                            <th>职称：</th>
+                            <td>$!{artise.title}</td>
+                        </tr>
+						<tr>
+                            <th>个人简介：</th>
+                            <td> $!{artise.profile}</td>
+                        </tr>
+					<tr>
+		<tr>
+			<td width="20%" align="right">艺术家履历：</td>
+			<td width="50%" style="word-wrap: break-word; word-break: break-all;">
+				#foreach($artise in $record)
+                    <span style="color:#333;font-size:12px;">${artise.startTime}-$!{artise.endTime}&nbsp;&nbsp;&nbsp;$!{artise.content}</span>
+
+				#end
+			</td>
+		</tr>
+
+					   <td width="20%" align="right">个人作品：</td><td width="80%">
+			            #foreach(${image} in ${imgStr})
+						<a href="$!{uploadServer}/${image}" title="点击看大图" target="_blank">
+							<img width="100" height="100" src="$!{uploadServer.get(${image})}?x-oss-process=image/resize,m_pad,h_100,w_100"/>
+                        </a>
+				         #end
+			           </td>
+                    </tr>
+				    <tr>
+							<td width="20%" align="right">个人证书：</td><td width="80%">
+			                 #foreach(${image} in ${cimgStr})
+						<a href="$!{uploadServer}/${image}" title="点击看大图" target="_blank">
+							<img width="100" height="100" src="$!{uploadServer.get(${image})}?x-oss-process=image/resize,m_pad,h_100,w_100"/>
+                        </a>
+				         #end
+			                </td>
+                    </tr>
+					<tr>
+						<th>审核状态： </th>
+							<td> #if($!{artise.status}==0)未审核
+							 #elseif($!{artise.status}==1)正常
+							 #elseif($!{artise.status}==2)审核不通过
+							 #end 
+							</td>
+                    </tr>
+					<tr>
+							<th>审核备注： </th>
+							<td> $!{artise.memo} </td>
+                    </tr>
+					<tr>
+							<th>审核时间： </th>
+							<td> $!{dateTool.format($!{artise.gmt_Identify})} </td>
+                    </tr>
+						<tr>
+							<th>创建时间：</th>
+							<td> $!{dateTool.format($!{artise.gmt_Create})}</td>
+			
+                        </tr>
+					
+                    </table>
+                </div>
+                <div class="nr-b"></div>
+            </div>
+        </div>
+        <!-- 表单按钮区-->
+        <div class="form-but">
+          #if($!{artise.ifrecommend}==1&&$!{artise.status}==1) <input type="button" onclick="location.href='$!{appServer}/artise/recommend.htm?artiseId=${artise.artiseId}'" class="but" value="取消推荐" />
+			<input type="button" onclick="location.href='list.htm'" class="but" value="返回" />
+			#elseif($!{artise.status}==1) <input type="button" onclick="location.href='$!{appServer}/artise/recommend.htm?artiseId=${artise.artiseId}'" class="but" value="推荐首页" />
+			<input type="button" onclick="location.href='list.htm'" class="but" value="返回" />
+			#else  <input type="button" onclick="location.href='list.htm'" class="but" value="返回" />
+		#end
+		</div>
+        <!-- 表单按钮区 END -->
+        <div class="clear"></div>
+    </form>
+</div>
+
+
+
+</script>

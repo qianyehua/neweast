@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="GB2312"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<bean id="ResourceConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>WEB-INF/conf/server.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- view -->
+	<bean id="velocityViewCache"
+		class="com.eyeieye.melos.util.cache.local.SimpleHashMapCompactCache"></bean>
+	<bean id="velocityConfigurer" class="com.eyeieye.melos.web.velocity.FixedVelocityConfigurer">
+		<property name="resourceLoaderPath" value="WEB-INF/views/" />
+		<property name="velocityProperties">
+			<map>
+				<entry key="input.encoding" value="${vm.file.encoding}"></entry>
+				<entry key="output.encoding" value="${web.encoding}"></entry>
+				<!-- cache directive 相关配置 -->
+				<entry key="userdirective"
+					value="com.eyeieye.melos.web.velocity.directive.CacheDirective,com.eyeieye.melos.web.velocity.directive.JsCodeDirective"></entry>
+				<!-- direcitive.cache.provider 配置cache的提供者 -->
+				<entry key="direcitive.cache.provider" value-ref="velocityViewCache"></entry>
+				<!-- direcitive.cache.dev.mode 控制是否打开cache,如果是true,则关闭 -->
+				<entry key="direcitive.cache.dev.mode" value="${system.devMode}"></entry>
+			</map>
+		</property>
+		<property name="configLocation" value="WEB-INF/conf/velocity.properties"></property>
+	</bean>
+
+	<!-- 需要国际化的使用 I18nVelocityLayoutViewResolver,否则使用 FixedVelocityLayoutViewResolver -->
+	<bean id="viewResolver"
+		class="com.eyeieye.melos.web.velocity.resolver.I18nVelocityLayoutViewResolver">
+		<property name="order" value="10" />
+		<property name="suffix" value=".vm" />
+		<property name="prefix" value="screen/" />
+		<property name="layoutUrl" value="layout/default.vm" />
+		<property name="exposeSpringMacroHelpers" value="true" />
+		<property name="dateToolAttribute" value="dateTool" />
+		<property name="numberToolAttribute" value="numberTool" />
+		<property name="toolboxConfigLocation" value="WEB-INF/conf/vm-toolbox.xml" />
+		<property name="contentType" value="${web.contentType}"></property>
+		<property name="templateEncoding" value="${vm.file.encoding}"></property>
+		<property name="devMode" value="${system.devMode}"></property>
+	</bean>
+
+	<!-- interceptors -->
+	<bean id="readonlyCookyjarInterceptor"
+		class="com.eyeieye.melos.web.cookyjar.ReadonlyCookyjarInterceptor">
+		<property name="cookyjarConfigure" ref="cookyjarConfigure"></property>
+	</bean>
+	<bean id="brokersInterceptor" class="com.eyeieye.melos.web.url.URLBrokerLauncherInterceptor">
+		<property name="brokers">
+			<map>
+				<entry key="appServer" value-ref="appServerBroker"></entry>
+				<entry key="imageServer" value-ref="imageServerBroker"></entry>
+				<entry key="uploadServer" value-ref="uploadServerBroker"></entry>
+				<entry key="blueflyServer" value-ref="blueflyServerBroker"></entry>
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="preventCachingInterceptor"
+		class="com.eyeieye.melos.web.interceptor.WebPreventCachingInterceptor"></bean>
+		
+	<bean id="authorityHandlerInterceptor"
+		class="com.skyjoo.neweast.web.access.AuthorityHandlerInterceptor">
+		<property name="userFuncsCacheService" ref="userFuncsCacheService" />
+		<property name="uncheckPattern">
+			<list>
+				<value>/login.htm</value>
+				<value>/timetask(/[0-9A-Za-z-_]+)+.htm[l]?</value>
+			</list>
+		</property>	
+	</bean>
+	<!-- adapters -->
+	<bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter" />
+	<bean
+		class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean class="com.eyeieye.melos.web.converter.StringHttpMessageConverter" />
+				<bean
+					class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+			</list>
+		</property>
+		<property name="customArgumentResolvers">
+			<list>
+				<!-- 只要在method声明Cookyjar对象,则自动注入 -->
+				<bean class="com.eyeieye.melos.web.cookyjar.CookyjarArgumentResolver"></bean>
+				<bean class="com.skyjoo.neweast.web.cookyjar.SystemUserAgentArgumentResolver"></bean>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- rpc -->
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="order" value="100" />
+		<property name="urlMap">
+			<map>
+				<entry key="/remoting/hessian/userAccountOpenService.htm" value-ref="userAccountOpenService-hessian" />
+				<entry key="/remoting/hessian/tradeOrderService.htm" value-ref="tradeOrderService-hessian" />
+			</map>
+		</property>
+	</bean>
+
+	<!-- url mapping -->
+	<context:component-scan base-package="com.skyjoo.neweast.web" />
+
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+		<property name="order" value="200" />
+		<property name="interceptors">
+			<list>
+				<ref bean="readonlyCookyjarInterceptor" />
+				<ref bean="brokersInterceptor" />
+				<ref bean="preventCachingInterceptor" />
+				<ref bean="authorityHandlerInterceptor"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="lastHandlerMapping"
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="order" value="999" />
+		<property name="defaultHandler">
+			<bean class="org.springframework.web.servlet.mvc.UrlFilenameViewController"></bean>
+		</property>
+		<property name="interceptors">
+			<list>
+				<ref bean="readonlyCookyjarInterceptor" />
+				<ref bean="brokersInterceptor" />
+				<ref bean="preventCachingInterceptor" />
+				<ref bean="authorityHandlerInterceptor"/>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 文件上传解析 -->
+	<bean id="multipartResolver" class="com.eyeieye.melos.web.resolver.MultipartResolver">
+		<property name="defaultEncoding" value="${web.encoding}" />
+	</bean>
+	
+	<bean class="com.skyjoo.neweast.web.access.AccessLoginExceptionResolver"/>
+	<bean class="com.skyjoo.neweast.web.access.AccessDeniedExceptionResolver"/>
+	
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver">
+	</bean>
+	
+	<import resource="web-remoting.xml"/>
+	<import resource="web-validation.xml"/>
+</beans>

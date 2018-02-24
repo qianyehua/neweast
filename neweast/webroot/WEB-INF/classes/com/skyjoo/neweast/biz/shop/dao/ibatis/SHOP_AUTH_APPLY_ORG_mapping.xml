@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SHOP_AUTH_APPLY_ORG">
+
+	<typeAlias alias="shopAuthApplyOrg" type="com.skyjoo.neweast.biz.shop.domain.ShopAuthApplyOrg" />
+	
+	<resultMap id="shopAuthApplyOrgResultMap" class="shopAuthApplyOrg">
+		<result column="ID" property="id"/>
+		<result column="APPLY_ID" property="applyId"/>
+		<result column="REAL_NAME" property="realName"/>
+		<result column="LICENSE_TYPE" property="licenseType"/>
+		<result column="LICENSE" property="license"/>
+		<result column="ATTACHMENT" property="attachment"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		saao.ID,
+		saao.APPLY_ID,
+		saao.REAL_NAME,
+		saao.LICENSE_TYPE,
+		saao.LICENSE,
+		saao.ATTACHMENT,
+		saao.GMT_CREATE,
+		saao.GMT_MODIFY
+	</sql>
+	
+	<select id="selectByApplyId" parameterClass="long" resultMap="shopAuthApplyOrgResultMap">
+		select <include refid="columsSql"/>
+		from SHOP_AUTH_APPLY_ORG saao
+		where saao.APPLY_ID = #applyId#
+	</select>
+
+</sqlMap>

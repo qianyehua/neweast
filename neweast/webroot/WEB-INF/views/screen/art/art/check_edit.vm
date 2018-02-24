@@ -1,0 +1,126 @@
+ <script type="text/javascript">
+function canBlank(checkResult){
+	if(checkResult == 1){
+		jQuery("#editForm").attr("action","$!{appServer}/art/edit.htm?artId=${art.id}&checkResult=1")
+		jQuery("#editForm").submit();
+	}else{
+		if(jQuery("#memo").val().trim() == ""){
+			alert("审核不通过时必须填写备注");
+		}else{
+			jQuery("#editForm").attr("action","$!{appServer}/art/edit.htm?artId=${art.id}&checkResult=2")
+			jQuery("#editForm").submit();
+		}	
+	}	
+}
+</script>
+   <div class="main-right" >        	
+  <div class="basic">  
+  	 <ul class="form-tab">
+        <li class="c">
+            <span>艺术品审核</span>
+        </li>
+    </ul>
+    <form id="editForm" name="editForm" action="$!{appServer}/art/edit.htm?artId=${art.id}" method="post">    
+		<input type="hidden" name="userId" id="userId" value="$!{art.userId}">
+		<input type="hidden" name="artiseId" id="artiseId" value="$!{art.artiseId}">
+  	<div class="listbox" >
+   	<table class="list-table">
+		<tr>
+			<td width="20%" align="right">艺术品分类：</td><td width="80%">$!{art.categoryContent}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">艺术品名称：</td><td width="80%">$!{art.name}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">艺术品类型：</td><td width="80%">#if($!{art.type}==1) 艺术品  #else 作品 #end</td>
+			<input type="hidden" value="${art.type}" name="type" id="type"/>
+		</tr>		
+		<tr>
+			<td width="20%" align="right">艺术品价格：</td><td width="80%">￥$!moneyUtils.getMoneyDesc($!{art.price})</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">艺术品属性：</td>
+			<td width="80%">
+				#if($!{stringUtils.contains($!{propertyContent[0]},"=")})
+					$!{stringUtils.split($!{propertyContent[0]},"=")[0]}
+					<font color="red">($!{stringUtils.split($!{propertyContent[0]},"=")[1]})</font>
+				#else
+					$!{propertyContent[0]}
+				#end
+			</td>
+		</tr>
+		#foreach($strProperty in $propertyContent)
+			#if($strProperty != $!{propertyContent[0]})
+				<tr>
+					<td width="20%"></td>
+					<td width="80%">
+						#if($!{stringUtils.contains($strProperty,":")} == false) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #end
+						#if( $!{stringUtils.contains($strProperty,"=")})							
+							$!{stringUtils.split($strProperty,"=")[0]}
+							<font color="red">($!{stringUtils.split($strProperty,"=")[1]})</font>
+						#else
+							$strProperty
+						#end
+					</td>
+				</tr>
+			#end
+		#end
+		<tr>
+			<td width="20%" align="right">艺术家：</td><td width="80%">$!{art.artise}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">运费类型：</td><td width="80%">#if($!{art.freightType}==1) 双方协定 #elseif($!{art.freightType}==2) 免运费 #end</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">图片：</td><td width="80%">
+				#foreach(${image} in ${imgStr})
+						<a href="$!{uploadServer}/${image}" title="点击看大图" target="_blank">
+							<img width="100" height="100" src="$!{uploadServer.get(${image})}?x-oss-process=image/resize,m_pad,h_100,w_100"/>
+                        </a>
+				#end
+			</td>
+		</tr>
+        <tr>
+			 <td width="20%" align="right">场景：</td>
+            <td width="80%" colspan="2">
+				<table >
+					#foreach($scene in $!{sceneList})
+					<tr ><td > $!{scene.name} </td></tr>
+					<tr >
+					#foreach($link in $!{sceneLinkList})
+						#if($!{link.sceneId}==$!{scene.id})
+						<td >
+							<a href="$!{uploadServer}/$!{link.sceneUrl}" title="点击看大图" target="_blank">
+        						<img src="$!{uploadServer.get($!{link.sceneUrl})}?x-oss-process=image/resize,m_pad,h_100,w_100" width="100" height="100"/>
+        					</a>
+						</td>
+						#end
+					#end
+					</tr>
+					#end
+                </table>
+            </td>
+		</tr>	
+		<tr>
+			<td width="20%" align="right">艺术品描述：</td><td width="80%" style="max-width: 700px;overflow:hidden;">#direct($!{art.description})</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">备注：</td>
+			<td width="80%">#springBind("art.memo")
+				<textarea rows="6" cols="40" maxlength="80" id="memo" name="memo"></textarea><span></span>
+			</td>
+		</tr>
+    </table>
+    </div>
+	
+	<div></div>
+	<div class="form-but"><!-- 表单按钮区 -->
+		<input type="submit"  class="but" value="通过" onclick="canBlank(1)"/>
+		<input type="button" id="sub" name="sub" class="but" value="不通过" onclick="canBlank(2)" />
+<!--     	<input type="button" onclick="location='$!{appServer}/art/check_list.htm'" class="but" value="返回" /> -->
+		<input type="button" id="back" name="back" class="but" value="返回" />
+    </div><!-- 表单按钮区 END -->
+</form>
+  </div>
+</div>
+		

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="Auth_Inst">
+
+	<typeAlias alias="authInst" type="com.skyjoo.neweast.biz.auth.domain.AuthInst" />
+	
+	<resultMap id="authInstResultMap" class="authInst">
+		<result column="ID" property="id"/>
+		<result column="ACCOUNT" property="account"/>
+		<result column="PASSWORD" property="password"/>
+		<result column="NAME" property="name"/>
+		<result column="ADDRESS" property="address"/>
+		<result column="TEL" property="tel"/>
+		<result column="GMT_ENTRY" property="gmtEntry"/>
+		<result column="OPERATOR" property="operator"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		sa.ID,
+		sa.ACCOUNT,
+		sa.PASSWORD, 
+		sa.NAME, 
+		sa.ADDRESS, 
+		sa.TEL, 
+		sa.GMT_ENTRY,  
+		sa.OPERATOR , 
+		sa.GMT_CREATE,
+		sa.GMT_MODIFY 
+	</sql>
+	
+	<!-- 机构名称 存在数量-->
+	<select id="getCountByName" parameterClass="authInst" resultClass="int">
+		select  Count(sa.ID)
+		from  AUTH_INST sa
+		where
+		sa.NAME = #name#
+		<isNotEmpty property="id" prepend="and">
+			sa.ID &lt;&gt;#id#
+		</isNotEmpty>
+	</select>
+	
+	<!-- 获取 索引 -->
+	<select id="getNextSeq"  resultClass="long">
+		select SEQ_AUTH_INST.NEXTVAL from DUAL
+	</select>
+     
+     <!-- 增加 鉴定机构 -->
+	<insert id="addAuthInst" parameterClass="authInst">
+		insert into AUTH_INST sa (<include refid="columsSql"/>)
+		values (#id#,#account#, #password#, #name#,
+		#address#, #tel#, sysdate,#operator#,sysdate,sysdate)
+	</insert>
+	
+	<!-- 1.获取申请数 -->
+	<select id="getAuthInstCount" parameterClass="authInst" resultClass="int">
+		select count(ID) from AUTH_INST sa
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="name">
+				sa.NAME like #name#||'%' 
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="tel">
+				sa.TEL = #tel#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="account">
+				sa.ACCOUNT = #account#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="startDate">
+                <![CDATA[ sa.GMT_CREATE >= to_date(#startDate#,'yyyy-MM-dd') ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="endDate">
+                <![CDATA[ sa.GMT_CREATE <= to_date(#endDate#,'yyyy-MM-dd')+1 ]]>
+            </isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 2.条件查询 -->
+	<select id="getPaginatedAuthInst" parameterClass="authInst"  resultMap="authInstResultMap">
+	
+		select *
+		from (
+		select t1.* , rownum linenum
+		from (
+		select <include refid="columsSql"/>
+		from AUTH_INST sa
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="name">
+				sa.NAME like #name#||'%' 
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="tel">
+				sa.TEL = #tel#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="account">
+				sa.ACCOUNT = #account#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="startDate">
+                <![CDATA[ sa.GMT_CREATE >= to_date(#startDate#,'yyyy-MM-dd') ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="endDate">
+                <![CDATA[ sa.GMT_CREATE <= to_date(#endDate#,'yyyy-MM-dd')+1 ]]>
+            </isNotEmpty>
+		</dynamic>
+			order by
+			    	sa.GMT_CREATE asc
+		) t1
+			where rownum &lt;= #endIndex#) t2
+		where t2.linenum &gt;= #beginIndex#
+	</select>
+	
+	<select id="getAuthInstById" parameterClass="Long" resultMap="authInstResultMap">
+		select <include refid="columsSql"/>
+		from  AUTH_INST sa
+		where
+		sa.id = #authId#
+	</select>
+	
+	<update id="updateAuthInst" parameterClass="authInst">
+		update AUTH_INST sa 
+		set sa.GMT_MODIFY = sysdate ,sa.ADDRESS = #address#
+		<isNotEmpty property="operator" prepend=",">
+			sa.OPERATOR = #operator#
+		</isNotEmpty>
+		<isNotEmpty property="name" prepend=",">
+			sa.NAME = #name#
+		</isNotEmpty>
+		<isNotEmpty property="tel" prepend=",">
+			sa.TEL = #tel#
+		</isNotEmpty>
+		where sa.ID = #id#
+	</update>
+	
+	<update id="resetpw" parameterClass="authInst">
+		update AUTH_INST sa 
+		set sa.GMT_MODIFY = sysdate 
+		<isNotEmpty property="operator" prepend=",">
+			sa.OPERATOR = #operator# 
+		</isNotEmpty>
+		<isNotEmpty property="password" prepend=",">
+			sa.PASSWORD = #password# 
+		</isNotEmpty>
+		where sa.ID = #id#
+	</update>
+	
+	<!--获取 鉴定机构的鉴定表数量 -->
+	<select id="getChertCount"  resultClass="int">
+		select count(*) 
+		from AUTH_CERT ac 
+		where ac.INST_ID = #authId# 
+	</select>
+	
+	<delete id="deleteAuthInsByID" >
+		delete from AUTH_INST sa
+		where
+		sa.ID = #authId#
+    </delete>
+	
+</sqlMap>

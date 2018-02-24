@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="TRADE_REFUND">
+	<typeAlias alias="tradeRefund" type="com.skyjoo.neweast.biz.trade.domain.TradeRefund"/>
+	
+	<resultMap id="tradeRefundResultMap" class="tradeRefund">
+		<result column="ID" property="id"/>
+		<result column="ORDER_ID" property="orderId"/>
+		<result column="TRADE_NO" property="tradeNo"/>
+		<result column="STATUS" property="status"/>
+		<result column="BUYER_ID" property="buyerId"/>
+		<result column="SELLER_ID" property="sellerId"/>
+		<result column="TOTAL_FEE" property="totalFee"/>
+		<result column="REFUND_FEE" property="refundFee"/>
+		<result column="EVIDENCE" property="evidence"/>
+		<result column="CAUSE" property="cause"/>
+		<result column="NOTE" property="note"/>
+		<result column="RETUEN_GOODS" property="retuenGoods"/>
+		<result column="REJECT_EVIDENCE" property="rejectEvidence"/>
+		<result column="REJECT_CAUSE" property="rejectCause"/>
+		<result column="REJECT_NOTE" property="rejectNote"/>
+		<result column="APPLY_TIME" property="applyTime"/>
+		<result column="RESPOND_TIME" property="respondTime"/>
+		<result column="COMPLETE_TIME" property="completeTime"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+		<result column="JUDGE_MEMO" property="judgeMemo"/>
+	</resultMap>
+	
+	<resultMap id="tradeRefundExtResultMap" class="tradeRefund" extends="tradeRefundResultMap">
+		<result column="BUYER_STOCK_ACCOUNT" property="buyerStockAccount"/>
+		<result column="BUYER_REAL_NAME" property="buyerRealName"/>
+		<result column="SELLER_STOCK_ACCOUNT" property="sellerStockAccount"/>
+		<result column="SELLER_REAL_NAME" property="sellerRealName"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		tr.ID,
+		tr.ORDER_ID,
+		tr.TRADE_NO,
+		tr.STATUS,
+		tr.BUYER_ID,
+		tr.SELLER_ID,
+		tr.TOTAL_FEE,
+		tr.REFUND_FEE,
+		tr.EVIDENCE,
+		tr.CAUSE,
+		tr.NOTE,
+		tr.RETUEN_GOODS,
+		tr.REJECT_EVIDENCE,
+		tr.REJECT_CAUSE,
+		tr.REJECT_NOTE,
+		tr.APPLY_TIME,
+		tr.RESPOND_TIME,
+		tr.COMPLETE_TIME,
+		tr.GMT_CREATE,
+		tr.GMT_MODIFY,
+		tr.JUDGE_MEMO
+	</sql>
+	
+	<typeAlias alias="tradeRefundQuery" type="com.skyjoo.neweast.biz.trade.domain.query.TradeRefundQuery" />
+	
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+	
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum &gt;= #beginIndex#
+	</sql>
+	<sql id="pageCondition">
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="gmtApplyStart">
+				tr.APPLY_TIME &gt;= to_date(#gmtApplyStart#, 'yyyy-MM-dd')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="gmtApplyEnd">
+				tr.APPLY_TIME &lt; to_date(#gmtApplyEnd#, 'yyyy-MM-dd') + 1
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="status">
+				tr.STATUS = #status#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="buyerStockAccount">
+				buyer.STOCK_ACCOUNT = #buyerStockAccount#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="sellerStockAccount">
+				seller.STOCK_ACCOUNT = #sellerStockAccount#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="orderNo">
+				tr.TRADE_NO = #orderNo#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="id">
+				tr.ID = #id#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+		
+	<select id="pageCount" parameterClass="tradeRefundQuery" resultClass="java.lang.Integer">
+		select count(*)
+		from TRADE_REFUND tr
+		left join USER_ACCOUNT buyer on buyer.ID = tr.BUYER_ID
+		left join USER_ACCOUNT seller on seller.ID = tr.SELLER_ID
+		<include refid="pageCondition"/>
+	</select>
+	
+	<select id="page" parameterClass="tradeRefundQuery" resultMap="tradeRefundExtResultMap">
+		<include refid="pageBeginSql"/>
+		
+		select <include refid="columsSql"/>, buyer.STOCK_ACCOUNT as BUYER_STOCK_ACCOUNT, buyer.REAL_NAME as BUYER_REAL_NAME,
+											seller.STOCK_ACCOUNT as SELLER_STOCK_ACCOUNT, seller.REAL_NAME as SELLER_REAL_NAME
+		from TRADE_REFUND tr
+		left join USER_ACCOUNT buyer on buyer.ID = tr.BUYER_ID
+		left join USER_ACCOUNT seller on seller.ID = tr.SELLER_ID
+		<include refid="pageCondition"/>
+		order by tr.GMT_CREATE desc
+		
+		<include refid="pageEndSql"/>
+	</select>
+		
+	<select id="selectByOrderId" parameterClass="java.lang.Long" resultMap="tradeRefundResultMap">
+		select <include refid="columsSql"/>
+		from TRADE_REFUND  tr
+		where tr.ORDER_ID = #orderId#
+		order by tr.GMT_CREATE desc
+	</select>
+	
+	<select id="selectById" parameterClass="java.lang.Long" resultMap="tradeRefundResultMap">
+		select <include refid="columsSql"/>
+		from TRADE_REFUND tr
+		where tr.ID = #id#
+	</select>
+ 
+ 	<update id="update" parameterClass="tradeRefund">
+ 		update 	TRADE_REFUND  tr
+ 		set		tr.GMT_MODIFY = sysdate,
+ 				tr.REFUND_FEE = #refundFee#
+ 		where	tr.ID = #id#
+ 	</update>
+</sqlMap>

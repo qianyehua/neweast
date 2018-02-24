@@ -1,0 +1,42 @@
+#set($layout = 'layout/login.vm')
+<script type="text/javascript">
+// 用户会话超时跳转至登录页面, 并将登录页面置为最顶层窗口
+if (window != top) {
+	top.location.href = location.href; 
+}
+</script>
+<div class="login-box" style="display:none;">
+    <div class="d-1">
+        <h2>系统管理员登录</h2>
+		<form id="loginForm" name="loginForm" action="login.htm" method="POST">
+        <table>
+            <tr>
+                <th>用户名：</th>
+                <td>
+                    <input id="loginName" name="loginName" type="text" class="inp" maxlength="32" />
+                </td>
+            </tr>
+            <tr>
+                <th>密&nbsp;&nbsp;&nbsp;&nbsp;码：</th>
+                <td>
+                    <input id="password" name="password" type="password" class="inp" value="" maxlength="12" onKeyPress="if(event.keyCode==13)jQuery('#loginForm').submit();"/>
+                </td>
+            </tr>
+            <tr>
+                <th></th>
+                <td>
+                    <input id="remmemberMe" name="j_spring_security_remember_me" type="checkbox" class="checkbox" />记住密码
+				</td>
+            </tr>
+        </table>
+        </form>
+		#if($!{error})
+            <div class="tips">
+                <span class="span-error">$!{error}</span>
+            </div>
+		#end
+    </div>
+    <div class="but-box">
+        <input id="logins" name="logins" type="button" class="but-101" />
+    </div>
+</div>

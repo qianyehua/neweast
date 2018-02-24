@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ART_COMMENT">
+
+	<typeAlias alias="artComment" type="com.skyjoo.neweast.biz.art.domain.ArtComment"/>
+	<typeAlias alias="artCommentQuery" type="com.skyjoo.neweast.biz.art.domain.query.ArtCommentQuery"/>
+	
+	<resultMap id="artCommentResultMap" class="artComment">
+		<result column="ID"            property="id"/>
+		<result column="ART_ID"        property="artId"/>
+		<result column="ART_NAME"      property="artName"/>
+		<result column="REPLY_ID"      property="reply_Id"/>
+		<result column="USER_ID"       property="userId"/>
+		<result column="FROM_NAME"     property="fromName"/>
+		<result column="TO_NAME"       property="toName"/>		
+		<result column="CONTENT"       property="content"/>
+		<result column="GMT_CREATE"    property="gmtCreate"/>
+		<result column="GMT_MODIFY"    property="gmtModify"/>
+	</resultMap>
+	
+	<resultMap id="artCommentQueryResultMap" class="artComment"  extends="artCommentResultMap">
+		<result column="ART_NAME"            property="artName"/>
+		<result column="SELLER_STOCKACCOUNT" property="sellerStockAccount"/>
+		<result column="BUYER_STOCKACCOUNT"  property="buyerStockAccount"/>
+	</resultMap>
+	
+	<sql id="columnSql">
+		a.ID,
+		a.ART_ID,
+		a.USER_ID,
+		a.REPLY_ID,
+		a.CONTENT,
+		a.GMT_CREATE,
+		a.GMT_MODIFY
+	</sql>
+	
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+	
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum &gt;= #beginIndex#
+	</sql>		
+	
+	<!-- Complex PAGE -->
+	<sql id="pageComplexCondition">
+		<dynamic prepend="where">
+		   <isNotEmpty prepend="and" property="startDate">
+		   		<![CDATA[ a.GMT_CREATE >= #startDate# ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="endDate">
+				<![CDATA[ a.GMT_CREATE <= #endDate#+1 ]]>
+	        </isNotEmpty>
+	        <isNotEmpty prepend="and" property="artName">
+				b."NAME" LIKE '$artName$%'
+	        </isNotEmpty>
+	        <isNotEmpty prepend="and" property="sellerStockAccount">
+				t4.SELLER_STOCKACCOUNT = #sellerStockAccount#
+	        </isNotEmpty>	  
+	        <isNotEmpty prepend="and" property="buyerStockAccount">
+				t3.BUYER_STOCKACCOUNT = #buyerStockAccount#
+	        </isNotEmpty>		              
+		</dynamic>
+	</sql>	
+	
+	<select id="getPaginateArtComment" parameterClass="artCommentQuery" resultMap="artCommentQueryResultMap">
+		<include refid="pageBeginSql"/>
+			SELECT <include refid="columnSql"/>,b."NAME" ART_NAME,
+			t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT
+			FROM ART_COMMENT a 
+			LEFT JOIN ART b ON b."ID" = a.ART_ID
+			LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID
+			LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID			
+			<include refid="pageComplexCondition"/>
+			ORDER BY a.GMT_CREATE DESC
+        <include refid="pageEndSql"/>		
+	</select>
+	
+	<select id="getArtCommentCount" parameterClass="artCommentQuery" resultClass="java.lang.Integer">
+			select Count(t1.ID) from (SELECT <include refid="columnSql"/>,b."NAME" ART_NAME,
+			t3.FROM_NAME,t4.TO_NAME,t3.BUYER_STOCKACCOUNT,t4.SELLER_STOCKACCOUNT
+			FROM ART_COMMENT a 
+			LEFT JOIN ART b ON b."ID" = a.ART_ID
+			LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID
+			LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID				
+			<include refid="pageComplexCondition"/> ORDER BY a.GMT_CREATE DESC) t1
+	</select>	
+	
+	<select id="getArtCommentDetailById" parameterClass="Long" resultMap="artCommentResultMap">
+		select <include refid="columnSql"/>,b."NAME" ART_NAME,t3.FROM_NAME,t4.TO_NAME
+		from ART_COMMENT a 
+		LEFT JOIN ART b ON b."ID" = a.ART_ID
+		LEFT JOIN (SELECT REAL_NAME FROM_NAME,"ID",STOCK_ACCOUNT BUYER_STOCKACCOUNT FROM USER_ACCOUNT) t3 ON t3."ID" = a.REPLY_ID
+		LEFT JOIN (SELECT REAL_NAME TO_NAME,"ID",STOCK_ACCOUNT SELLER_STOCKACCOUNT FROM USER_ACCOUNT) t4 ON t4."ID" = a.USER_ID		
+		where a.ID = #id#
+	</select>
+	
+	<delete id="deleteArtCommentById" parameterClass="Long">
+	    delete from ART_COMMENT where ID = #id#
+	</delete>
+</sqlMap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

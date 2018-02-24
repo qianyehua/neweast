@@ -1,0 +1,186 @@
+
+</script>
+   <div class="main-right" >        	
+  <div class="basic">  
+  	 <ul class="form-tab">
+        <li class="c">
+            <span>艺术家审核</span>
+        </li>
+    </ul>
+    <form id="editForm" name="editForm" action="$!{appServer}/artise/edit.htm?artiseId=${artise.artiseId}" method="post">        
+		<input type="hidden" name="userId"   value="${artise.userId}">
+		<input type="hidden" name="roleType" value="${artise.roleType}">
+		<input type="hidden" name="artiseName" value="${artise.artiseName}">
+  	<div class="listbox">
+   	<table class="list-table" style="margin-top:20px; " >
+		<tr>
+			<td width="20%" align="right">艺术家头像：</td><td width="80%">					
+				<a href="$!{uploadServer}/${artise.portrait}" title="点击看大图" target="_blank">
+					<img width="100" height="100" src="$!{uploadServer.get(${artise.portrait})}?x-oss-process=image/resize,m_pad,h_100,w_100"/>
+                </a>
+			</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">艺术家名称：</td><td width="80%">$!{artise.artiseName}</td>
+		</tr>
+		#if($!{artise.roleType} ==2)
+    		<tr>
+    			<td width="20%" align="right">机构简称：</td><td width="80%">$!{artise.artist}</td>
+    		</tr>
+			#else
+			<tr>
+    			<td width="20%" align="right">艺术家艺名：</td><td width="80%">$!{artise.artist}</td>
+    		</tr>	
+		#end
+
+		<tr>
+			<td width="20%" align="right">用户类型：</td><td width="80%">#if($!{artise.roleType} ==2) 机构 #else 个人 #end</td>
+		</tr>
+		
+		<tr>
+			<td width="20%" align="right" >艺术家简介：</td><td width="80%">$!{artise.profile}</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right" >艺术家履历：</td>
+			<td width="80%" style="word-wrap: break-word; word-break: break-all;" >
+				#foreach($artise in $record)
+                    <span>${artise.startTime}-$!{artise.endTime}&nbsp;&nbsp;&nbsp;$!{artise.content}</span>
+				#end
+			</td>
+		</tr>
+
+		<tr>
+			<td width="20%" align="right">艺术家作品：</td><td width="80%">
+				#foreach(${image} in ${artise.getArtWroksList()})
+					<a href="$!{uploadServer}/${image}" title="点击看大图" target="_blank">
+						<img width="100" height="100" src="$!{uploadServer.get(${image})}?x-oss-process=image/resize,m_pad,h_100,w_100"/>
+                    </a>
+				#end
+			</td>
+		</tr>
+		
+		<tr>
+			<td width="20%" align="right">艺术家证书：</td><td width="80%">
+				#foreach(${image} in ${artise.getCertificationsList()})
+						<a href="$!{uploadServer}/${image}" title="点击看大图" target="_blank">
+							<img width="100" height="100" src="$!{uploadServer.get(${image})}?x-oss-process=image/resize,m_pad,h_100,w_100"/>
+                        </a>
+				#end
+			</td>
+		</tr>
+		<tr>
+			<td width="20%" align="right">艺术家职称：</td><td width="80%">
+				#springBind("artise.title")
+				<div class="form-but" style="text-align:left; margin:0px;margin-bottom:10px;"><input type='text' value="" placeholder="请添加职称" id="titleStr" maxlength="15"><input type="button"  class="but"  value="添加" onclick="addTitle()"/>
+					<span>限制15个字数</span>
+					<div id="divTitle">
+    					#foreach($title in ${artise.getTitleList()})
+    						<a href="#" onclick="removeTitle(this)"><span style="font-size:14px;">${title}</span><input type="hidden" name="title" value="${title}"></a>
+						#end
+					</div>
+				</div>
+			</td>
+		</tr>	
+		<tr>
+			<td width="20%" align="right">备注：</td>
+			<td width="80%">
+				#springBind("artise.memo")
+				<textarea rows="6" cols="40" maxlength="80" id="memo" name="memo"></textarea><span></span>
+			</td>
+		</tr>
+    </table>
+    </div>
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="20%">编号</th>
+			<th width="20%">名称</th>
+			<th width="15%">类型</th>
+			<th width="25%">类目</th>
+			<th width="20%">发布时间</th>
+        </tr>
+		#if($!{art} && ${art.size()} > 0)
+			#foreach($a in $art)
+				<tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+					<td><a href="$!{appServer}/art/detail.htm?artId=${a.id}&come=1">$!{a.artCode}</a></td>
+					<td><p title="$!{art.name}">$!stringUtils.abbreviate($!{a.name},10)</p></td>
+					<td>						
+						#foreach($artType in ${artTypeList})
+							#if($artType.value == $!{a.type}) $artType.desp #end
+						#end
+					</td>
+					<td>$!{a.categoryContent}</td>
+					<td>$!{dateTool.format($!{a.gmtCreate})}</td>
+				</tr>
+			#end
+		#else
+            <tr>
+                <td colspan="7">
+                    <p class="ts">没有结果</p>
+                </td>
+            </tr>
+        #end
+    </table>
+	</div>
+
+	<div class="form-but" style="margin-bottom:30px;"><!-- 表单按钮区 -->
+		<input type="button"  class="but" value="通过" onclick="canBlank(1)"/>
+		<input type="button" id="sub" name="sub" class="but" value="驳回" onclick="canBlank(2)" />
+<!--     	<input type="button" onclick="location='$!{appServer}/art/check_list.htm'" class="but" value="返回" /> -->
+		<input type="button" id="back" name="back" class="but" value="返回" />
+    </div><!-- 表单按钮区 END -->
+</form>
+  </div>
+</div>
+
+<script >
+function addTitle(){
+	var title = $("#titleStr").val().replace(/[\*\/\|\,\，]/g,"");
+	var nums = $("input[name='title']").length;
+	if(title == ''){
+    	 alert("职称不能为空或者特殊字符！");
+    	 return;
+	}
+	
+	if(title.length > 15){
+    	 alert("职称字数不能超过15个字");
+    	 return;		
+	}
+	
+	if(nums >= 5){
+		alert("职称不能超过5个！");
+		return;
+	}
+    var htmlStr="<a href='#' style='margin-left:10px;' onclick='removeTitle(this)'><span style='font-size:14px;'>"+title+"</span><input type='hidden' name='title' value='"+title+"'></a>"	
+	$("#divTitle").append(htmlStr);
+	$("#titleStr").val('');
+}
+
+function removeTitle(obj){
+	$(obj).remove();
+}
+
+function canBlank(checkResult){
+	if(checkResult == 1){
+		var nums = $("input[name='title']").length;
+		if(nums<1){
+			alert("审核通过时必须填写职称");
+			return;
+		}else{
+    		jQuery("#editForm").attr("action","$!{appServer}/artise/edit.htm?artiseId=${artise.artiseId}&checkResult=1")
+    		jQuery("#editForm").submit();
+		}
+	}else{
+		if(jQuery("#memo").val().trim() == ""){
+			alert("审核不通过时必须填写备注");
+			return;
+		}else{
+			jQuery("#editForm").attr("action","$!{appServer}/artise/edit.htm?artiseId=${artise.artiseId}&checkResult=2")
+			jQuery("#editForm").submit();
+		}	
+	}	
+}
+</script>
+
+</script>
+		

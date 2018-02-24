@@ -1,0 +1,54 @@
+<div class="basic">
+    <ul class="form-tab">
+        <li class="c">
+            <span>会员详细</span>
+        </li>
+    </ul>
+    <form id="form1" action="list.htm" method="post">
+        <div class="formbox">
+            <div class="clear"></div>
+            <div class="nr">
+                <div class="nr-t"></div>
+                <div class="nr-c">
+                    <table class="c2">
+						<tr >
+							<th>账户：</th>
+							<td>$!{account.stockAccount}</td>
+                        </tr>
+						<tr >
+							<th>姓名：</th>
+							<td>$!{account.realName}</td>
+                        </tr>
+                        <tr>
+                            <th>电子邮件：</th>
+                            <td>$!{account.email}</td>
+                        </tr>
+						<tr >
+							<th>移动电话：</th>
+							<td>$!{account.mobile}</td>
+                        </tr>
+						<tr >
+							<th>地区：</th>
+							<td>$enumUtils.getCountry($!{account.country})</td>
+                        </tr>
+						<tr >
+							<th>开户时间： </th>
+							<td>$!dateTool.format('yyyy-MM-dd HH:mm:ss', $!{account.gmtCreate})</td>
+                        </tr>
+						<tr>
+							<th>状态：</th>
+							<td>$enumUtils.getUserAccountStatus($!{account.status})</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="nr-b"></div>
+            </div>
+        </div>
+        <!-- 表单按钮区-->
+        <div class="form-but">
+            <input type="button" onclick="location.href='list.htm'" class="but" value="返回" />
+        </div>
+        <!-- 表单按钮区 END -->
+        <div class="clear"></div>
+    </form>
+</div>

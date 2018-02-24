@@ -1,0 +1,343 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/validate.css" />
+<link href="$!{imageServer}/styles/cropper.css" type="text/css" rel="stylesheet" />
+<link href="$!{imageServer}/styles/scrop.css" type="text/css" rel="stylesheet" />
+<link href="$!{imageServer}/styles/picture.css" type="text/css" rel="stylesheet" />
+<script charset="utf-8" src="$!{imageServer}/scripts/cropper/jquery.js"></script>
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<script charset="utf-8" src="$!{imageServer}/scripts/ueditor/ueditor.config.js"></script>
+<script charset="utf-8" src="$!{imageServer}/scripts/ueditor/ueditor.all.min.js"></script>
+<script charset="utf-8" src="$!{imageServer}/scripts/ueditor/ueditor.parse.min.js"></script>
+<script charset="utf-8" src="$!{imageServer}/scripts/cropper/cropper.js"></script>
+<script charset="utf-8" src="$!{imageServer}/scripts/cropper/crop.js"></script>
+<script >
+	var imageServer = '$!{imageServer}';
+	var uploadServer = '$!{uploadServer}';
+</script>
+<script type="text/javascript">
+jQuery(function() {
+	var ue = UE.getEditor('container',{initialFrameWidth:700,initialFrameHeight:600});
+	uParse('#container', {
+    rootPath: '$!{imageServer}/scripts/ueditor'
+	})
+	var brow=$.browser;
+	if(brow.msie){
+		jQuery("#subjectPic").after("<span color='gray'>只能上传小于2M的图片</span>");
+	}
+	
+	jQuery.validator.addMethod("fileSize", function(value,element,params) {
+			if(value == "" || value == null){
+				return true;
+			}
+			if(brow.msie){
+				return true;
+			}else{
+				size = parseInt(params)*1024*1024;
+				var byteSize = element.files[0].size;
+				if(this.optional(element)||(byteSize>size)){
+					return false;
+				}else{
+					return true;
+				}
+			}
+	}, "图片必须小于2M");
+	jQuery.validator.addMethod("checkContent", function(value, element) { 
+   		if($("#editType").val()==0){
+		 	$(element).data('error-msg','请填写原文链接');
+            return $("#originalUrl").val() != "";
+		}else{
+			$(element).data('error-msg','请填写文章内容');
+            return ue.getContent() != "" || ue.getContentTxt() != "";
+		}
+    	}, function(params, element){
+		    return $(element).data('error-msg');
+		});
+	jQuery("#addForm").validate({
+		rules:{
+			articleTitle : {
+				required : true
+			} ,
+			mediaId : {
+				required : true
+			} ,
+			subjectIds : {
+				required : true
+			} ,
+			articleAbstract : {
+				required : true,
+				maxlength : 200
+			} ,
+			basePic : {
+				required : true
+			},
+			originalUrl : {
+				checkContent : true
+			}
+		},
+		messages:{
+			articleTitle : {
+				required : "请输入文章标题"
+			} ,
+			subjectName : {
+				required : "请输入专题名称"
+			} ,
+			mediaId : {
+				required : "请选择媒体"
+			} ,
+			subjectIds : {
+				required : "请选择专题"
+			} ,
+			articleAbstract : {
+				required : "请填写文章摘要",
+				maxlength : "文章摘要不能超过200字"
+			} ,
+			basePic : {
+				required : "请添加图片"
+			}
+		}
+	});
+	
+	$("#mediaId").change(function(){
+    	var type = $("#mediaId").find("option:selected").attr("type");
+		var val = $("#mediaId").find("option:selected").val();
+    	$("#visitType").val(type);
+    	if(type == 3){
+    		$("#checkPic").show();
+    	}else{
+    		$("#checkPic").hide();
+		}
+		if(type == 2){
+			$("#editBtn").show();
+			$("#editContentBtn").show();
+		}else{
+			$("#editBtn").hide();
+			$("#editContentBtn").hide();
+			$("#trContent").hide();
+			$("#originalUrl").attr("readonly",false);  
+		}
+		$("#contentError").hide();
+		setMainHeight();
+	});
+	
+	$("#editBtn").click(function () {
+		var type = $("#editType").val();
+		if($("#trContent").is(":visible")){
+			if (!confirm("是否取消编辑，当前编辑内容会被删除？")) {
+        		return;
+			} 
+			$("#lab").text("");
+			$("#editType").val(0);
+			$("#trContent").hide();
+			$("#originalSpan").show();
+			ue.setContent("");
+			$("#originalUrl").attr("readonly",false);  
+		}else if($("#originalUrl").attr("readonly") != true){
+			if($("#originalUrl").val() == ""){
+				alert("请输入原文链接！");
+			}else{
+				$.ajax({
+            		url: imageServer + "/ajax/article/getUrlContent.htm",
+            		data: {url:$("#originalUrl").val()},
+            		async: false,
+            		dataType: 'json',
+            		success: function(result){
+						$("#originalUrl").attr("readonly",true); 
+            			$("#editType").val(1);
+						$("#trContent").show();
+						ue.setContent(result.content);
+					},
+					error:function(){
+						alert("页面内容处理失败！");
+					}
+				});
+			}
+		}
+		setMainHeight();
+	})
+	
+	$("#editContentBtn").click(function () {
+		var type = $("#editType").val();
+		if($("#trContent").is(":hidden")){
+			$("#lab").text("");
+			$("#editType").val(2);
+			$("#trContent").show();
+			$("#originalSpan").hide();
+			$("#originalUrl").val("");
+			$("#originalUrl").attr("readonly",true);  
+		}else{
+			if (!confirm("是否取消编辑，当前编辑内容会被删除？")) {
+        		return;
+			}  
+			$("#lab").text("");
+			if(type == 1){
+				$("#editType").val(2);
+				$("#originalUrl").val("");
+				ue.setContent("");
+				$("#originalSpan").hide();
+			}else{
+				$("#editType").val(0);
+				$("#trContent").hide();
+				ue.setContent("");
+				$("#originalSpan").show();
+				$("#originalUrl").val("");
+				$("#originalUrl").attr("readonly",false);  
+			}
+		}
+		setMainHeight();
+	})
+	
+	//防止双击重复提交
+	$("#but").click(function () {
+    	var type = $("#mediaId").find("option:selected").attr("type");
+		if(type == 3){
+    		$("#transitionPic").rules("add", {    
+                required: true,
+                accept : 'jpg|jpeg|png|bmp|gif|JPG|JEPG|PNG|BMP|GIF',
+				fileSize : 2,
+                messages: {    
+                    required: "请上传过渡图片",
+					accept : "格式必须为jpg/jpeg,png,bmp,gif",
+                }    
+           	}); 
+    	}
+
+    	if($("#addForm").valid()){
+    		$("#but").attr("disabled","true"); //设置变灰按钮  
+			$("#articleAbstract").val($("#articleAbstract").val().replace(/[\r\n]/g,""));
+			$("#addForm").submit();//提交表单  
+    	}
+    })
+});
+</script>	
+<div class="main-right">
+    <div class="basic">
+        <ul class="form-tab">
+            <li class="c">
+                <span>创建文章</span>
+            </li>
+        </ul>
+		<div class="formbox">
+			<div class="clear"></div>
+			<form id="addForm" name="addForm" action="add.htm" method="post" enctype="multipart/form-data">
+			<input id="editType" value="0" style="display:none"/>
+			<div class="nr">
+				<div class="nr-t"></div>
+				<div class="nr-c">
+					<table class="c2">
+						<tr>
+							<th><span style="color:red">*</span>文章标题：</th>
+							<td>#springBind("article.articleTitle")
+								<input name="articleTitle" id="articleTitle" class="inp" maxlength="50" value="$!{status.value}"/>
+							</td>
+						</tr>
+						<tr>
+							<th><span style="color:red">*</span>媒体：</th>
+							<td>#springBind("article.mediaId")
+								<select id="mediaId" name="mediaId">
+									<option value="">请选择</option>
+									#foreach($media in $mediaList)
+										<option type="$media.visitType" value="$media.id" #if($article.mediaId == "$media.id") selected="selected" #end>
+												$media.mediaName
+										</option>
+									#end
+								</select>
+								#springBind("article.visitType")
+								<input type="hidden" id="visitType" name="visitType" value="$!{status.value}"/>
+							</td> 
+						</tr>
+						<tr>
+							<th><span style="color:red">*</span>专题：</th>
+							<td>
+								#foreach($subject in $subjectList)
+									#set($count = 0)
+									#foreach($sb in $article.subjectIds)
+										#if($sb == $subject.id)
+											<input type="checkbox" name="subjectIds" value="$subject.id" checked="checked">$subject.subjectName
+											#set($count = $count + 1)	
+										#end
+									#end
+									#if($count == 0)
+										<input type="checkbox" name="subjectIds" value="$subject.id">$subject.subjectName
+									#end
+								#end
+								<label for="subjectIds" class="error" style="display:none">请选择专题</label>
+							</td> 
+						</tr>
+						<tr>
+							<th><span style="color:red">*</span>文章摘要：</th>
+							<td>#springBind("article.articleAbstract")
+								<textarea  class="textarea"  id="articleAbstract" name="articleAbstract" maxLength="200">$!{status.value}</textarea>
+								<label for="${status.expression}" generated="true" class="error">$!{status.errorMessage}</label>
+							</td>
+						</tr>
+						<tr>
+							<th><span style="color:red">*</span>上传文章图片：</th>
+							<td>
+								<input id="fileButton" type="button" value="选择文件"/>
+								<p class="err-p">请上传图片</p>
+								<img style="display:none;position:relative;left:100px;" id="thumbnail" src="" width="100" height="100">
+								<input style="display:none" type="file" class="sr-only" id="inputImage" name="file" accept=".jpg,.jpeg,.png,.gif,.bmp">
+								<input style="display:none" id="basePic" name="basePic" value=""/>
+							</td>
+						</tr>
+						<tr id="checkPic" style="display:none">
+							<th><span style="color:red">*</span>上传过渡页面图片：</th>
+							<td>
+								<input  id="transitionPic" name="file2"  type="file"/>
+							</td>
+						</tr>
+						<tr id="checkUrl">
+							<th><span id="originalSpan" style="color:red">*</span>原文链接：</th>
+							<td>#springBind("article.originalUrl")
+								<input  id="originalUrl" name="originalUrl"  type="text" size="50" maxlength="256" value="$!{status.value}"/>
+								<label for="${status.expression}" generated="true" id="lab" class="error">$!{status.errorMessage}</label>
+							</td>
+						</tr>
+						<tr>
+							<th></th>
+							<td>
+								<input type="button" #if($!{article.visitType} != 2)style="display:none"#end id="editBtn" class="but" value="编辑文章"/>
+								<input type="button" #if($!{article.visitType} != 2)style="display:none"#end id="editContentBtn" class="but" value="本地创建"/>
+							</td>
+						</tr>
+						<tr id="trContent" style="display:none">
+							<td colspan="2">#springBind("article.content")
+								<textarea id="container" name="content" value="$!{status.value}"></textarea>
+								<em id="contentError" style="color:red">请编辑文章内容</em>
+								<label for="${status.expression}" generated="true" class="error">$!{status.errorMessage}</label>
+							</td>
+						</tr>
+						<tr><th></th><td>图片格式仅支持：jpg | jpeg | png | gif| bmp|等</td></tr>
+						<tr><th></th><td>图片大小仅支持：2M以内</td></tr>
+					</table>
+				</div>
+			</div>
+			<div class="form-but"><!-- 表单按钮区 -->
+				<input id="but" type="button" class="but" value="保存" />
+				<input type="button" class="but" value="返回" onclick="window.location = 'list.htm'"/>
+			</div><!-- 表单按钮区 END -->
+			</form>
+			<div class="clear"></div>
+		</div>
+	</div>
+</div>
+	
+<aside class="mask pic-mask">
+	<div class="pic-box">
+		<p class="pic-p clear"> 
+			<span style="line-height: 40px!important;">上传裁剪图片</span>
+			<img src="$!{imageServer}/images/d2.png" class="close-mask fr">
+		</p>
+		<form action="javascript:;" method="post" class="scrop-form">
+			<div class="img-container">
+				<img id="imageScrop" src="" alt="Picture">
+			</div>
+			<p class="show-p">
+		   		<img class="test-img" src="">
+		    </p>
+			<p class="pic-but">
+				<input id="scrop-but" class="scro" type="button" value="裁剪" />
+				<input id="save-but" class="scro" type="button" value="保存" />
+			</p>
+		</form>
+	</div>
+</aside>

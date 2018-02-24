@@ -1,0 +1,125 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/validate.css" />
+<script src="$!{imageServer}/scripts/system/user.js" type="text/javascript" charset="gb2312"></script>
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<script>
+    $(function(){
+        $("#save").click(function(){
+            $("input[name=role]").each(function(){
+                if($(this).attr("checked")) {
+                    var roles = $("#roles").val()+""+$(this).val()+",";
+                    $("#roles").val(roles);
+                }
+            });
+        })
+    })
+</script>
+<div class="main-right">
+    <div class="basic">
+        <ul class="form-tab">
+            <li class="c">
+                <span>用户增加</span>
+            </li>
+        </ul>
+        <div class="formbox">
+            <form id="systemUser" name="systemUser" action="add.htm" method="post">
+                <div class="clear"></div>
+                <div class="nr">
+                    <div class="nr-t"></div>
+                    <div class="nr-c">
+                        <table class="c2">
+                            <tr>
+                                <th>
+                                    <span style="color:red">*</span>
+                                    用户名：</th>
+                                    <td>
+                                        #springBind("systemUser.loginName")
+                                        <input type="text" id="loginName" name="${status.expression}" onkeyup="this.value=this.value.replace(/[\u4e00-\u9fa5]/g,''); this.value=this.value.trim();" value="$!{status.value}" maxlength="12" class="inp"/>
+                                        <label class="error"> #if($!{hasRegister})用户已经存在 #end  #if($!{hasSystemUser})system用户名不能注册 #end   ${status.errorMessage}</label>
+                                                (用户名不能含有中文)
+                                    </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <span style="color:red">*</span>
+                                    真实姓名：</th>
+                                    <td>
+                                        #springBind("systemUser.realName")
+                                        <input type="text" id="realName" name="${status.expression}" onkeyup="this.value=this.value.trim()" value="$!{status.value}" maxlength="16" class="inp required"/>
+                                        <label class="error">${status.errorMessage}</label>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <span style="color:red">*</span>
+                                    密    码：</th>
+                                    <td>
+                                        #springBind("systemUser.password")
+                                        <input type="password" id="password" name="${status.expression}" onkeyup="this.value=this.value.trim()" value="$!{status.value}" maxlength="12" class="inp"/>
+                                        <label class="error">${status.errorMessage}</label>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <span style="color:red">*</span>
+                                    确认密码：</th>
+                                    <td>
+                                        #springBind("systemUser.rePassword")
+                                        <input type="password" id="rePassword" name="${status.expression}" onkeyup="this.value=this.value.trim()" value="$!{status.value}" maxlength="12" class="inp"/>
+                                        <label class="error">${status.errorMessage}#if(${hasPasswordError}) 两次输入密码不一致  #end</label>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <span style="color:red">*</span>
+                                    E-mail</th>
+                                    <td>
+                                        #springBind("systemUser.email")
+                                        <input type="text" id="email" name="email" value="$!{status.value}" onkeyup="this.value=this.value.trim()"  maxlength="36" class="inp"/>
+                                        <label class="error">${status.errorMessage}</label>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    电    话：</th>
+                                    <td>
+                                        #springBind("systemUser.tel")
+                                        <input type="text" id="tel" name="${status.expression}" value="$!{status.value}" onkeyup="this.value=this.value.trim()" maxlength="13" class="inp isTel"/>
+                                        <label class="error">${status.errorMessage} #if(${isTelAndMobileInValid}) 电话和手机不能同时为空  #end</label>
+                                            (电话号码格式为：区号-号码)
+                                    </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    手机：</th>
+                                    <td>
+                                        #springBind("systemUser.mobile")
+                                        <input type="text" id="mobile" name="${status.expression}" value="$!{status.value}"onkeyup="this.value=this.value.trim()"  maxlength="11" class="inp isMobile"/>
+                                        <label class="error">${status.errorMessage}</label>
+                                    </td>
+                            </tr>
+                           
+            <tr>
+                <th>角    色：</th>
+                <td>
+                    #foreach($role in $roles)
+                        <input type="checkbox" class="checkbox" name="role" value="$!{role.id}"/>
+                        $!{role.name}
+                    #end
+                </td>
+            </tr>
+</table>
+</div>
+<div class="nr-b"></div>
+</div>
+<input type="hidden" id="roles" name="roles" value=""/>
+<!-- 表单按钮区 -->
+<div class="form-but">
+    <input type="submit" id="save" name="save" class="but" value="保存" />
+    <input type="button" id="back" name="back" class="but" onclick="location.href='list.htm'" value="返回" />
+</div>
+<!-- 表单按钮区 END -->
+<div class="clear"></div>
+</form>
+                </div>
+</div>
+        </div>

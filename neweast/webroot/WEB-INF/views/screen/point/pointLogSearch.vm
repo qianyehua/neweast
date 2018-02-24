@@ -1,0 +1,101 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+    jQuery( function() {
+        $('.date-pick').datePicker( {clickInput : true, startDate : "2010-01-01"});
+	});
+</script>
+
+<script type="text/javascript">
+function getTimeByDateStr(dateStr){
+ var year = parseInt(dateStr.substring(0,4));
+ var month = parseInt(dateStr.substring(5,7),10)-1;
+ var day = parseInt(dateStr.substring(8,10),10);
+ return new Date(year, month, day).getTime();
+}
+$('document').ready(function(){
+jQuery.validator.addMethod("data",function(value,element){
+   	var startTime = getTimeByDateStr($("#startTime").val());
+ 	var endTime = getTimeByDateStr($("#endTime").val());
+ 	if((endTime - startTime) > 31*24*60*60*1000)  return false;
+ 	return true; 
+ },'时间间隔不能超过一个月');
+
+	jQuery("#pointLogForm").validate({
+		  rules: {
+   			endTime:{
+				data:true
+   			}
+		  },
+		  messages: { 
+          } 
+  	});
+});
+</script>
+<!-- 搜索框 -->
+<form id="pointLogForm" name="pointLogForm" action="pointlogsearch.htm" method="post">
+	<div class="search-box"">
+        <table>
+			<tr>
+				<th>交易账号：</th>
+                <td>
+					#springBind("query.tradeAccount")
+                    <input type="text" name="$!{status.expression}" value="$!{status.value}" onKeyUp="this.value=this.value.trim()" class="inp" style="width:140px">
+				</td>
+				</tr>
+				<tr>
+                <th>发生时间：</th>
+                <td colspan="3">
+					#springBind("query.startTime")
+					<input type="text" id="startTime" name="$!{status.expression}" value="$!{status.value}" readonly="readonly" size="10" class="date-pick" style="width:85px;"/>
+                    -
+					#springBind("query.endTime")
+                    <input type="text" id="endTime" name="$!{status.expression}" value="$!{status.value}" readonly="readonly"  size="10" class="date-pick" style="width:85px;"/>
+                </td>
+			   <td >
+					<input type="submit" name="search" value="查询" class="but-61" />
+                </td>
+				<td>
+					##<input type="reset" value="重置" onclick="window.location = 'pointlogsearch.htm'" class="but-62"/>
+                 </td>
+			</tr>
+		</table>
+	</div>
+<!-- 搜索框 END -->
+ <div class="basic">
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="10%">交易账号 </th>
+			<th width="20%">发生时间</th>
+			<th width="15%">发生数量</th>
+			<th width="15%">积分结余</th>
+			<th width="40%">原因</th>
+        </tr>
+		#if($!{query.getData()} && $!{query.getData().size()} > 0) 
+            #foreach($data in $!query.getData())
+            <tr #if($!{velocityCount}%2 == 0) class="bg" #end align="center">
+				<td >$!{data.tradeAccount}</td>
+				<td >$!dateTool.format('yyyy-MM-dd HH:mm:ss', $!{data.occurTime})</td>
+				<td >
+					#if($!{data.pointType}=="store_consume") -$!{data.pointAmount}
+						#else +$!{data.pointAmount}
+				#end
+				</td>
+				<td >$!{data.pointPost}</td>
+				<td >$!{data.reason}</td>
+            </tr>
+            #end
+        #else
+            <tr>
+                <td colspan="6">
+                    <p class="ts">没有结果</p>
+                </td>
+            </tr>
+        #end
+    </table>
+	 #pager($query, "pointLogForm")
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

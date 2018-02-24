@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SystemRoleFunction">
+
+	<typeAlias alias="SystemRoleFunction"
+		type="com.skyjoo.neweast.biz.system.domain.SystemRoleFunction" />
+
+	<resultMap id="systemRoleFunctionResultMap" class="SystemRoleFunction">
+		<result column="ID" property="id" />
+		<result column="ROLE_ID" property="roleId" />
+		<result column="FUNCTION_ID" property="functionId" />
+		<result column="OPERATOR" property="operator" />
+		<result column="GMT_CREATE" property="gmtCreate" />
+		<result column="GMT_MODIFY" property="gmtModify" />
+	</resultMap>
+
+	<select id="getRoleFuncsByRoleId" resultMap="systemRoleFunctionResultMap">
+		select * from
+		SYSTEM_ROLE_FUNCTION t
+		where t.ROLE_ID = #roleId# 
+	</select>
+
+	<insert id="addRoleFuncs">
+		<selectKey keyProperty="id" resultClass="long" type="pre">
+			select
+			SEQ_SYSTEM_ROLE_FUNCTION.nextval as id from dual 
+		</selectKey>
+		insert into SYSTEM_ROLE_FUNCTION (ID, ROLE_ID, FUNCTION_ID, OPERATOR,
+		GMT_CREATE, GMT_MODIFY)
+		values (#id#, #roleId#, #functionId#, #operator#,
+		sysdate, sysdate)
+	</insert>
+
+	<delete id="removeRoleFuncsByRoleId">
+		delete from SYSTEM_ROLE_FUNCTION where ROLE_ID =
+		#roleId#
+	</delete>
+</sqlMap>

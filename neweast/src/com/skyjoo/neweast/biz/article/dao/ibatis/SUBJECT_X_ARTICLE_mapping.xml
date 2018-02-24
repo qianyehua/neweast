@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SUBJECT_X_ARTICLE">
+
+	<typeAlias alias="subjectXArticle" type="com.skyjoo.neweast.biz.article.domain.SubjectXArticle" />
+
+	<insert id="addSubjectXArticle" parameterClass="subjectXArticle">
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+			select
+			SEQ_SUBJECT_X_ARTICLE.nextval from dual
+		</selectKey>
+		INSERT INTO
+		SUBJECT_X_ARTICLE(ID,SUBJECT_ID,ARTICLE_ID,GMT_CREATE)
+		VALUES (#id#,#subjectId#,#articleId#,sysdate)
+	</insert>
+	
+	<delete id="deleteSubjectXArticle">
+		delete from SUBJECT_X_ARTICLE where ARTICLE_ID=#id#
+	</delete>
+	<delete id="removeSubjectXArticle">
+		delete from SUBJECT_X_ARTICLE where SUBJECT_ID=#subjectId#
+	</delete>
+</sqlMap>

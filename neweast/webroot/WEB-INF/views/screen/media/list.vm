@@ -1,0 +1,72 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+ <!-- 搜索框 -->
+<form id="mediaForm" name="mediaForm" action="list.htm" method="get">
+	<div class="search-box">
+        <table>
+				<td>	
+				</td>
+           </tr>
+</table>
+</div>
+ 
+ <div class="basic">
+	<div class="tool">
+		<span>
+            <a onclick="window.location='create.htm'" href="#" class="bt_add" hidefocus="true" >新增</a>
+        </span>
+	</div>
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="25%">媒体名称</th>
+			<th width="25%">访问类型</th>
+			<th width="25%">创建时间</th>
+			<th width="25%">操作</th>
+        </tr>
+		#if($!{mediaList})
+			#set($index=1)   
+			#foreach($meida in $mediaList)
+				<tr #if($index%2==0) class="bg" #end>
+					#set($index=1+$index)
+					 <td style="text-align:center">$!{meida.mediaName}</td>
+					 <td style="text-align:center">
+						#foreach($type in $types)
+							#if($type.value==$meida.visitType)
+								$type.desc
+							#end
+						#end
+					 </td>
+					 <td style="text-align:center">
+						$!{dateTool.format($!{meida.gmtCreate})}
+					</td>
+					<td class="link-td" style="text-align:center">
+						<a href="$!{appServer}/media/update.htm?id=$meida.id">编辑</a>
+						<a  href="javascript:void(0)" onclick="delete1($meida.id,$meida.count)">删除</a>
+					</td>
+				</tr>	
+			#end
+        #else
+            <tr>
+                <td colspan="4">
+                    <p class="ts">没有结果</p>
+                </td>
+            </tr>
+        #end
+    </table>
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>
+<script type="text/javascript">
+function delete1(vid,count){
+	if(count>0){
+		alert("该媒体下仍有文章，无法删除");
+	}else{
+	if(confirm("是否确定删除该媒体?")){
+			var url="$!{appServer}/media/delete.htm?id="+vid;
+			window.location =  url;
+		}
+	}
+}
+</script>

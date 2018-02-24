@@ -1,0 +1,129 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+     var num = 0;
+     function verify(flag, id) {
+             num ++;
+             if(num <= 1){
+        	    var url = "verify.htm?id=" + id + "&flag=" + flag;
+       		    document.location = url;
+        		}
+         }
+         jQuery( function() {
+         //设置日期
+         $('.date-pick').datePicker( {
+         clickInput : true,
+         startDate : "2010-01-01"
+         });
+         });
+</script>
+<!-- 搜索框 -->
+<form id="refundForm" name="refundForm" action="list.htm" method="get">
+	<div class="search-box">
+        <table>
+        	<tr>
+				<th>订单编号</th>
+				<td>#springBind("query.orderNo")
+					<input id="orderNo" name="$!{status.expression}" type="text" value="$!{status.value}"/>
+				</td>
+				<th>退款编号</th>
+				<td>#springBind("query.id")
+					<input id="id" name="$!{status.expression}" type="text" value="$!{status.value}"/>
+				</td>
+			</tr>
+        
+            <tr>
+				<th>退款申请时间</th>
+                <td>
+                	#springBind("query.gmtApplyStart")
+					<input type="text" id="gmtApplyStart" name="$!{status.expression}" value="$!{status.value}" readonly="readonly" size="10" class="date-pick" />					-
+					#springBind("query.gmtApplyEnd")
+                    <input type="text" id="gmtApplyEnd" name="$!{status.expression}" value="$!{status.value}" readonly="readonly"  size="10" class="date-pick" />
+                 </td>
+                 <th>退款状态</th>
+				<td>
+                    #springBind("query.status")
+					<select id="status" name="$!{status.expression}">
+						<option value="">请选择</option>
+						#foreach($refundStatusType in $refundStatusMap.keySet())
+							<option value="${refundStatusType}" #if($!{query.status} == ${refundStatusType}) selected #end>$refundStatusMap.get($refundStatusType)</option>
+						#end
+					</select>	
+                </td>
+           </tr>
+
+			<tr>
+				<th>买家账号</th>
+				<td>#springBind("query.buyerStockAccount")
+					<input type="text" id="buyerStockAccount" name="$!{status.expression}" value="$!{status.value}"/>
+				</td>
+				<th>卖家账号</th>
+				<td>#springBind("query.sellerStockAccount")
+					<input type="text" id="sellerStockAccount" name="$!{status.expression}"  value="$!{status.value}"/>
+				</td>
+			</tr>
+			
+           <tr>
+           		<td></td>
+           		<td></td>
+           		<td></td>
+                <td>
+   					 <input type="submit" name="search" value="查询" class="but-61" />
+					<input type="reset" value="重置" onclick="window.location = 'list.htm'" class="but-62"/>
+				</td>
+           </tr>
+           
+</table>
+</div>
+<!-- 搜索框 END -->
+ <div class="basic">
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="5%">退款编号</th>
+			<th width="8%">订单编号</th>
+			<th width="12%">退款申请时间</th>
+			<th width="5%">买家账号</th>
+			<th width="10%">买家姓名</th>
+			<th width="5%">卖家账号</th>
+			<th width="10%">卖家姓名</th>
+			<th width="8%">退款状态</th>
+			<th width="5%">操作</th>
+        </tr>
+		#if($!{query} && ${query.totalCount} > 0)
+			#foreach($refund in $query.getData())
+				<tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+					<td>						
+						<a href="$!{appServer}/refund/detail.htm?refundId=$!{refund.id}">$!{refund.id}</a>
+					</td>
+					<td>$!{refund.tradeNo}</td>
+					<td>$!{dateTool.format($!{refund.applyTime})}</td>
+					<td>$!{refund.buyerStockAccount}</td>
+					<td>$!{refund.buyerRealName}</td>
+					<td>$!{refund.sellerStockAccount}</td>
+					<td>$!{refund.sellerRealName}</td>
+					<td>
+						#foreach($refundStatusType in $refundStatusMap.keySet())
+							#if($refundStatusType == $refund.status) $refundStatusMap.get($refundStatusType) #end
+						#end					
+					</td>
+					<td class="link-td">
+						#if($!{refund.status} == "waitArbitrate")
+							<a href="$!{appServer}/refund/arbitrate.htm?id=$!{refund.id}">仲裁</a>
+						#end 
+					</td>
+				</tr>	
+			#end		    
+        #else
+                    <tr>
+                        <td colspan="7">
+                            <p class="ts">没有结果</p>
+                        </td>
+                    </tr>
+        #end
+    </table>
+	 #pager($query, "refundForm")
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

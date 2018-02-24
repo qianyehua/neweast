@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MEDIAMANAGER">
+
+	<typeAlias alias="subjectMedia"
+		type="com.skyjoo.neweast.biz.media.domain.SubjectMedia" />
+
+	<resultMap id="subjectMediaResultMap" class="subjectMedia">
+		<result column="ID" property="id" />
+		<result column="MEDIA_NAME" property="mediaName" />
+		<result column="MEDIA_LOGO" property="mediaLogo" />
+		<result column="VISIT_TYPE" property="visitType" />
+		<result column="GMT_CREATE" property="gmtCreate" />
+		<result column="GMT_MODIFY" property="gmtModify" />
+	</resultMap>
+	
+	<resultMap id="subjectMediaListResultMap" class="subjectMedia">
+		<result column="ID" property="id" />
+		<result column="MEDIA_NAME" property="mediaName" />
+		<result column="MEDIA_LOGO" property="mediaLogo" />
+		<result column="VISIT_TYPE" property="visitType" />
+		<result column="GMT_CREATE" property="gmtCreate" />
+		<result column="GMT_MODIFY" property="gmtModify" />
+		<result column="COUNT" property="count"/>
+	</resultMap>
+
+	<sql id="columsSql">
+		sm.ID,
+		sm.MEDIA_NAME,
+		sm.MEDIA_LOGO,
+		sm.VISIT_TYPE,
+		sm.GMT_CREATE,
+		sm.GMT_MODIFY
+	</sql>
+
+	<!--列表 -->
+	<select id="list" resultMap="subjectMediaListResultMap">
+		select
+		<include refid="columsSql" />,
+		(select count(1) from ARTICLE ar
+		where ar.MEDIA_ID=sm.ID and (ar.STATUS=1 or ar.STATUS=0 or ar.STATUS=-1)) AS COUNT
+		from SUBJECT_MEDIA sm
+		order by sm.GMT_CREATE desc
+	</select>
+	<!-- 插入媒体 -->
+	<insert id="createMedia" parameterClass="subjectMedia">
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+			select
+			SEQ_SUBJECT_MEDIA.nextval from dual
+		</selectKey>
+		INSERT INTO
+		SUBJECT_MEDIA(ID,MEDIA_NAME,MEDIA_LOGO,VISIT_TYPE,GMT_CREATE,GMT_MODIFY)
+		VALUES (#id#,#mediaName#,#mediaLogo#,#visitType#,sysdate,sysdate)
+	</insert>
+	<!-- 通过id搜索媒体 -->
+	<select id="findMediaById" parameterClass="java.lang.Long"
+		resultMap="subjectMediaResultMap">
+		select
+		<include refid="columsSql" />
+		from SUBJECT_MEDIA sm
+		where sm.ID = #id#
+	</select>
+	<!-- 通过id删除媒体 -->
+	<delete id="deleteById" parameterClass="java.lang.Long">
+		delete
+		from SUBJECT_MEDIA sm  
+		where sm.ID =#id#
+	</delete>
+	<!-- 通过id更新媒体信息 -->
+	<update id="updateMedia" parameterClass="subjectMedia">
+		update SUBJECT_MEDIA sm
+		set
+		sm.MEDIA_NAME=#mediaName#,
+		sm.VISIT_TYPE=#visitType#,
+		sm.GMT_MODIFY=sysdate
+		<isNotEmpty property="mediaLogo" prepend=",">
+		sm.MEDIA_LOGO=#mediaLogo#
+		</isNotEmpty>
+		where sm.ID = #id#
+	</update>
+	<select id="getSumMediaArticle" parameterClass="java.lang.Long" resultClass="java.lang.Long">
+		select count(1) from ARTICLE ar
+		where ar.MEDIA_ID=#id# and (ar.STATUS=1 or ar.STATUS=0 or ar.STATUS=-1)
+	</select>
+</sqlMap>

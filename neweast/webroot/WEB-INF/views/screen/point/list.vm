@@ -1,0 +1,125 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+    jQuery( function() {
+        $('.date-pick').datePicker( {clickInput : true, startDate : "2010-01-01"});
+	});
+</script>
+<!-- 搜索框 -->
+<form id="pointForm" name="pointForm" action="list.htm" method="post">
+	<div class="search-box"">
+        <table>
+			<tr>
+				<th>事件名称</th>
+				<td>
+					#springBind("query.eventType")
+					<select id="eventType" name="$!{status.expression}">
+						<option value="">请选择</option>
+						#foreach($type in $!eventType)
+                		<option  value="$!{type.value}" #if($!{query.eventType} == $!{type.value} ) selected #end>$!type.desc</option>
+						#end
+					</select>
+                </td> 
+				<td >
+					<input type="submit" name="search" value="查询" class="but-61" />
+                </td>
+			</tr>
+			
+		</table>
+	</div>
+<!-- 搜索框 END -->
+ <div class="basic">
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th rowspan="2" width="8%"></th>
+			<th colspan="2" width="20%">Online pc</th>
+			<th colspan="2" width="20%">Online app</th>
+			<th colspan="2" width="20%">Unit</th>
+			<th rowspan="2" width="20%">操作</th>
+        </tr>
+		<tr >
+			#foreach($chal in $!occChal)
+				<th width="10%">单次</th>
+				<th width="10%">首次</th>
+			#end
+        </tr>
+		#foreach($type in $!eventType)
+		<tr #if($!{query.eventType} !="" && $!{query.eventType}!=$type.value) style="display: none" #end #if($type.index%2==0) class="bg"#end>
+                <td style="text-align:center">$type.desc </td>
+					 <td style="text-align:center">
+				#foreach($rule in $!query.getData())
+						#if($rule.eventType==$type.value && $rule.occurChannel=="online_pc")
+							#if($!rule.basePointType==1)
+								$!rule.getBasePointShow()
+								#else
+								$!rule.getBasePointShow()
+							#end
+						#end
+				#end
+				  </td>
+					 <td style="text-align:center">
+					 #foreach($rule in $!query.getData())
+						#if($rule.eventType==$type.value && $rule.occurChannel=="online_pc")
+							#if($!rule.firstPointType==1)
+								$!rule.getFirstPointShow()
+								#else
+								$!rule.getFirstPointShow()
+							#end
+						#end
+					 #end
+					   </td>
+					 <td style="text-align:center">
+					  #foreach($rule in $!query.getData())
+						#if($rule.eventType==$type.value && $rule.occurChannel=="online_app")
+							#if($!rule.basePointType==1)
+								$!rule.getBasePointShow()
+								#else
+								$!rule.getBasePointShow()
+							#end
+						#end
+					  #end
+					    </td>
+					 <td style="text-align:center">
+					 #foreach($rule in $!query.getData())
+						#if($rule.eventType==$type.value && $rule.occurChannel=="online_app")
+							#if($!rule.firstPointType==1)
+								$!rule.getFirstPointShow() 
+								#else
+								$!rule.getFirstPointShow() 	
+							#end
+						#end
+					 #end
+					  </td>
+					 <td style="text-align:center">
+					 #foreach($rule in $!query.getData())
+						#if($rule.eventType==$type.value && $rule.occurChannel=="unit")
+							#if($!rule.basePointType==1)
+								$!rule.getBasePointShow()
+								#else
+								$!rule.getBasePointShow()
+							#end
+						#end
+					 #end
+					 </td>
+						<td style="text-align:center">  
+					 #foreach($rule in $!query.getData())
+						#if($rule.eventType==$type.value && $rule.occurChannel=="unit")
+							#if($!rule.firstPointType==1)
+								$!rule.getFirstPointShow()
+								#else
+							   $!rule.getFirstPointShow()
+							#end 
+						#end 
+					 #end 
+						</td>	
+					 <td style="text-align:center" class="link-td">
+						<a href="config.htm?type=$type.value&chann=online_pc">编辑</a>
+					 </td>
+				</tr>
+		#end
+    </table>
+ </div>
+ </div>
+ <div class="clear"></div>
+</form>

@@ -1,0 +1,97 @@
+<link href="$!{imageServer}/styles/validate.css" rel="stylesheet" type="text/css" />
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<script type="text/javascript">
+jQuery(function(){
+	$("#replyForm").validate({
+		rules:{
+			content:{required:true,maxlength:170}
+			},
+		messages:{			
+				content:{
+					required:"回复内容不能为空",
+					maxlength:"您输入的内容过长"}				
+		}
+	});
+});
+</script>
+<div class="main-right">
+ 
+            <div class="basic">
+<div class="formbox">
+					
+                    <div class="clear"></div>
+
+<form id="replyForm" name="replyForm" action="$!{appServer}/internalMessage/reply.htm?pid=$!{message.id}&userId=$!{message.userId}" method="post">
+	 <div class="nr">
+                    	<div class="nr-t"></div>
+                        
+                        <div class="nr-c">
+
+<table class="c2">
+<tr>
+	<th>发件人：</th>
+	<td>#springBind("message.addressee")	
+		
+		<input type="hidden" name="addressee" value="$!{message.messageSender}" />
+		<label>$!{message.messageSender}</label>
+</tr>
+	<tr>
+		<th>收件人：</th>
+		<td>
+<!-- 			<input name="messageSender" id="messageSender" type="text" disabled="disabled" value="$!{message.addressee}" />	 -->
+			<label>#if($!{message.addressType}==0)  客户服务   #else $!{message.addressee} #end</label>
+		</td>
+	</tr>
+	<tr>
+		<th>收件时间：</th>
+		<td>
+<!-- 			<input name="replyDate" id="replyDate" type="text" disabled="disabled" value="$!{dateTool.format($!{message.gmtCreate})}" /> -->
+			<label>$!{dateTool.format($!{message.gmtCreate})}</label>
+		</td>
+	</tr>
+	<tr>
+		<th>发件时间：</th>
+		<td>
+			<label>$!{dateTool.format($!{message.sendDate})}</label>
+		</td>
+	</tr>
+	<tr>
+		<th>标题：</th>
+		<td>
+<!-- 			<input name="" id="" type="text" disabled="disabled" value="$!{message.theme}"> -->
+			<label id=>$!{message.theme}</label> 
+		</td>
+	</tr>
+	<tr>
+		<th>内容：</th>
+		<td>
+			<textarea rows="5" cols="43"  disabled="disabled">$!{message.content}</textarea>
+		</td>
+	</tr>
+	<tr>
+		<th><font color="red">*</font>回复内容:</th>
+		<td>#springBind("message.content")
+			<textarea id="content" name="content" rows="5" cols="43" maxlength="170"></textarea>
+		</td>
+	</tr>
+</table>
+ </div>
+                        
+                        <div class="nr-b"></div>
+                    </div>
+<div class="form-but"><!-- 表单按钮区 -->
+                    
+                    	<input type="submit" class="but" value="保存" />
+<!--                     	<input type="button" onclick="location='$!{appServer}/internalMessage/list.htm'" class="but" value="返回" /> -->
+                        <input type="button" id="back" name="back" class="but" value="返回" />
+                    </div><!-- 表单按钮区 END -->
+                                        
+                    <div class="clear"></div>
+                    	
+</form>
+	</div>
+ 
+                <div class="clear"></div>
+                
+            </div>
+</div>

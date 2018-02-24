@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SHOP_DECORATE_CONTENT">
+
+	<typeAlias alias="shopDecorateContent" type="com.skyjoo.neweast.biz.shop.domain.ShopDecorateContent" />
+	
+	<resultMap id="shopDecorateContentResultMap" class="shopDecorateContent">
+		<result column="ID" property="id"/>
+		<result column="DECORATE_ID" property="decorateId"/>
+		<result column="PAGE_TYPE" property="pageType"/>
+		<result column="AREA_TYPE" property="areaType"/>
+		<result column="CONTENT" property="content"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		sdc.ID,
+		sdc.DECORATE_ID,
+		sdc.PAGE_TYPE,
+		sdc.AREA_TYPE,
+		sdc.CONTENT,
+		sdc.GMT_CREATE,
+		sdc.GMT_MODIFY
+	</sql>
+	
+	<select id="selectByDecorateId" parameterClass="Long" resultMap="shopDecorateContentResultMap">
+		select <include refid="columsSql"/>
+		from SHOP_DECORATE_CONTENT sdc
+		where sdc.DECORATE_ID = #decorateId#
+	</select>
+
+	<select id="selectByDecorateIdAndPageAndAreaType" resultMap="shopDecorateContentResultMap">
+		select <include refid="columsSql"/>
+		from SHOP_DECORATE_CONTENT sdc
+		where sdc.DECORATE_ID = #decorateId# and sdc.PAGE_TYPE = #pageType# and	sdc.AREA_TYPE = #areaType#
+	</select>
+	
+	<insert id="insert" parameterClass="shopDecorateContent">
+		<selectKey keyProperty="id" resultClass="long">
+			select SEQ_SHOP_DECORATE_CONTENT.NEXTVAL from DUAL
+		</selectKey>
+		insert into SHOP_DECORATE_CONTENT sdc (<include refid="columsSql"/>)
+		values (#id#, #decorateId#, #pageType#, #areaType#, #content#, sysdate, sysdate)
+	</insert>
+	
+	<update id="update" parameterClass="shopDecorateContent">
+		update 	SHOP_DECORATE_CONTENT sdc
+		set		sdc.GMT_MODIFY = sysdate
+			<isNotEmpty property="content" prepend=",">
+				sdc.CONTENT = #content#
+			</isNotEmpty>
+		where sdc.ID = #id#
+	</update>
+	
+	<delete id="deleteByDecorateId" parameterClass="Long">
+		delete from SHOP_DECORATE_CONTENT sdc
+		where sdc.DECORATE_ID = #decorateId# 
+	</delete>
+	
+	<select id="getShopDecorateContentByUserId" parameterClass="java.util.Map" resultMap="shopDecorateContentResultMap">
+		SELECT
+			A .*
+		FROM
+			SHOP_DECORATE_CONTENT A
+		LEFT JOIN SHOP_DECORATE b ON b."ID" = A .DECORATE_ID
+		LEFT JOIN SHOP c ON c. ID = b.SHOP_ID
+		WHERE
+			c.ACCOUNT_ID = #userId#
+		AND 
+			A .AREA_TYPE = #areaType#
+	</select>
+</sqlMap>

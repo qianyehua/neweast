@@ -1,0 +1,52 @@
+/*scrop-form*/
+.scrop-form{
+	text-align: center;
+}
+.scrop-form .img-container{
+	width: 400px;
+	height: 400px;
+	margin: 0 auto;
+	float:left;
+}
+.scrop-form .show-p{
+	width: 200px;
+	height: 200px;
+	background: #f5f5f5;
+	margin:0px auto;
+	margin-top: 0px;
+	float:right;
+}
+#inputImage{
+	margin: 10px;
+}
+.show-p .test-img{
+	display: block;
+	width:auto;
+	max-width: 180px;
+	max-height: 180px;
+	padding: 10px;
+}
+.btn-submit{
+	background: #F5F5F5;
+	color: #333;
+	border: 1px solid #333;
+	width: 200px;
+	height: 30px;
+	text-align: center;
+	line-height: 30px;
+	margin-top: 20px;
+	outline: none;
+}
+.pic-but{
+	float:right;
+	width:200px;
+	margin-top:130px;
+}
+.pic-but .scro{
+	width:66px; 
+	height:30px; 
+	line-height:30px; 
+	text-align:center;
+	margin-left:10px;
+	margin-right:10px;
+}

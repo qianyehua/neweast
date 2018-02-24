@@ -1,0 +1,33 @@
+<form id="listForm" method="get">
+<div class="basic">
+	<div class="listbox">
+	<table  class="list-table">
+		<tr >
+			<th width="20%">版本类型</th>
+			<th width="20%">版本号</th>
+			<th width="20%">是否强制更新</th>
+			<th width="25%">备注</th>
+			<th width="15%">操作</th>
+        </tr>
+		#if($!{versionList} && ${versionList.size()} > 0)
+			#foreach($version in $versionList)
+				<tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+					<td>#if($!{version.type} == "0")ANDROID#else IOS#end</td>
+					<td>$!{version.versionNum}</td>
+					<td>#if($!{version.isForce} == "s")是#else 否#end</td>
+					<td>$!{version.remark}</td>
+                    <td class="link-td"><a href="edit-init.htm?id=$!{version.id}">修改</a></td>
+                </tr>
+            #end
+		#else
+			<tr>
+				<td colspan="5">
+					<p class="ts">没有结果</p>
+				</td>
+			</tr>
+		#end
+    </table>
+	</div>
+</div>
+<div class="clear"></div>
+</form>

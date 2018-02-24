@@ -1,0 +1,108 @@
+<link href="$!{imageServer}/styles/validate.css" rel="stylesheet" type="text/css" />
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(document).ready(function(){  
+jQuery("#editForm").validate({
+	rules:{
+		name:{
+			required:true,
+			maxlength:33,
+		},
+		ordering:{
+			required:true
+		},
+		description:{
+			maxlength:65
+		},
+	},
+	messages:{
+		name:{required:"请输入功能名",maxlength:"最多33个汉字"},
+		ordering:{required:"请输入排序"},
+		description:{maxlength:"最多输入65个汉字"}
+	}
+});
+});
+</script>
+<div class="main-right" >
+     <div class="basic">
+		<ul class="form-tab">
+            <li class="c">
+                <span>系统功能修改</span>
+            </li>
+        </ul>
+		<div class="formbox">
+            <div class="clear"></div>
+			<form id="editForm" name="editForm" action="edit.htm" method="post">
+				<div class="nr">
+                	<div class="nr-t"></div>
+                    <div class="nr-c">
+						<table class="c2">
+							<input id="id" name="id" style="display:none" value="$!{fun.id}"/>
+							<tr>
+								<th>上级功能：</th>
+								<td><select  id="parentId" name="parentId" class="inp">
+										#foreach($menu in $!list_menus)
+											<option #if(${menu.id}==${fun.parentId}) selected="selected" #end
+													value="${menu.id}">
+													#foreach($str in $!stringUtils.split($!{menu.name},";"))
+														#if($str=="&nbsp")
+															&nbsp;&nbsp;
+															#else
+																$str
+														#end
+													#end				
+											</option>
+										#end
+								</select>	
+								</td>
+							</tr>
+							<tr>
+								<th>功能名：</th>
+								<td>#springBind("fun.name")
+									<input id="name" name="name" maxLength="33" class="inp required" value="$!{fun.name}"/>
+									<font color="red">${status.errorMessage}</font></td>
+							</tr>
+							<tr>
+								<th>路径：</th>
+								<td>#springBind("fun.url")
+									<input type="text" id="url" name="url" maxLength="127" class="inp" value="$!{fun.url}"/>
+									<font color="red">${status.errorMessage}</font></td>
+							</tr>
+                            <tr>
+                            	<th>是否菜单：</th>
+                            	<td> <label>
+                                      <input type="radio" name="isMenu" 
+                            			#if($!{fun.isMenu}==1) checked="checked" #end value="1" />
+                            		  是</label>&nbsp;
+                                      <label>
+                                    <input  name="isMenu" type="radio" value="0" 
+                            			#if($!{fun.isMenu}!=1) checked="checked" #end />  
+                            			否</label></td>
+                            </tr>
+                            <tr>
+                            	<th>#springBind("fun.ordering")
+                            	排序：</th>
+                            	<td><input id="ordering" name="ordering" class="inp  required" value="$!{fun.ordering}"/>	
+                            	<font color="red">${status.errorMessage}</font>
+                            	</td>
+                            </tr>
+                            <tr>
+                            	<th>描述：</th>
+                            	<td>#springBind("fun.description")
+                            	<textarea  class="textarea"  id="description" name="description" maxLength="65">$!{fun.description}</textarea>
+                            	<font color="red">${status.errorMessage}</font></td>
+                            </tr>
+						</table>
+					</div>
+					<div class="nr-b"></div>
+				</div>
+				<div class="form-but"><!-- 表单按钮区 -->
+                	<input type="submit" class="but" value="保存" />
+                	<input type="button" onclick="location.href='list.htm?pid=$!{fun.parentId}'" class="but" value="返回" />
+                </div><!-- 表单按钮区 END -->
+                <div class="clear"></div>
+			</form>
+		</div>
+		<div class="clear"></div>
+	 </div>
+</div>

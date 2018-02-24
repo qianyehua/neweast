@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SUBJECT">
+	<typeAlias alias="subject"
+		type="com.skyjoo.neweast.biz.subject.domain.Subject" />
+	<resultMap id="subjectResult" class="subject">
+		<result column="ID" property="id" />
+		<result column="GMT_CREATE"  property="gmt_Create" />
+		<result column="GMT_MODIFY"  property="gmt_Modify" />
+		<result column="SUBJECT_NAME"  property="subjectName" />
+		<result column="SUBJECT_PIC"  property="subjectPic" />
+		<result column="SUBJECT_ORDER"  property="subjectOrder" />
+	</resultMap>
+  
+  <insert id="insertSubject" parameterClass="subject" >
+    <selectKey keyProperty="id" resultClass="java.lang.Long">
+    select SEQ_SUBJECT.nextval from dual</selectKey>
+    insert into SUBJECT (ID, GMT_CREATE,GMT_MODIFY,SUBJECT_NAME,SUBJECT_PIC,SUBJECT_ORDER)
+    values (#id#,sysdate,sysdate, #subjectName:VARCHAR#, #subjectPic:VARCHAR#,#subjectOrder#)
+  </insert>
+  
+  
+  <select id="getSubject" resultMap="subjectResult">
+		select A.*
+		from SUBJECT A
+		order by SUBJECT_ORDER,GMT_CREATE ASC
+  </select>
+  
+  <select id="searchsbName" resultMap="subjectResult" 
+  		parameterClass="java.lang.String">
+		 select ID,GMT_CREATE,GMT_MODIFY,SUBJECT_NAME,SUBJECT_PIC,SUBJECT_ORDER
+		from SUBJECT
+		where SUBJECT_NAME = #subjectName#
+  </select>
+  <update id="updateSubject" parameterClass="subject">
+  		update SUBJECT 
+    	set GMT_MODIFY = sysdate
+   	   <isNotEmpty property="subjectPic" prepend=",">
+   			SUBJECT_PIC = #subjectPic#
+   		</isNotEmpty>
+   		<isNotEmpty property="subjectOrder" prepend=",">
+   			SUBJECT_ORDER = #subjectOrder#
+   		</isNotEmpty>
+   		<isNotEmpty property="subjectName" prepend=",">
+   			SUBJECT_NAME = #subjectName#
+   		</isNotEmpty>
+   		where ID = #id#
+  </update>
+  
+  <select id="getSubjectById" resultMap="subjectResult" 
+  		parameterClass="Long">
+		 select ID,GMT_CREATE,GMT_MODIFY,SUBJECT_NAME,SUBJECT_PIC,SUBJECT_ORDER
+		from SUBJECT
+		where id = #id#
+  </select>
+  
+  
+  <delete id="removeSubject" parameterClass="subject">
+  	delete from SUBJECT where id=#id#
+  </delete>
+  
+    <select id="getSbListByarticleId" resultMap="subjectResult">
+		select a.*
+		from SUBJECT a
+		left join SUBJECT_X_ARTICLE sm on sm.SUBJECT_ID = a.ID
+		where sm.ARTICLE_ID=#articleId#
+  </select>
+  
+</sqlMap>

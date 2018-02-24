@@ -1,0 +1,106 @@
+<link href="$!{imageServer}/styles/validate.css" rel="stylesheet" type="text/css" />
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<script type="text/javascript">
+jQuery(function(){
+	$("#addForm").validate(
+	{
+		/*自定义验证规则*/
+		rules:{
+			content:{required:true,maxlength:40},
+			ordering:{required:true,number:true,min:1,max:100,digits:true}
+		},
+		/*错误提示位置*/
+		errorPlacement:function(error,element){
+			error.appendTo(element.siblings("span"));
+		}
+	});
+})
+
+function JudgeOptionName()
+        {
+			jQuery.ajax({
+            type:"post",
+            url:"$!{appServer}/checkOptionContent.htm",
+            dataType:"html",
+            data:"content="+jQuery("#content").val()+"&propertyId=$!{propertyId}&categoryId=$!{categoryId}&optionId=0",
+            beforeSend:function(XMLHttpRequest)
+                {
+                   // jQuery("#showResult").text("正在查询");
+                },
+            success:function(msg)
+                {   
+            		jQuery("#showResult").html("");
+                    if(msg == "该选项已经存在"){
+                    	jQuery("#showResult").html(msg);
+                    	jQuery("#sub").attr("disabled", true); 
+                    }
+                    if(msg == "该选项可以使用"){
+                    	jQuery("#sub").attr("disabled", false);
+                    }
+                    jQuery("#showResult").css("color","red");
+                },
+           complete:function(XMLHttpRequest,textStatus)
+                {
+                    
+                },
+          error:function()
+               {
+                   
+               }
+            });
+        }
+</script>
+<div class="main-right" >
+	<div class="basic">
+    	<ul class="form-tab">
+        	<li class="c">
+           		<span>选项增加</span>
+        	</li>
+    	</ul>
+<div class="formbox">
+					
+                    <div class="clear"></div>
+
+<form id="addForm" name="addForm" action="$!{appServer}/art/artPropertyOption/add.htm?propertyId=$!{propertyId}&categoryId=$!{categoryId}&parentId=$!{parentId}" method="post">
+	 <div class="nr">
+                    	<div class="nr-t"></div>
+                        
+                        <div class="nr-c">
+
+<table class="c2">
+<tr>
+	<th><font color="red">*</font>选项内容：</th>
+	<td>#springBind("option.content")
+		<input id="content" name="content" class="inp required" maxlength="40" onkeyup="JudgeOptionName()"/>
+		<span id="showResult"></span>
+	</td>
+</tr>
+
+<tr>
+	<th><font color="red">*</font>序列号：</th>	
+	<td>#springBind("option.ordering")
+	<input id="ordering" name="ordering" class="inp  required" />
+	<span></span>	
+	</td>
+</tr>
+</table>
+ </div>
+                        
+                        <div class="nr-b"></div>
+                    </div>
+<div class="form-but"><!-- 表单按钮区 -->
+                    
+                    	<input id="sub" name="sub" type="submit" class="but" value="保存" />
+                    	<input type="button" onclick="location='$!{appServer}/art/artPropertyOption/list.htm?propertyId=$!{propertyId}&categoryId=$!{categoryId}&parentId=$!{parentId}'" class="but" value="返回" />
+                        
+                    </div><!-- 表单按钮区 END -->
+                                        
+                    <div class="clear"></div>
+                    	
+</form>
+	</div>
+ 
+                <div class="clear"></div>
+                
+            </div>
+</div>

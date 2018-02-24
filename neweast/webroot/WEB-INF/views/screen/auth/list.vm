@@ -1,0 +1,102 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var num = 0;
+    function verify(flag, id) {
+            num ++;
+            if(num <= 1){
+        	    var url = "verify.htm?id=" + id + "&flag=" + flag;
+       		    document.location = url;
+       		}
+        }
+        jQuery( function() {
+        //设置日期
+        $('.date-pick').datePicker( {
+        clickInput : true,
+        startDate : "2010-01-01"
+        });
+        });
+</script>
+<!-- 搜索框 -->
+<div class="search-box">
+    <form id="authInst" name="authInst" action="list.htm" method="post">
+        <table>
+            <tr>
+                <th>机构名称</th> <td>
+                	#springBind("authInst.name")
+                    <input type="text" name="name" value="$!{status.value}" onKeyUp="this.value=this.value.trim()" id="serchName" maxlength="16" class="inp" style="width:180px;">
+                </td>
+                <th>联系电话</th> <td>
+                	#springBind("authInst.tel")
+                    <input type="text" name="tel" value="$!{status.value}" onKeyUp="this.value=this.value.trim()" id="serchTel" maxlength="16" class="inp">
+                </td>
+                <th>登录帐号</th> <td>
+                	#springBind("authInst.account")
+                    <input type="text" name="account" value="$!{status.value}" onKeyUp="this.value=this.value.trim()" id="serchAccountl" maxlength="16" class="inp">
+                </td>
+        </tr><tr>
+                <th>录入日期</th>
+                <td>
+					#springBind("authInst.startDate")
+					<input type="text" id="startDate" name="startDate" value="$!{status.value}" readonly="readonly" size="10" class="date-pick" style="width:85px;"/>
+                    -
+					#springBind("authInst.endDate")
+                    <input type="text" id="endDate" name="endDate" value="$!{status.value}" readonly="readonly"  size="10" class="date-pick" style="width:85px;"/>
+                </td>
+                 <th>
+                    <input type="submit" name="search" value="查询" class="but-61" />
+				</th>
+                 <td>
+                 	<input type="reset" value="重置" onclick="window.location = 'list.htm'" class="but-62"/>
+                 </td>
+		</tr>
+</table>
+</form>
+</div>
+<!-- 搜索框 END -->
+
+<div class="basic">
+    <div class="tool">
+        <span>
+            <a href="add-init.htm" class="bt_add"  hidefocus="true" >新增</a>
+        </span>
+    </div>
+    <div class="listbox" >
+        <table class="list-table" >
+            <tr>
+                <th>机构ID</th>
+                <th>机构名称</th>
+                <th>联系电话</th>
+                <th>联系地址</th>
+                <th>登录账号</th>
+                <th>录入日期</th>
+                <th style="width:180px">操作</th>
+            </tr>
+            #if($!{page} && ${page.totalCount} > 0)
+                #foreach($auth in $page.getData())
+                    <tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+                            <td>$!{auth.id}</td>
+                            <td>$!{auth.name}</td>
+                            <td>$!{auth.tel}</td>
+                            <td>$!{auth.address}</td>
+                            <td>$!{auth.account}</td>
+                            <td>$dateTool.format('yyyy-MM-dd HH:mm:ss',$!{auth.gmtCreate})</td>
+                            <td class="link-td">
+                                <a href="edit-init.htm?id=$!{auth.id}">修改</a>
+                                <a href="remove.htm?id=$!{auth.id}" onClick="return confirm('确定删除该用户吗？');" name="delete">删除</a>
+								<a href="resetpw.htm?id=$!{auth.id}" onClick="return confirm('确定重置该用户密码吗？');" name="resetpw">重置密码</a>
+                            </td>
+                    </tr>
+                #end
+                #else
+                    <tr>
+                        <td>
+                            <p class="ts">没有结果</p>
+                        </td>
+                    </tr>
+            #end
+        </table>
+        #pager($page, "authInst")
+    </div>
+    <div class="clear"></div>
+</div>

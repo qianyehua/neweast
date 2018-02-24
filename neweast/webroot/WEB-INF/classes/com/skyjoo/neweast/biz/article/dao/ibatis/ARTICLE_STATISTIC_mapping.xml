@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ARTICLE_STATISTIC">
+
+	<typeAlias alias="articleStatistic"
+		type="com.skyjoo.neweast.biz.article.domain.ArticlStatistic" />
+
+	<resultMap id="articleStatisticResultMap" class="articleStatistic">
+		<result column="ID" property="id" />
+		<result column="ARTICLE_TITLE" property="title" />
+		<result column="MEDIA_NAME" property="media" />
+		<result column="BROWSE_COUNT" property="borwseCount" />
+		<result column="PRAISE_COUNT" property="praiseCount" />
+		<result column="COMMENT_COUNT" property="commentCount" />
+		<result column="GMT_CREATE" property="gtmCreate" />
+	</resultMap>
+
+
+	<select id="Count" parameterClass="articleStatistic"
+		resultClass="java.lang.Integer">
+		select count(1) from ARTICLE ar
+		where ar.STATUS=1
+	</select>
+
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum
+		&gt;= #beginIndex#
+	</sql>
+
+	<select id="getStatistic" resultMap="articleStatisticResultMap">
+		<include refid="pageBeginSql" />
+		select
+		ar.ID,ar.ARTICLE_TITLE,sm.MEDIA_NAME,
+		ar.BROWSE_COUNT,ar.PRAISE_COUNT,ar.COMMENT_COUNT,
+		ar.GMT_CREATE
+		from
+		ARTICLE ar left join SUBJECT_MEDIA sm on ar.MEDIA_ID=sm.id
+		where ar.STATUS=1
+		order by
+		ar.gmt_create desc
+		<include refid="pageEndSql" />
+	</select>
+
+	<select id="getSubjectById" parameterClass="java.lang.Long"
+		resultClass="java.lang.String">
+		select sub.SUBJECT_NAME 
+		from SUBJECT_X_ARTICLE sxa left join
+		SUBJECT sub on sxa.SUBJECT_ID=sub.ID
+		 where sxa.ARTICLE_ID=#id#
+	</select>
+
+</sqlMap>

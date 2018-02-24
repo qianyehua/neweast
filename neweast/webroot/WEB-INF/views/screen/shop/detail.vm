@@ -1,0 +1,79 @@
+<script >
+jQuery(function() {
+	$('img').click(function(){
+		window.location.href = $(this).attr('src');
+	});
+});
+</script>
+<style >
+	img{width:200px;cursor:pointer;}
+</style>
+<div class="basic">
+    <ul class="form-tab">
+        <li class="c">
+            <span>店铺详情</span>
+        </li>
+    </ul>
+    <div class="formbox">
+        <div class="clear"></div>
+        <div class="nr">
+            <div class="nr-t"></div>
+            <div class="nr-c">
+                <table class="c2">
+                    <tr >
+                        <th>店铺名称：</th>
+                        <td>$!{shop.name}</td>
+                    </tr>
+					<tr >
+						<th>店铺Logo： </th>
+						<td><a src="$uploadServer/$!{shop.logoPath}" target="_blank" ><img src="$uploadServer/$!{shop.logoPath}@!120_120.img" /></a>
+						</td>
+                    </tr>
+					<tr >
+						<th>店铺简介：</th>
+						<td>$!{shop.description}</td>
+                    </tr>
+					<tr >
+						<th>联系地址：</th>
+						<td>
+							$!enumUtils.getProvinceCityName($!{shop.province}, $!{shop.city}, '省', '市')&nbsp;$!{shop.address}</td>
+                    </tr>
+					<tr >
+						<th>联系手机：</th>
+						<td>$!{shop.mobile}</td>
+                    </tr>
+					<tr >
+						<th>总销量：</th>
+						<td>$!{shop.salesVolume}</td>
+                    </tr>
+					<tr>
+						<th>状态：</th>
+						<td>$!{enumUtils.getShopStatus($shop.status)}#if($!shop.isClosed())&nbsp;&nbsp;原因：$!shop.memo#end</td>
+                    </tr>
+					
+					<tr>
+						<th>营业时间：</th>
+						<td>
+							#foreach($hour in $!{shop.businessHours})
+								$!enumUtils.getShopBizHourType($hour.type): $!dateTool.format('HH:mm', $hour.gmtStart) &nbsp;-&nbsp; $!dateTool.format('HH:mm', $hour.gmtEnd)<br />
+							#end
+						</td>
+                    </tr>
+					<tr>
+						<th>店铺首页链接：</th>
+						<td>
+							<a href="$!{blueflyServer}/shop/view.htm?id=$!{shop.id}"  target="_blank">$!{shop.name}</a>
+						</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="nr-b"></div>
+        </div>
+    </div>
+    <!-- 表单按钮区-->
+    <div class="form-but">
+        <input type="button" onclick="location.href='list.htm'" class="but" value="返回" />
+    </div>
+    <!-- 表单按钮区 END -->
+    <div class="clear"></div>
+</div>

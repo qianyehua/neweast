@@ -1,0 +1,79 @@
+<link href="$!{imageServer}/styles/validate.css" rel="stylesheet" type="text/css" />
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<script type="text/javascript">
+jQuery(function() {
+	jQuery("#editForm").validate({
+		rules:{
+			name : {
+				required : true,
+				remote: {
+					type : "POST",
+					url : "$!{appServer}/portal/helpcategory/checkcat.htm",
+					dataType: "json",
+					data:{
+					 parentId: function() {return $("#parentId").val();},
+					 name: function() {return $("#name").val();},
+					 id : function() {return $("#id").val();}
+					}
+				}
+			} ,
+			ordering : {
+				required : true,
+				digits : true ,
+				min : 0 ,
+			}
+		},
+		messages:{
+			name : {
+				required : "请输入标题",
+				remote : "类目名称已存在"
+			} ,
+			ordering : {
+				required : "请输入序号" ,
+				digits : "序号必须是整数" ,
+				min : "序号不能小于0" ,
+			}
+		}
+	});
+});
+</script>
+<div class="main-right" >
+            <div class="basic">
+<div class="formbox">
+					
+                    <div class="clear"></div>
+
+<form id="editForm" name="editForm" action="edit.htm" method="post">
+	 <div class="nr">
+                    	<div class="nr-t"></div>
+        <input id="id" name="id" style="display:none" value="$!{cat.id}"/>
+		<input id="parentId" name="parentId" style="display:none" value="$!{cat.parentId}"/>
+                        <div class="nr-c">
+<table class="c2">
+<tr>
+	<th><span style="color:red">*</span>标题：</th>
+	<td>#springBind("cat.name")
+	<input id="name" name="name" class="inp required" maxLength="42" value="$!{cat.name}"/>
+	<font color="red">${status.errorMessage}</font></td>
+</tr>
+<tr>
+	<th>#springBind("cat.ordering")
+	<span style="color:red">*</span>排序：</th>
+	<td><input id="ordering" name="ordering" class="inp  required"  maxLength="3" value="$!{cat.ordering}"/>	
+	<font color="red">${status.errorMessage}</font>
+	</td>
+</tr>
+</table>
+ </div>
+    <div class="nr-b"></div>
+        </div>
+			<div class="form-but"><!-- 表单按钮区 -->
+                 <input type="submit" class="but" value="保存" />
+                 <input type="button" class="but" value="返回" onclick="history.back(-1)"/>
+			</div><!-- 表单按钮区 END -->
+			<div class="clear"></div>
+	</form>
+	</div>
+	<div class="clear"></div>
+  </div>
+</div>

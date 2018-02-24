@@ -1,0 +1,3 @@
+这个是一份邮箱校验邮件
+
+<a href="$!{appServer}/open/register_check.htm?$!{key}">点击进行验证</a>

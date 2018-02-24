@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="CREDIT_APPRAISE">
+
+	<typeAlias alias="creditAppraise" type="com.skyjoo.neweast.biz.account.domain.CreditAppraise" />
+	<resultMap id="creditAppraiseResultMap" class="creditAppraise">
+		<result column="ID" property="id"/>
+		<result column="SELLER_ID" property="sellerId"/>
+		<result column="ART_ID" property="artId"/>
+		<result column="BUYER_ID" property="buyerId"/>
+		<result column="APPRAISE_LEVEL" property="appraiseLevel"/>
+		<result column="APPRAISE_CONTANT" property="appraiseContant"/>
+		<result column="SCORE" property="score"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+		<result column="ORDER_ID" property="orderId"/>
+		<result column="OPERATOR_ID" property="operatorId"/>
+	</resultMap>
+
+	<sql id="columsSql">
+		ca.ID,
+		ca.SELLER_ID,
+		ca.ART_ID,
+		ca.BUYER_ID,
+		ca.APPRAISE_LEVEL,
+		ca.APPRAISE_CONTANT,
+		ca.SCORE,
+		ca.GMT_CREATE,
+		ca.GMT_MODIFY,
+		ca.ORDER_ID,
+		ca.OPERATOR_ID
+	</sql>
+
+	<select id="selectByUserId" parameterClass="long" resultMap="creditAppraiseResultMap">
+		select <include refid="columsSql"/>
+		from CREDIT_APPRAISE ca
+		where (ca.SELLER_ID = #userId# or ca.BUYER_ID = #userId#) and ca.OPERATOR_ID != #userId#
+	</select>
+	
+</sqlMap>

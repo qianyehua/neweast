@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="publicNote">
+	<typeAlias alias="publicNote"
+		type="com.skyjoo.neweast.biz.portal.domain.common.PublicNote" />
+	<resultMap id="publicNoteResult" class="publicNote">
+		<result column="ID" property="id" />
+		<result column="GMT_CREATE" property="gmtCreate" />
+		<result column="GMT_MODIFY" property="gmtModified" />
+		<result column="TITLE" property="title" />
+		<result column="CONTENT" property="content" />
+		<result column="NOTICE_TYPE" property="type" />
+		<result column="NOTICE_TIME" property="noticeTime"/>
+		<result column="STATUS" property="status" />
+		<result column="OPERATOR" property="operator" />
+		<result column="MEMO" property="memo" />
+	</resultMap>
+
+	<select id="getPublicNote" resultMap="publicNoteResult"
+		parameterClass="Long">
+		 select ID, GMT_CREATE, GMT_MODIFY, TITLE, CONTENT, NOTICE_TYPE,
+		 NOTICE_TIME,STATUS, OPERATOR,MEMO
+		from PUBLIC_NOTICE
+		where ID = #commPublicNoteId#
+  </select>
+
+
+	<select id="getPaginatedPublicNote" parameterClass="publicNote"
+		resultMap="publicNoteResult">
+		select *
+		from (
+		select t1.* , rownum linenum
+		from (
+		select S.ID, S.GMT_CREATE, S.GMT_MODIFY, S.TITLE, S.CONTENT, S.NOTICE_TYPE,
+		S.NOTICE_TIME,S.STATUS, S.OPERATOR, S.MEMO
+		from PUBLIC_NOTICE S
+		<dynamic prepend="where">
+		<isNotEmpty prepend="and" property="type">
+			S.NOTICE_TYPE = #type#
+		</isNotEmpty>
+        <isNotEmpty prepend="and" property="status">
+			S.STATUS = #status#
+        </isNotEmpty>
+		<isNotEmpty prepend="and" property="startDate">
+            <![CDATA[ S.NOTICE_TIME >= to_date(#startDate#,'yyyy-MM-dd') ]]>
+        </isNotEmpty>
+        <isNotEmpty prepend="and" property="endDate">
+            <![CDATA[ S.NOTICE_TIME <= to_date(#endDate#,'yyyy-MM-dd')+1 ]]>
+        </isNotEmpty>
+		</dynamic>
+			order by
+			    	S.GMT_MODIFY desc
+		) t1
+			where rownum &lt;= #endIndex#) t2
+		where t2.linenum &gt;= #beginIndex#
+	</select>
+
+  <insert id="addPublicNote" parameterClass="publicNote" >
+    <selectKey keyProperty="id" resultClass="java.lang.Long">
+    select SEQ_PUBLIC_NOTICE.nextval from dual
+    </selectKey>
+    insert into PUBLIC_NOTICE (ID, GMT_CREATE, GMT_MODIFY, TITLE, CONTENT, NOTICE_TYPE,
+       STATUS, OPERATOR)
+    values (#id#,sysdate,sysdate, #title:VARCHAR#, #content:VARCHAR#,
+      #type:number#, 0, #operator:VARCHAR#)
+  </insert>
+
+
+  <select id="getPublicNoteCount" parameterClass="publicNote" resultClass="int" >
+    select count(1) from PUBLIC_NOTICE S
+    <dynamic prepend="where">
+					<isNotEmpty prepend="and" property="type">
+						S.NOTICE_TYPE = #type#
+                     </isNotEmpty>
+                     <isNotEmpty prepend="and" property="status">
+						S.STATUS = #status#
+                     </isNotEmpty>
+				     <isNotEmpty prepend="and" property="startDate">
+                          <![CDATA[ S.NOTICE_TIME >= to_date(#startDate#,'yyyy-MM-dd') ]]>
+                      </isNotEmpty>
+                      <isNotEmpty prepend="and" property="endDate">
+                          <![CDATA[ S.NOTICE_TIME <= to_date(#endDate#,'yyyy-MM-dd')+1 ]]>
+                      </isNotEmpty>
+				</dynamic>
+  </select>
+
+    <update id="verifyPublicNote" parameterClass="publicNote" >
+     update PUBLIC_NOTICE
+      Set
+      STATUS = #status#,
+      OPERATOR = #operator#,
+      GMT_MODIFY = sysdate,
+      NOTICE_TIME = sysdate,
+      MEMO = #memo#
+      Where
+      ID = #id#
+  </update>
+  	<update id="removePublicNote" parameterClass="publicNote">
+  	  update PUBLIC_NOTICE
+      Set
+      STATUS = 3,
+      OPERATOR = #operator#,
+      GMT_MODIFY = sysdate
+      Where
+      ID = #id#
+  	</update>
+</sqlMap>

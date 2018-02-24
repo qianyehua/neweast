@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ARTICLE">
+
+	<typeAlias alias="article"
+		type="com.skyjoo.neweast.biz.article.domain.Article" />
+	<typeAlias alias="articleCheckQuery"
+		type="com.skyjoo.neweast.biz.article.domain.query.ArticleCheckQuery" />
+	
+	<resultMap id="articleResultMap" class="article">
+		<result column="ID" property="id" />
+		<result column="ARTICLE_TITLE" property="articleTitle" />
+		<result column="ARTICLE_ABSTRACT" property="articleAbstract" />
+		<result column="ARTICLE_PIC" property="articlePic" />
+		<result column="TRANSITION_PIC" property="transitionPic" />
+		<result column="MEDIA_ID" property="mediaId" />
+		<result column="MEDIA_NAME" property="mediaName" />
+		<result column="VISIT_TYPE" property="visitType" />
+		<result column="ORIGINAL_URL" property="originalUrl" />
+		<result column="LOCAL_URL" property="localUrl" />
+		<result column="UR_CODE" property="urCode" />
+		<result column="COMMENT_COUNT" property="commentCount" />
+		<result column="BROWSE_COUNT" property="browseCount" />
+		<result column="PRAISE_COUNT" property="praiseCount" />
+		<result column="STATUS" property="status" />
+		<result column="MEMO" property="memo" />
+		<result column="GMT_CREATE" property="gmtCreate" />
+		<result column="GMT_MODIFY" property="gmtModify" />
+	</resultMap>
+	
+
+	<sql id="pageCondition">
+		where
+			a.STATUS != -2
+			<isNotEmpty property="startDate">
+				and a.GMT_CREATE &gt;=
+				#startDate#
+			</isNotEmpty>
+			<isNotEmpty property="endDate">
+				and a.GMT_CREATE &lt;=
+				#endDate# + 1
+			</isNotEmpty>
+			<isNotEmpty property="status">
+				and a.STATUS = #status#
+			</isNotEmpty>
+			<isNotEmpty property="mediaId">
+				and sm.ID = #mediaId#
+			</isNotEmpty>
+			<isNotEmpty property="subjectId">
+				and a.ID in (select
+				ARTICLE_ID from SUBJECT_X_ARTICLE sxa where sxa.SUBJECT_ID =
+				#subjectId#)
+			</isNotEmpty>
+			<isNotEmpty property="articleTitle">
+				and a.ARTICLE_TITLE like
+				'$articleTitle$%'
+			</isNotEmpty>
+	</sql>
+
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum
+		&gt;= #beginIndex#
+	</sql>
+
+	<!-- 分页显示文章相关信息 -->
+	<select id="getPaginatedArticleCheckQuery" resultClass="articleCheckQuery"
+		parameterClass="articleCheckQuery">
+		<include refid="pageBeginSql" />
+		select a.ID,a.ARTICLE_TITLE as articleTitle,sm.MEDIA_NAME as
+		mediaName,
+		a.STATUS as status,a.GMT_CREATE as gmtCreate,sm.VISIT_TYPE as visitType
+		from ARTICLE a
+		left join SUBJECT_MEDIA sm on sm.ID = a.MEDIA_ID
+		<include refid="pageCondition" />
+		order by a.GMT_CREATE desc
+		<include refid="pageEndSql" />
+	</select>
+
+	<select id="getArticleCount" resultClass="java.lang.Integer"
+		parameterClass="articleCheckQuery">
+		select count(1) from ARTICLE a
+		left join SUBJECT_MEDIA sm on sm.ID =
+		a.MEDIA_ID
+		<include refid="pageCondition" />
+	</select>
+
+	<insert id="addArticle" parameterClass="article">
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+			select
+			SEQ_ARTICLE.nextval from dual
+		</selectKey>
+		INSERT INTO
+		ARTICLE(ID,ARTICLE_TITLE,ARTICLE_ABSTRACT,ARTICLE_PIC,TRANSITION_PIC,MEDIA_ID,
+		ORIGINAL_URL,LOCAL_URL,UR_CODE,COMMENT_COUNT,BROWSE_COUNT,PRAISE_COUNT,STATUS,MEMO,GMT_CREATE,GMT_MODIFY)
+		VALUES
+		(#id#,#articleTitle#,#articleAbstract#,#articlePic#,#transitionPic#,#mediaId#,
+		#originalUrl#,#localUrl#,#urCode#,0,0,0,#status#,#memo#,sysdate,sysdate)
+	</insert>
+	
+	
+	<select id="getArticleById" resultMap="articleResultMap" parameterClass="long">
+	select
+		 T.* ,sm.MEDIA_NAME,sm.VISIT_TYPE
+       from ARTICLE T
+       left join SUBJECT_MEDIA sm on sm.ID = T.MEDIA_ID
+      where T.ID = #id#   
+	</select>	
+	
+	<select id="getArticleXSujectCount" resultClass="java.lang.Integer" parameterClass="long">
+		select
+			count(1) 
+       from ARTICLE T		
+       left join SUBJECT_X_ARTICLE sm on sm.ARTICLE_ID = T.ID
+      where sm.SUBJECT_ID =#subjectId# and (T.STATUS &lt;-2  or T.STATUS &gt;-2  )
+	</select>	
+	<update id="deleteArticleByIds">
+		update ARTICLE set status = -2
+		where ID in
+		<iterate conjunction="," open="(" close=")">
+			#[]#
+		</iterate>
+	</update>
+	
+	<update id="updateArticle" parameterClass="article">
+		UPDATE ARTICLE
+		set GMT_MODIFY = sysdate
+		 <isNotEmpty property="articleTitle" prepend=",">
+   			ARTICLE_TITLE = #articleTitle#
+   		</isNotEmpty>
+   		  <isNotEmpty property="articleAbstract" prepend=",">
+   			ARTICLE_ABSTRACT = #articleAbstract#
+   		</isNotEmpty>
+   		  <isNotEmpty property="articlePic" prepend=",">
+   			ARTICLE_PIC = #articlePic#
+   		</isNotEmpty>
+   		  <isNotEmpty property="transitionPic" prepend=",">
+   			TRANSITION_PIC = #transitionPic#
+   		</isNotEmpty>
+   		 <isNotEmpty property="originalUrl" prepend=",">
+   			ORIGINAL_URL = #originalUrl#
+   		</isNotEmpty>
+   		 <isNotEmpty property="localUrl" prepend=",">
+   			LOCAL_URL = #localUrl#
+   		</isNotEmpty>
+	 	<isNotEmpty property="status" prepend=",">
+   			STATUS = #status#
+   		</isNotEmpty>	
+   		<isNotEmpty property="urCode" prepend=",">
+   			UR_CODE = #urCode#
+   		</isNotEmpty>	
+		where ID = #id#
+	</update>
+	
+	<update id="updateCommentCount" parameterClass="long">
+		UPDATE ARTICLE
+		SET COMMENT_COUNT = (SELECT COUNT (1) FROM ARTICLE_COMMENT
+		WHERE
+		ARTICLE_ID = #articleId#
+		)WHERE  ID = #articleId#	
+	</update>
+	
+	<delete id="removeArticleBysubjectId" >
+		DELETE	FROM ARTICLE  WHERE ID IN (
+		SELECT ARTICLE_ID
+		FROM	SUBJECT_X_ARTICLE
+		WHERE	SUBJECT_ID = #id#
+		)
+	</delete>
+	
+</sqlMap>

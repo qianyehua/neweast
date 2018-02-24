@@ -1,0 +1,111 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/validate.css" />
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<script src="$!{imageServer}/scripts/subject.js"></script>
+<script type="text/javascript">
+$('document').ready(function() {
+	var brow=$.browser;
+	if(brow.msie){
+		jQuery("#subjectPic").after("<span color='gray'>只能上传小于1M的图片</span>");
+	}
+	jQuery.validator.addMethod("fileSize", function(value,element,params) {
+			if(brow.msie){
+				return true;
+			}else{
+				size = parseInt(params)*1024*1024;
+				var byteSize = element.files[0].size;
+				if(this.optional(element)||(byteSize>size)){
+					return false;
+				}else{
+					return true;
+				}
+			}
+	}, "图片必须小于1M");
+	var form = $("#addForm");
+	form.validate({
+		rules:{
+			subjectName : {
+				required : true
+			} ,
+			file : {
+				required : true,
+				accept : 'jpg|jpeg|png|bmp|gif|JPG|JEPG|PNG|BMP|GIF',
+				fileSize : 1
+				
+			},
+			subjectOrder:{
+				required : true
+			}
+		},
+		messages:{
+			subjectName : {
+				required : "请输入专题名称"
+			} ,
+			file : {
+				required : "请添加图片" ,
+				accept : "格式必须为jpg/jpeg,png,gif,bmp",
+			},
+			subjectOrder:{
+				required : "请输入图片排序序号"
+			}
+		}
+	});	
+	//防止双击重复提交
+	$("#but").click(function () {
+
+	if(form.valid()){
+		$("#but").attr("disabled","true"); //设置变灰按钮  
+    	form.submit();//提交表单  
+	}
+    })
+});	
+</script>	
+<div class="basic">
+	     <ul class="form-tab">
+            <li class="c">
+                <span>专题创建</span>
+            </li>
+        </ul>
+	<div class="formbox">
+		<div class="clear"></div>
+		<form id="addForm" name="addForm" action="add.htm" method="post" enctype="multipart/form-data">
+			<div class="nr">
+				<div class="nr-t"></div>
+				<div class="nr-c">
+					<table class="c2">
+						<tr>
+							<th><span style="color:red">*</span>专题名称：</th>
+							<td>
+								<input name="subjectName" id="subjectName" class="inp" maxlength="6" />
+								<p  class="focus-p" style="display:none">
+									<a style="color:red">该专题名已存在</a>							
+								</p>
+                                </span>
+							</td>
+						</tr>
+						<tr>
+							<th><span style="color:red">*</span>上传图片：</th>
+							<td>
+								<input  id="subjectPic" name="file" accept="*.jpeg,*.bmp,*.png,*.jpg"  type="file" />
+							</td>
+						</tr>
+						<tr>
+							<th><span style="color:red">*</span>排序：</th>
+							<td>
+								<input  id="subjectOrder" name="subjectOrder"  type="text"  maxlength="2" onkeyup="value=value.replace(/[^\d]/g,'')"/>
+							</td>
+						</tr>
+						<tr><th></th><td>图片格式仅支持：jpg | jpeg | png | gif| bmp|等</td></tr>
+						<tr><th></th><td>图片大小仅支持：1M以内</td></tr>
+					</table>
+				</div>
+				<div class="nr-b"></div>
+			</div>
+			<div class="form-but"><!-- 表单按钮区 -->
+				<input id="but" type="button" class="but" value="保存" />
+				<input type="button" class="but" value="返回" onclick="history.back(-1)"/>
+			</div><!-- 表单按钮区 END -->
+			<div class="clear"></div>
+		</form>
+	</div>
+	<div class="clear"></div>
+</div>

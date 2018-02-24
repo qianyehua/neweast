@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ARTISE_TREND">
+	<typeAlias alias="artiseTrend"
+		type="com.skyjoo.neweast.biz.artise.domain.ArtiseTrend" />
+
+	
+	<insert id="insertTrend" parameterClass="artiseTrend">	
+		<selectKey keyProperty="id" resultClass="long">
+			select
+			SEQ_ARTISE_TREND.NEXTVAL from DUAL
+		</selectKey>
+		insert into ARTISE_TREND
+		(ID,USER_ID,ARTISE_ID,OBJECT_TYPE,OBJECT_ID,TITLE,GMT_CREATE,GMT_MODIFY)
+		values (#id#, #userId#,#artiseId#,#objectType#,#objectId#,#title#,sysdate,sysdate)
+	</insert>	
+	
+	<select id="getArtiseTrendCount" parameterClass="Long" resultClass="int">
+		SELECT Count(ID) FROM ARTISE_TREND WHERE OBJECT_TYPE = 1 AND OBJECT_ID = #artId#
+	</select>
+	
+</sqlMap>

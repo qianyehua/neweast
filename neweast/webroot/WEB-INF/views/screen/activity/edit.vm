@@ -1,0 +1,177 @@
+<script src="$!{imageServer}/scripts/jquery.validate.js" type="text/javascript"></script>
+<script type="text/javascript">
+jQuery(function() {
+	var obj = $('#oldImgList').html();
+
+ 	$("#fileButton").click(function(){
+		$("#inputImage").trigger("click");
+	});
+	
+	$('#inputImage').change(function () {
+		var files = this.files;
+		if(files.length > 9){
+			 $(".err-p").html("最多选择9张图片，请重新选择！").show();
+    		  setTimeout(function(){
+    			  $(".err-p").hide();
+    		  },5000);
+			$('#inputImage').val("");
+		}
+		for(var i = 0;i<files.length;i++){
+			var file = files[i];
+			if(file.size > 5*1024*1024){  //大于5m
+ 		   		$(".err-p").html("所选图片有大于5M的！").show();
+    		  	setTimeout(function(){
+    				$(".err-p").hide();
+    			},5000);
+			  	$('#inputImage').val("");
+			  	return;
+    	  	}
+		}
+		
+		if($('#inputImage').val() == ""){//如果选择的图片值为空，就显示默认图片
+			$('#oldImgList').html(obj);
+		}else{//否则将原图片隐藏，并设置为disabled
+			$('#oldImgList').html("");
+		}
+		var html = "<th></th><td>";
+		for(var i = 0;i<files.length;i++){
+			var file = files[i];
+			html += "<p style='margin-bottom:3px'><input name='imgOrder' size='3' maxlength='1' value='"+ (i+1) + "' onkeyup='value=value.replace(/[^\\d]/g,&apos;&apos;)'/>";
+			html += file.name + "</p>";
+		}
+		html += "</td>";
+		$("#imgList").html(html);
+		setMainHeight();
+	});
+	
+	jQuery.validator.addMethod("orderNumber",function(value,element){
+		 	return this.optional(element) || value != 0 ;
+		},'排序不能为0！');
+	
+	jQuery("#editForm").validate({
+		rules:{
+			name : {
+				required : true,
+				maxlength : 50
+			} ,
+			introduction : {
+				required : true,
+				maxlength : 100
+			} ,
+			ordering : {
+				required : true,
+				orderNumber : true,
+				maxlength : 3
+			},
+			imgOrder : {
+				required : true,
+				orderNumber : true,
+				maxlength : 1
+			} 
+		},
+		messages:{
+			name : {
+				required : "请输入活动名称",
+				maxlength : "活动名称不能超过50个字符"
+			} ,
+			introduction : {
+				required : "请输入活动描述",
+				maxlength : "活动描述不能超过100个字符"
+			} ,
+			ordering : {
+				required : "请输入活动排序",
+				maxlength : "活动排序最大为999"
+			} ,
+			imgOrder : {
+				required : "请输入上传图片的排序",
+				maxlength : "图片排序最大为9"
+			}
+		}
+	});
+
+	//防止双击重复提交
+	$("#but").click(function () {
+    	if($("#editForm").valid()){
+    		$("#but").attr("disabled","true"); //设置变灰按钮  
+			$("#editForm").submit();//提交表单  
+    	}
+    });
+});
+</script>
+<div class="main-right">
+    <div class="basic">
+        <ul class="form-tab">
+            <li class="c">
+                <span>编辑活动</span>
+            </li>
+        </ul>
+		<div class="formbox">
+			<div class="clear"></div>
+			<form id="editForm" name="editForm" action="edit.htm" method="post" enctype="multipart/form-data">
+			<div class="nr">
+				<div class="nr-t"></div>
+				<div class="nr-c">
+					<table class="c2">
+						<tr>
+							#springBind("activity.id")
+							<input name="id" id="id" style="display:none" value="$!{status.value}"/>
+							<th><span style="color:red">*</span>活动名称：</th>
+							<td>#springBind("activity.name")
+								<input name="name" id="name" size="50" maxlength="50" value="$!{status.value}"/>
+								<label for="${status.expression}" generated="true" class="error">$!{status.errorMessage}</label>
+							</td>
+						</tr>
+						<tr>
+							<th><span style="color:red">*</span>活动描述：</th>
+							<td>#springBind("activity.introduction")
+								<textarea  class="textarea"  id="introduction" name="introduction" maxLength="100">$!{status.value}</textarea>
+								<label for="${status.expression}" generated="true" class="error">$!{status.errorMessage}</label>
+							</td>
+						</tr>
+						<tr>
+							<th><span style="color:red">*</span>排序：</th>
+							<td>#springBind("activity.ordering")
+								<input name="ordering" id="ordering" size="10" maxlength="3" value="$!{status.value}" onkeyup="value=value.replace(/[^\d]/g,'')"/>
+								<label for="${status.expression}" generated="true" class="error">$!{status.errorMessage}</label>
+							</td>
+						</tr>
+						<tr>
+							<th>链接：</th>
+							<td>
+								$!{blueflyServer}/activity/detail.htm?id=$!{activity.id}
+							</td>
+						</tr>
+						<tr>
+							<th><span style="color:red">*</span>上传活动图片：</th>
+							<td>
+								<input id="fileButton" type="button" value="选择文件"/>
+								<label for="imgOrder" generated="true" class="error">$!{status.errorMessage}</label>
+								<p class="err-p">请上传图片</p>
+								<input style="display:none" type="file" class="sr-only" id="inputImage" name="fileList" accept=".jpg,.jpeg,.png,.gif,.bmp" multiple="multiple">
+							</td>
+						</tr>
+						<tr id="oldImgList">
+							<th></th><td>
+							#foreach($img in $activity.imgList)
+							<p style='margin-bottom:3px'><input name="imgOrder" size="3" maxlength="1" value="$!{velocityCount}" onkeyup="value=value.replace(/[^\d]/g,'')"/>
+							$!{img}<input type="hidden" name="img" value="$!{img}"/>
+							<a href="${uploadServer.get($!{img})}" title="点击看大图" target="_blank">
+							<img src="${uploadServer.get($!{img})}?x-oss-process=image/resize,m_pad,h_100,w_100" width="20" height="20"></a></p>
+							#end</td>
+						</td>
+						<tr id="imgList">
+						</tr>
+						<tr><th></th><td>图片格式仅支持：jpg | jpeg | png | gif| bmp</td></tr>
+						<tr><th></th><td>图片大小仅支持：5M以内</td></tr>
+					</table>
+				</div>
+			</div>
+			<div class="form-but"><!-- 表单按钮区 -->
+				<input id="but" type="button" class="but" value="保存" />
+				<input type="button" class="but" value="返回" onclick="window.location = 'list.htm'"/>
+			</div><!-- 表单按钮区 END -->
+			</form>
+			<div class="clear"></div>
+		</div>
+	</div>
+</div>

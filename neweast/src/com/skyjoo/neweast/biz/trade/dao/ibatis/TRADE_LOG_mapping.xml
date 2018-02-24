@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="TRADE_LOG">
+
+	<typeAlias alias="tradeLog" type="com.skyjoo.neweast.biz.trade.domain.TradeLog"/>
+	<resultMap id="tradeLogResultMap" class="tradeLog" >
+		<result column="ID" property="id"/>
+		<result column="ORDER_ID" property="orderId"/>
+		<result column="TRADE_NO" property="tradeNo"/>
+		<result column="OPERATOR" property="operator"/>
+		<result column="OPERATE_IP" property="operateIP"/>
+		<result column="PRE_TRADE_STATUS" property="preTradeStatus"/>
+		<result column="POST_TRADE_STATUS" property="postTradeStatus"/>
+		<result column="REFUND_ID" property="refundId"/>
+		<result column="PRE_REFUND_STATUS" property="preRefundStatus"/>
+		<result column="POST_REFUND_STATUS" property="postRefundStatus"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+<!-- 		<result column="buyerEmail" property="buyerEmail"/> -->
+<!-- 		<result column="sellerEmail" property="sellerEmail"/> -->
+	</resultMap>
+
+	<!-- 通过订单号得到订单日志 -->
+	<select id="getTradeLogByOrderId" parameterClass="java.lang.Long" resultMap="tradeLogResultMap">
+		select 
+			ID,
+			ORDER_ID,
+			TRADE_NO,
+			OPERATOR,
+			OPERATE_IP,
+			PRE_TRADE_STATUS,
+			POST_TRADE_STATUS,
+			REFUND_ID,
+			PRE_REFUND_STATUS,
+			POST_REFUND_STATUS,
+			GMT_CREATE
+		from 
+			TRADE_LOG
+		where
+			ORDER_ID=#orderId#
+		order by
+			GMT_CREATE
+	</select>
+
+</sqlMap>

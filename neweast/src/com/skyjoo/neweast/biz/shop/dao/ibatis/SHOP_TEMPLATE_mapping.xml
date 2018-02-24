@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SHOP_TEMPLATE">
+
+	<typeAlias alias="shopTemplate" type="com.skyjoo.neweast.biz.shop.domain.ShopTemplate" />
+	
+	<resultMap id="shopTemplateResultMap" class="shopTemplate">
+		<result column="ID" property="id"/>
+		<result column="TITLE" property="title"/>
+		<result column="TEMPLATE_NAME" property="templateName"/>
+		<result column="PREVIEW_PIC" property="previewPic"/>
+		<result column="PREVIEW_URL" property="previewUrl"/>
+		<result column="DESP" property="desp"/>
+		<result column="DESCRIPTION" property="description"/>
+		<result column="STATUS" property="status"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+		<result column="GMT_MODIFY" property="gmtModify"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		st.ID,
+		st.TITLE,
+		st.TEMPLATE_NAME,
+		st.PREVIEW_PIC,
+		st.PREVIEW_URL,
+		st.DESP,
+		st.DESCRIPTION,
+		st.STATUS,
+		st.GMT_CREATE,
+		st.GMT_MODIFY
+	</sql>
+	
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+	
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum &gt;= #beginIndex#
+	</sql>
+		
+	<sql id="pageCondition">
+		<dynamic prepend="where">
+			<isNotEmpty property="title" prepend="and">
+				st.TITLE = #title#
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+				st.STATUS = #status#
+			</isNotEmpty>
+			<isNotEmpty property="gmtCreateStart" prepend="and">
+				st.GMT_CREATE &gt;= to_date(#gmtCreateStart#, 'yyyy-MM-dd')
+			</isNotEmpty>
+			<isNotEmpty property="gmtCreateEnd" prepend="and">
+				st.GMT_CREATE &lt; to_date(#gmtCreateEnd#, 'yyyy-MM-dd') + 1
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+		
+	<select id="pageCount" parameterClass="shopTemplate" resultClass="java.lang.Integer">
+		select count(*)
+		from SHOP_TEMPLATE st
+		<include refid="pageCondition"/>
+	</select>
+	
+	<select id="page" parameterClass="shopTemplate" resultMap="shopTemplateResultMap">
+		<include refid="pageBeginSql"/>
+		
+		select <include refid="columsSql"/>
+		from SHOP_TEMPLATE st
+		<include refid="pageCondition"/>
+		order by st.GMT_CREATE asc
+		
+		<include refid="pageEndSql"/>
+	</select>
+
+	<select id="getShopTemplateByID" parameterClass="Long" resultMap="shopTemplateResultMap">
+		select <include refid="columsSql"/>
+		from SHOP_TEMPLATE st
+		where st.id = #id#
+	</select>
+
+	<select id="getCountByTitle" parameterClass="string" resultClass="java.lang.Integer">
+		select count(*)
+		from SHOP_TEMPLATE st
+		where st.TITLE = #title#
+		and st.STATUS!=-1
+	</select>
+	
+	<insert id="addShopTemplate" parameterClass="shopTemplate" >
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+    		select SEQ_SHOP_TEMPLATE.nextval from dual
+    	</selectKey>
+    	INSERT INTO SHOP_TEMPLATE ("ID",TITLE,TEMPLATE_NAME,PREVIEW_PIC,PREVIEW_URL,DESP,DESCRIPTION,STATUS,GMT_CREATE,GMT_MODIFY)
+    	VALUES (#id#,#title#,#templateName#,#previewPic#,#previewUrl#,#desp#,#description#,#status#,SYSDATE,SYSDATE)
+	</insert>
+	
+  <update id="remove">
+    	update  SHOP_TEMPLATE 
+    	set
+    		STATUS=-1,GMT_MODIFY=sysdate
+    	where
+    		ID=#id#
+    </update>
+
+</sqlMap>

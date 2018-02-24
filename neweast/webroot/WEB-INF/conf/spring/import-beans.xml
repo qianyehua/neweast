@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!-- 此配置文件包括所有通过远程调用import来的service -->
+<beans>
+	<bean id="remoteMallTradeService"
+		class="com.hundsun.wudadao.common.rpc.hessian.HessianProxyFactoryBean">
+		<property name="serviceUrl"
+			value="${greenbird.remoteMallTradeService.hessian.url}" />
+		<property name="serviceInterface"
+			value="com.skyjoo.wudadao.greenbird.interfaces.RemoteMallTradeService" />
+	</bean>
+	<bean id="remoteUserPointService"
+		class="com.hundsun.wudadao.common.rpc.hessian.HessianProxyFactoryBean">
+		<property name="serviceUrl"
+			value="${greenbird.remoteUserPointService.hessian.url}"></property>
+		<property name="serviceInterface"
+			value="com.skyjoo.wudadao.greenbird.interfaces.RemoteUserPointService"></property>
+	</bean>
+	
+	
+	<!-- <bean id="messageRemoteService" class="com.hundsun.wudadao.common.rpc.hessian.HessianProxyFactoryBean"> 
+		<property name="serviceUrl" value="${greenbird.messageRemoteService.hessian.url}" 
+		/> <property name="serviceInterface" value="com.skyjoo.wudadao.greenbird.interfaces.MessageRemoteService" 
+		/> </bean> -->
+</beans>

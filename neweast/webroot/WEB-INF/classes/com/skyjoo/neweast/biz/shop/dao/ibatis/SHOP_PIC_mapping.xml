@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SHOP_PIC">
+
+	<typeAlias alias="shopPic" type="com.skyjoo.neweast.biz.shop.domain.ShopPic" />
+	<typeAlias alias="shopPicQuery" type="com.skyjoo.neweast.biz.shop.domain.query.ShopPicQuery" />
+	
+	<resultMap id="shopPicQueryResultMap" class="shopPicQuery">
+		<result column="PIC_ID" property="picID"/>
+		<result column="PIC_PATH" property="picPath"/>
+		<result column="NAME" property="name"/>
+		<result column="STATUS" property="status"/>
+		<result column="STOCK_ACCOUNT" property="email"/>
+		<result column="GMT_CREATE" property="gmtCreate"/>
+	</resultMap>
+	
+	<sql id="columsSql">
+		s.NAME as NAME,
+		ua.STOCK_ACCOUNT as STOCK_ACCOUNT,
+		sp.ID as PIC_ID,
+		sp.IMG_PATH as PIC_PATH,
+		sp.STATUS as STATUS,
+		sp.GMT_CREATE as GMT_CREATE 
+	</sql>
+	
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+	
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum &gt;= #beginIndex#
+	</sql>
+		
+	<sql id="pageCondition">
+		where s.ID = sp.SHOP_ID  AND s.ACCOUNT_ID = ua.ID   
+		<isNotEmpty property="email" prepend="and">
+			ua.STOCK_ACCOUNT = #email#
+		</isNotEmpty>
+		<isNotEmpty property="name" prepend="and">
+			s.NAME LIKE '$name$%'
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend="and">
+			sp.STATUS = #status#
+		</isNotEmpty>
+		<isNotEmpty property="gmtCreateStart" prepend="and">
+			sp.GMT_CREATE &gt;= to_date(#gmtCreateStart#, 'yyyy-MM-dd')
+		</isNotEmpty>
+		<isNotEmpty property="gmtCreateEnd" prepend="and">
+			sp.GMT_CREATE &lt; to_date(#gmtCreateEnd#, 'yyyy-MM-dd') + 1
+		</isNotEmpty>
+	</sql>
+		
+	<select id="pageCount" parameterClass="shopPicQuery" resultClass="java.lang.Integer">
+		select count(*)
+		from SHOP s , SHOP_PIC sp , USER_ACCOUNT ua 
+		<include refid="pageCondition"/>
+	</select>
+	
+	<select id="page" parameterClass="shopPicQuery" resultMap="shopPicQueryResultMap">
+		<include refid="pageBeginSql"/>
+		
+		select <include refid="columsSql"/>
+		from SHOP s , SHOP_PIC sp , USER_ACCOUNT ua 
+		<include refid="pageCondition"/>
+		order by sp.GMT_CREATE desc
+		
+		<include refid="pageEndSql"/>
+	</select>
+	
+	<update id="audit" parameterClass="shopPic">
+		UPDATE SHOP_PIC sp 
+		SET SP.STATUS = #status#
+		WHERE sp."ID" = #id#
+	</update>
+	
+</sqlMap>

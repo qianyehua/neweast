@@ -1,0 +1,95 @@
+<link rel="stylesheet" type="text/css" href="$!{imageServer}/styles/datePicker.css" />
+<script src="$!{imageServer}/scripts/jquery.datePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var num = 0;
+    function verify(flag, id) {
+            num ++;
+            if(num <= 1){
+        	    var url = "verify.htm?id=" + id + "&flag=" + flag;
+       		    document.location = url;
+       		}
+        }
+        jQuery( function() {
+        //设置日期
+        $('.date-pick').datePicker( {
+        clickInput : true,
+        startDate : "2010-01-01"
+        });
+        });
+</script>
+
+<!-- 搜索框 -->
+<div class="search-box">
+    <form id="authCert" name="authCert" action="$!{appServer}/auth_cert/list.htm" method="post">
+        <table>
+            <tr>
+                <th>证书编号</th> <td>
+                	#springBind("query.certNo")
+                    <input type="text" name="certNo" value="$!{status.value}"  id="certNo" maxlength="50"  onKeyUp="this.value=this.value.trim()" class="inp" style="width:180px;">
+                </td>
+                <th>鉴定机构ID</th> <td>
+					#springBind("query.inst_id")
+					<input type="text" name="inst_id" id="instID" value="$!{status.value}" maxlength="16" onKeyUp="this.value=this.value.replace(/[^\d]/g,'').trim()"  class="inp">
+                </td>
+                <th>鉴定机构名称</th> <td>
+                	#springBind("query.instName")
+                    <input type="text" name="instName" value="$!{status.value}" onKeyUp="this.value=this.value.trim()" id="instName" maxlength="32" class="inp">
+                </td>
+        </tr><tr>
+                <th>录入日期</th>
+                <td>
+					#springBind("query.startDate")
+					<input type="text" id="startDate" name="startDate" value="$!{status.value}"  readonly="readonly" size="10" class="date-pick" style="width:85px;"/>
+                    -
+					#springBind("query.endDate")
+                    <input type="text" id="endDate" name="endDate"  value="$!{status.value}" readonly="readonly"  size="10" class="date-pick" style="width:85px;"/>
+                </td>
+                 <th>
+                    <input type="submit" name="search" value="查询" class="but-61" />
+				</th>
+                <td>
+                 	<input type="reset" value="重置" onclick="window.location = '$!{appServer}/auth_cert/list.htm'" class="but-62"/>
+                </td>
+		</tr>
+</table>
+</form>
+</div>
+<!-- 搜索框 END -->
+
+<div class="basic">
+ 
+    <div class="listbox" >
+        <table class="list-table" >
+            <tr>
+                <th>机构名称</th>
+                <th>机构ID</th>
+                <th>证书编号</th>
+                <th>录入时间</th>
+                <th>操作</th>
+            </tr>
+            #if($!{page} && ${page.totalCount} > 0)
+                #foreach($cert in $page.getData())
+                    <tr #if($!{velocityCount}%2 == 0) class="bg" #end>
+                            <td>$!{cert.instName}</td>
+                            <td>$!{cert.instID}</td>
+                            <td>$!{cert.certNo}</td>
+                            <td>$dateTool.format('yyyy-MM-dd HH:mm:ss',$!{cert.gmtEntry})</td>
+                            <td class="link-td">
+								<a href="detail.htm?id=$!{cert.certID}" name="detail">查看</a>
+								&nbsp;
+                                <a href="remove.htm?id=$!{cert.certID}" onClick="return confirm('确定删除该数据吗？');" name="remove">删除</a>
+                            </td>
+                    </tr>
+                #end
+                #else
+                    <tr>
+                        <td>
+                            <p class="ts">没有结果</p>
+                        </td>
+                    </tr>
+            #end
+        </table>
+        #pager($page, "authCert")
+    </div>
+    <div class="clear"></div>
+</div>

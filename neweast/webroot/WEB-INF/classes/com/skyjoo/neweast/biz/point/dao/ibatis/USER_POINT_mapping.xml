@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="USER_POINT">
+
+	<typeAlias alias="userPoint"
+		type="com.skyjoo.neweast.biz.point.domain.UserPoint" />
+	<typeAlias alias="userPointQuery"
+		type="com.skyjoo.neweast.biz.point.domain.query.UserPointQuery" />
+	<resultMap id="UserPointResultMap" class="userPoint">
+		<result column="ID" property="id" />
+		<result column="TRADE_ACCOUNT" property="tradeAccount" />
+		<result column="CURRENT_AMOUNT" property="currentAmount" />
+		<result column="FROZEN_AMOUNT" property="frozenAmount" />
+		<result column="GMT_CREATE" property="GMTCreate" />
+		<result column="GMT_MODIFY" property="GMTModify" />
+	</resultMap>
+
+	<resultMap id="UserPointListResultMap" class="userPoint">
+		<result column="REAL_NAME" property="name" />
+		<result column="TRADE_ACCOUNT" property="tradeAccount" />
+		<result column="CURRENT_AMOUNT" property="currentAmount" />
+	</resultMap>
+
+	<select id="count" parameterClass="userPointQuery" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM USER_POINT up WHERE 1=1
+		<isNotEmpty property="tradeAccount" prepend="and">
+			up.TRADE_ACCOUNT=#tradeAccount#
+		</isNotEmpty>
+	</select>
+
+	<sql id="pageBeginSql">
+		select * from ( select t1.* , rownum linenum from (
+	</sql>
+
+	<sql id="pageEndSql">
+		) t1 where rownum &lt;= #endIndex#) t2 where t2.linenum
+		&gt;= #beginIndex#
+	</sql>
+
+	<select id="query" parameterClass="userPointQuery" resultMap="UserPointListResultMap">
+	<include refid="pageBeginSql"/>
+		select
+		ua.REAL_NAME,
+		up.TRADE_ACCOUNT,
+		up.CURRENT_AMOUNT
+		from
+		USER_POINT up
+		left join USER_ACCOUNT ua
+		on up.TRADE_ACCOUNT = ua.STOCK_ACCOUNT
+		WHERE
+		1=1
+		<isNotEmpty property="tradeAccount" prepend="and">
+			up.TRADE_ACCOUNT=#tradeAccount#
+		</isNotEmpty>
+		order by up.GMT_CREATE desc
+		<include refid="pageEndSql"/>
+	</select>
+
+	<select id="getUserPointByTradeAccount" parameterClass="java.lang.String"
+		resultMap="UserPointResultMap">
+		select
+		up.ID,up.TRADE_ACCOUNT,
+		up.CURRENT_AMOUNT,up.FROZEN_AMOUNT,up.GMT_CREATE,up.GMT_MODIFY
+		from
+		USER_POINT up
+		where up.TRADE_ACCOUNT=#account#
+	</select>
+
+	<insert id="insert" parameterClass="userPoint">
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+			select
+			SEQ_USER_POINT.NEXTVAL from dual
+		</selectKey>
+		INSERT INTO USER_POINT(ID,TRADE_ACCOUNT,CURRENT_AMOUNT,FROZEN_AMOUNT,
+		GMT_CREATE,GMT_MODIFY)
+		VALUES (
+		#id#,#tradeAccount#,#currentAmount#,#frozenAmount#,sysdate,sysdate)
+	</insert>
+
+	<update id="update" parameterClass="userPoint">
+		update USER_POINT up set
+		up.GMT_MODIFY=sysdate,
+		up.CURRENT_AMOUNT=#currentAmount#
+		where
+		up.ID=#id#
+	</update>
+	
+	<select id="check" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+			SELECT COUNT(1) FROM USER_ACCOUNT ua WHERE ua.STOCK_ACCOUNT=#account# and  (ua.STATUS=1 or ua.STATUS=0 or ua.STATUS=-2)
+	</select>
+</sqlMap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
