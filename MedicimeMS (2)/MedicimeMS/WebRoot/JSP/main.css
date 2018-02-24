@@ -1,0 +1,10 @@
+   .datagrid-cell
+        {
+                text-overflow: ellipsis;
+    
+   }
+  .info{position:absolute;top:20px;right:30px;font-size:15px;width:350px;text-align:center;}
+  .detail{}
+ .out{position:absolute;top:50px;right:30px;font-size:15px;width:350px;text-align:center;padding:0}
+ 
+ #out span {cursor: pointer;}

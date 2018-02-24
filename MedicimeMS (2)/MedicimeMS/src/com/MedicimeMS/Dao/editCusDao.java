@@ -1,0 +1,52 @@
+package com.MedicimeMS.Dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import net.sf.json.JSONObject;
+
+import com.MedicimeMS.Tool.DBConn;
+
+public class editCusDao {
+
+	private Connection conn=null;
+	private PreparedStatement st=null;
+	private ResultSet rs=null;
+	public int edituser(JSONObject message){
+		try {
+			conn=DBConn.getCon();
+			st=conn.prepareStatement("update T_Hospital set HospitalName=?,Person=?,Phone=?,Address=?,AreaId=?,Longitude=?,Latitude=?,Property=? where HospitalId=?");
+			st.setString(9, message.getString("hospitalid"));
+			st.setString(1, message.getString("hospitalname"));
+			st.setString(2,message.getString("person"));
+			st.setString(3, message.getString("phone"));
+			st.setString(4, message.getString("address"));
+			st.setString(5, message.getString("areaid"));
+			st.setString(6, message.getString("longitude"));
+			st.setString(7, message.getString("latitude"));
+			st.setInt(8, message.getInt("proid"));
+			st.executeUpdate();
+			
+			return 1;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+			 try {
+				   rs.close();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			   try {
+				st.close();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			   try {
+				conn.close();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		return 0;
+	}
+}

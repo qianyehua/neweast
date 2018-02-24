@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>LoginServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.LoginServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>getVerifyCode</servlet-name>
+    <servlet-class>com.MedicimeMS.Tool.getVerifyCode</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>getSysChaServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.getSysChaServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>FunctionServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.FunctionServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>RoleServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.RoleServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>RoFu1Serv</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.RoFu1Serv</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>SaveFunServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.SaveFunServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>DeleFunServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.DeleFunServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>UserServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.UserServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>addUserServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.addUserServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>deleUserServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.deleUserServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>UseRoServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.UseRoServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>saveURServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.saveURServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>UR2Serv</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.UR2Serv</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>fillEditServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.fillEditServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>EditServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.EditServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>deleRoleServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.deleRoleServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>addRoleServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.addRoleServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>VisFinServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.VisFinServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>PlaFinServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.PlaFinServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>MesFinServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.MesFinServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>customServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.customServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>addCusServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.addCusServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>getComServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.getComServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>fillCusServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.fillCusServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>deleCusServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.deleCusServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>editCusServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.editCusServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>buscharServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.buscharServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>excelServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.excelServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>getAllHospitalServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.getAllHospitalServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>getAllStaffServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.getAllStaffServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>getDayReportServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.getDayReportServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>getHospitalMonthReportServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.getHospitalMonthReportServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>getStaffMonthReportServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.getStaffMonthReportServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>getType</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.getType</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>JieBangServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.JieBangServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>deleMoHoServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.deleMoHoServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>addMoHoSer</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.addMoHoSer</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>getAddHosSer</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.getAddHosSer</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>getPhotoServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.getPhotoServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>getDeptServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.getDeptServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>getstaffServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.getstaffServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>addDeptServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.addDeptServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>deleteDeptServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.deleteDeptServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>UpdateDeptServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.UpdateDeptServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>deletVisServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.deletVisServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>deletPlaServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.deletPlaServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>deleMesServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.deleMesServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>VistTypeServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.VistTypeServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>fankuiServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.fankuiServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>getProServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.getProServ</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>HandFinServ</servlet-name>
+    <servlet-class>com.MedicimeMS.Servlet.HandFinServ</servlet-class>
+  </servlet>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <servlet-mapping>
+    <servlet-name>LoginServ</servlet-name>
+    <url-pattern>/servlet/LoginServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getVerifyCode</servlet-name>
+    <url-pattern>/servlet/getVerifyCode</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getSysChaServ</servlet-name>
+    <url-pattern>/servlet/getSysChaServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>FunctionServ</servlet-name>
+    <url-pattern>/servlet/FunctionServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>RoleServ</servlet-name>
+    <url-pattern>/servlet/RoleServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>RoFu1Serv</servlet-name>
+    <url-pattern>/servlet/RoFu1Serv</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>SaveFunServ</servlet-name>
+    <url-pattern>/servlet/SaveFunServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>DeleFunServ</servlet-name>
+    <url-pattern>/servlet/DeleFunServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>UserServ</servlet-name>
+    <url-pattern>/servlet/UserServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>addUserServ</servlet-name>
+    <url-pattern>/servlet/addUserServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>deleUserServ</servlet-name>
+    <url-pattern>/servlet/deleUserServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>UseRoServ</servlet-name>
+    <url-pattern>/servlet/UseRoServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>saveURServ</servlet-name>
+    <url-pattern>/servlet/saveURServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>UR2Serv</servlet-name>
+    <url-pattern>/servlet/UR2Serv</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>fillEditServ</servlet-name>
+    <url-pattern>/servlet/fillEditServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>EditServ</servlet-name>
+    <url-pattern>/servlet/EditServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>deleRoleServ</servlet-name>
+    <url-pattern>/servlet/deleRoleServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>addRoleServ</servlet-name>
+    <url-pattern>/servlet/addRoleServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>VisFinServ</servlet-name>
+    <url-pattern>/servlet/VisFinServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>PlaFinServ</servlet-name>
+    <url-pattern>/servlet/PlaFinServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>MesFinServ</servlet-name>
+    <url-pattern>/servlet/MesFinServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>customServ</servlet-name>
+    <url-pattern>/servlet/customServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>addCusServ</servlet-name>
+    <url-pattern>/servlet/addCusServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getComServ</servlet-name>
+    <url-pattern>/servlet/getComServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>fillCusServ</servlet-name>
+    <url-pattern>/servlet/fillCusServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>deleCusServ</servlet-name>
+    <url-pattern>/servlet/deleCusServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>editCusServ</servlet-name>
+    <url-pattern>/servlet/editCusServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>buscharServ</servlet-name>
+    <url-pattern>/servlet/buscharServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>excelServ</servlet-name>
+    <url-pattern>/servlet/excelServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getAllHospitalServ</servlet-name>
+    <url-pattern>/getAllHospitalServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getAllStaffServ</servlet-name>
+    <url-pattern>/getAllStaffServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getDayReportServ</servlet-name>
+    <url-pattern>/getDayReportServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getHospitalMonthReportServ</servlet-name>
+    <url-pattern>/getHospitalMonthReportServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getStaffMonthReportServ</servlet-name>
+    <url-pattern>/getStaffMonthReportServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getType</servlet-name>
+    <url-pattern>/servlet/getType</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>JieBangServ</servlet-name>
+    <url-pattern>/servlet/JieBangServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>deleMoHoServ</servlet-name>
+    <url-pattern>/servlet/deleMoHoServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>addMoHoSer</servlet-name>
+    <url-pattern>/servlet/addMoHoSer</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getAddHosSer</servlet-name>
+    <url-pattern>/servlet/getAddHosSer</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getPhotoServ</servlet-name>
+    <url-pattern>/servlet/getPhotoServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getDeptServ</servlet-name>
+    <url-pattern>/servlet/getDeptServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getstaffServ</servlet-name>
+    <url-pattern>/servlet/getstaffServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>addDeptServ</servlet-name>
+    <url-pattern>/servlet/addDeptServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>deleteDeptServ</servlet-name>
+    <url-pattern>/servlet/deleteDeptServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>UpdateDeptServ</servlet-name>
+    <url-pattern>/servlet/UpdateDeptServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>deletVisServ</servlet-name>
+    <url-pattern>/servlet/deletVisServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>deletPlaServ</servlet-name>
+    <url-pattern>/servlet/deletPlaServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>deleMesServ</servlet-name>
+    <url-pattern>/servlet/deleMesServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>VistTypeServ</servlet-name>
+    <url-pattern>/servlet/VistTypeServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>fankuiServ</servlet-name>
+    <url-pattern>/servlet/fankuiServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getProServ</servlet-name>
+    <url-pattern>/servlet/getProServ</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>HandFinServ</servlet-name>
+    <url-pattern>/servlet/HandFinServ</url-pattern>
+  </servlet-mapping>
+
+</web-app>
